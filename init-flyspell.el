@@ -19,6 +19,9 @@
                 tcl-mode-hook
                 javascript-mode-hook))
   (add-hook hook 'flyspell-prog-mode))
+
+(ispell-change-dictionary "english")
+
 (add-hook 'nxml-mode-hook
           (lambda ()
             (add-to-list 'flyspell-prog-text-faces 'nxml-text-face)))
