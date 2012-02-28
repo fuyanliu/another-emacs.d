@@ -30,9 +30,23 @@
 
 ; from RobinH
 ;Time management
-(setq display-time-24hr-format t)
-(setq display-time-day-and-date t)
 (display-time)
+(defface display-time-face
+  '((((type x w32 mac))
+     ;; #060525 is the background colour of my default face.
+     (:foreground "#7F00FF" :inherit bold))
+    (((type tty))
+     (:foreground "blue")))
+  "Face used to display the time in the mode line."
+  :group 'display-time)
+
+;; This causes the current time in the mode line to be displayed in
+;; `egoge-display-time-face' to make it stand out visually.
+(setq display-time-string-forms
+      '("["
+        (propertize (concat 24-hours ":" minutes)
+ 		    'face 'display-time-face)
+        "]"))
 
 (global-set-key [f8] 'calendar)
 (global-set-key [f12] 'list-bookmarks)
@@ -52,7 +66,6 @@
     (interactive)
     (w32-send-sys-command 61728)
     (global-set-key (kbd "C-c z") 'w32-maximize-frame))
-
   )
 
 ;; M-x ct ENTER
@@ -67,13 +80,18 @@
 (global-set-key [f2] 'repeat-complex-command)
 
 ;effective emacs item 3
-(global-set-key "\C-w"     'backward-kill-word)
-(global-set-key "\C-x\C-k" 'kill-region)
-(global-set-key "\C-c\C-k" 'kill-region)
+;;; kill region if mark active, otherwise backwark kill a word.
+(global-set-key "\C-w"
+		(lambda () (interactive)
+		  (if mark-active
+		      (call-interactively 'kill-region)
+		    (call-interactively 'backward-kill-word))))
+;; (global-set-key "\C-x\C-k" 'kill-region)
+;; (global-set-key "\C-c\C-k" 'kill-region)
 (global-set-key "\C-s" 'isearch-forward-regexp)
 (global-set-key "\M-s" 'isearch-backward-regexp)
 (global-set-key "\C-\M-s" 'tags-search)
-(global-set-key "\C-x\C-n" 'find-file-other-frame) ;open new frame with a file
+;; (global-set-key "\C-x\C-n" 'find-file-other-frame) ;open new frame with a file
 
 ;;a no-op function to bind to if you want to set a keystroke to null
 (defun void () "this is a no-op" (interactive))
@@ -101,7 +119,7 @@
     (while (< i 254)
            (setq i (+ i 1))
            (insert (format "%4d %c\n" i i))))
-  (beginning-of-buffer))
+  (goto-char (point-min)))
 
 ;insert date into buffer
 (defun insert-date ()
@@ -121,7 +139,7 @@
 ;; @see http://xahlee.org/emacs/effective_emacs.html
 (global-set-key (kbd "M-3") 'split-window-horizontally);was digit-argument
 (global-set-key (kbd "M-2") 'split-window-vertically) ;was digit-argument
-(global-set-key (kbd "M-1") 'delete-other-window) ; was digit-argument
+(global-set-key (kbd "M-1") 'delete-other-windows) ; was digit-argument
 (global-set-key (kbd "M-0") 'delete-window) ; was digit-argument
 (global-set-key (kbd "M-o") 'other-window) ; was facemenu-keymap
 (defalias 'list-buffers 'ibuffer)
@@ -131,9 +149,9 @@
 (global-set-key "\C-cc" 'copy-region-as-kill)
 (global-set-key [home] 'beginning-of-line)
 (global-set-key [end] 'end-of-line)
-(global-set-key [\C-home] 'beginning-of-buffer)
+(global-set-key [\C-home] '(goto-char (point-min)))
 (global-set-key [\C-end] 'end-of-buffer)
-(global-set-key [?\C-/] 'void) ;forward reference
+; (global-set-key [?\C-/] 'void) ;forward reference
 
 ;; @see http://www.emacswiki.org/emacs/BetterRegisters
 ;; This is used in the function below to make marked points visible
