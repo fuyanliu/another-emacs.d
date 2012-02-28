@@ -1,4 +1,5 @@
 (require 'which-func)
 (add-to-list 'which-func-modes 'org-mode)
-(which-func-mode 1)
+(which-function-mode)
+
 (provide 'init-which-func)
