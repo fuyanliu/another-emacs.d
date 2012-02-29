@@ -24,7 +24,6 @@ environments too, with any Emacs version >= 23. If not, please file an
 issue on the github project: https://github.com/purcell/emacs.d
 
 -Steve Purcell
-
 ========================================================================
 
 I based my emacs configuration on Purcell's and sync from his frequently.
@@ -39,8 +38,15 @@ What I added are,
 Purcell won't list all the 3rd party tools you need install. I will
 try to list them HERE,
     * tidy
-    * pyflakes 
+    * pyflakes
       install pip, then `pip install pyflakes`, but on cygwin you need install
       setuptool in order to install pip.
 
 -Chen Bin
+
+========================================================================
+
+Chen Bin's configurations fit for me well except for some few key bindings.
+I rehacked it and canceled some odd key bindings of unnecessary packages.
+
+-Shi Yudi
