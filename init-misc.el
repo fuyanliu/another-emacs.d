@@ -44,7 +44,7 @@
 ;; `sydi-display-time-face' to make it stand out visually.
 (setq display-time-string-forms
       '("["
-        (propertize (concat 24-hours ":" minutes)
+        (propertize (format-time-string "%a %h %d %R" (current-time))
  		    'face 'sydi-display-time-face)
         "]"))
 
