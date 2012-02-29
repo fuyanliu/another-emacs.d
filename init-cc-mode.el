@@ -62,4 +62,13 @@
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-hook)
 
+(require 'oceanbase-style)
+
+(add-hook 'c-mode-hook
+	  '(lambda ()
+	     (c-set-style "oceanbase")))
+(add-hook 'c++-mode-hook
+	  '(lambda ()
+	     (c-set-style "oceanbase")))
+
 (provide 'init-cc-mode)
