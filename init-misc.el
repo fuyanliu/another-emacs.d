@@ -41,7 +41,7 @@
   :group 'sydi-display-time)
 
 ;; This causes the current time in the mode line to be displayed in
-;; `display-time-face' to make it stand out visually.
+;; `sydi-display-time-face' to make it stand out visually.
 (setq display-time-string-forms
       '("["
         (propertize (concat 24-hours ":" minutes)
@@ -89,7 +89,7 @@
 ;; (global-set-key "\C-x\C-k" 'kill-region)
 ;; (global-set-key "\C-c\C-k" 'kill-region)
 (global-set-key "\C-s" 'isearch-forward-regexp)
-(global-set-key "\M-s" 'isearch-backward-regexp)
+(global-set-key "\C-r" 'isearch-backward-regexp)
 (global-set-key "\C-\M-s" 'tags-search)
 ;; (global-set-key "\C-x\C-n" 'find-file-other-frame) ;open new frame with a file
 
