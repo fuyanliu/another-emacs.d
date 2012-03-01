@@ -7,8 +7,8 @@
   "/away message handler.")
 
 ;; Use fly spell check
-(add-hook 'rcirc-mode-hook (lambda ()
-                             (flyspell-mode 1)))
+;; (add-hook 'rcirc-mode-hook (lambda ()
+;;                              (flyspell-mode 1)))
 ;; Keep input line at bottom.
 (add-hook 'rcirc-mode-hook
           (lambda ()
