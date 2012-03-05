@@ -6,4 +6,4 @@ namespace ${1:Namespace} {
           
           `yas/selected-text`
 
-}
+} // end of namespace $1

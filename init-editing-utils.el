@@ -4,7 +4,7 @@
 (setq-default
  blink-cursor-delay 0
  blink-cursor-interval 0.4
- bookmark-default-file "~/.emacs.d/.bookmarks.el"
+ bookmark-default-file "~/.emacs.d/bookmarks.el"
  buffers-menu-max-size 30
  case-fold-search t
  compilation-scroll-output t
@@ -17,14 +17,12 @@
  make-backup-files nil
  mouse-yank-at-point t
  set-mark-command-repeat-pop t
- show-trailing-whitespace t
  tooltip-delay 1.5
  truncate-lines nil
  truncate-partial-width-windows nil
  visible-bell t)
 
 (transient-mark-mode t)
-
 
 ;;----------------------------------------------------------------------------
 ;; Zap *up* to char is a more sensible default
@@ -69,7 +67,7 @@
 ;;----------------------------------------------------------------------------
 ;; Rectangle selections, and overwrite text when the selection is active
 ;;----------------------------------------------------------------------------
-(cua-selection-mode t)                  ; for rectangles, CUA is nice
+; (cua-selection-mode t)                  ; for rectangles, CUA is nice
 
 
 ;;----------------------------------------------------------------------------

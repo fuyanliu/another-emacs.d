@@ -7,8 +7,8 @@
   "/away message handler.")
 
 ;; Use fly spell check
-;; (add-hook 'rcirc-mode-hook (lambda ()
-;;                              (flyspell-mode 1)))
+(add-hook 'rcirc-mode-hook (lambda ()
+                              (flyspell-mode 1)))
 ;; Keep input line at bottom.
 (add-hook 'rcirc-mode-hook
           (lambda ()
@@ -46,12 +46,12 @@
 (set-face-foreground 'rcirc-my-nick "red" nil)
 
 ;; Include date in time stamp.
-(setq rcirc-time-format "%Y-%m-%d %H:%M ")
+(setq rcirc-time-format "[%m-%d %H:%M] ")
 
 ;; Change user info
-(setq rcirc-default-nick "chenbin0")
-(setq rcirc-default-user-name "chenbin0")
-(setq rcirc-default-full-name "Chen Bin")
+(setq rcirc-default-nick "sydi")
+(setq rcirc-default-user-name "sylvestee")
+(setq rcirc-default-full-name "Shi Yudi")
 
 (let ((auth-file "~/private/.auth-rcirc.el"))
    (when (file-readable-p auth-file)

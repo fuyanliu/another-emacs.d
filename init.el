@@ -6,7 +6,7 @@
 ;; Which functionality to enable (use t or nil for true and false)
 ;;----------------------------------------------------------------------------
 (setq *spell-check-support-enabled* nil)
-(setq *macbook-pro-support-enabled* t)
+(setq *macbook-pro-support-enabled* nil)
 (setq *is-a-mac* (eq system-type 'darwin))
 (setq *is-carbon-emacs* (and *is-a-mac* (eq window-system 'mac)))
 (setq *is-cocoa-emacs* (and *is-a-mac* (eq window-system 'ns)))
@@ -21,7 +21,7 @@
 ;----------------------------------------------------------------------------
 ; Load configs for specific features and modes
 ;----------------------------------------------------------------------------
-(require 'init-modeline)
+;; (require 'init-modeline)
 
 ;;----------------------------------------------------------------------------
 ;; Load configs for specific features and modes
@@ -46,6 +46,7 @@
 (require 'init-recentf)
 (require 'init-ido)
 (require 'init-hippie-expand)
+(require 'init-yasnippet)
 (require 'init-auto-complete)
 (require 'init-windows)
 (require 'init-sessions)
@@ -88,11 +89,9 @@
 
 ;; Finally set up themes, after most possibly-customised faces have been defined
 (require 'init-themes) ; color-themes 6.6.1 has some problem
-;; Chinese inut method
 (require 'init-org2blog)
 (require 'init-fill-column-indicator)
-(require 'init-yasnippet)
-(require 'init-better-registers)
+;; (require 'init-better-registers)
 (require 'init-yari)
 ;(require 'init-etags-select)
 (require 'init-cc-mode)
@@ -103,12 +102,13 @@
 ;; (require 'init-linum-mode)
 (require 'init-delicious)
 (require 'init-emacs-w3m)
-(require 'init-eim)
+;; Chinese inut method
+;; (require 'init-eim)
 (require 'init-thing-edit)
 (require 'init-which-func)
 (require 'init-keyfreq)
 (require 'init-gist)
-(require 'init-emacspeak)
+;; (require 'init-emacspeak)
 (require 'init-pomodoro)
 (require 'init-undo-tree)
 (require 'init-moz)
