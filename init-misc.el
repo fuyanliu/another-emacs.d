@@ -193,7 +193,7 @@
 (track-closed-files-mode)
 
 ; if emacs-nox, use C-@, else, use C-2;
-(if window-system
+(if t ;; window-system
  (progn
    (define-key global-map (kbd "C-2") 'er/expand-region)
    (define-key global-map (kbd "C-M-2") 'er/contract-region)
