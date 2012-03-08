@@ -62,8 +62,10 @@
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-hook)
 
-(require 'oceanbase-style)
+;; c++-mode for h files.
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
+(require 'oceanbase-style)
 (add-hook 'c-mode-hook
 	  '(lambda ()
 	     (c-set-style "oceanbase")))
