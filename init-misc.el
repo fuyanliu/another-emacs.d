@@ -206,4 +206,7 @@
 
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 
+;; add time stamp if need.
+(add-hook before-save-hook 'time-stamp)
+
 (provide 'init-misc)
