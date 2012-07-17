@@ -17,7 +17,6 @@
 (put 'upcase-region 'disabled nil)
 
 ;; no annoying beep on errors
-(setq visible-bell t)
 (setq backup-directory-alist '(("." . "~/.backups")))
 
 (put 'narrow-to-region 'disabled nil)
@@ -207,6 +206,9 @@
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 
 ;; add time stamp if need.
-(add-hook before-save-hook 'time-stamp)
+(add-hook 'before-save-hook 'time-stamp)
+
+;; xcscope load
+(require 'xcscope)
 
 (provide 'init-misc)

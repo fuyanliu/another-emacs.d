@@ -1,4 +1,5 @@
 ;; -*- coding: utf-8 -*-
+;; Time-stamp: <2012-07-16 16:55:10 sydi>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -26,7 +27,7 @@
 ;;----------------------------------------------------------------------------
 ;; Load configs for specific features and modes
 ;;----------------------------------------------------------------------------
-(require 'init-cedet)
+;; (require 'init-cedet)
 
 (require 'init-compat)
 (require 'init-utils)
@@ -69,7 +70,7 @@
 (require 'init-javascript)
 (require 'init-sh)
 (require 'init-php)
-(require 'init-org)
+(require 'init-org-mode)
 (require 'init-nxml)
 (require 'init-css)
 (require 'init-haml)
@@ -78,6 +79,7 @@
 (require 'init-ruby-mode)
 (require 'init-rails)
 (require 'init-rcirc)
+;; (require 'init-erc)
 
 (require 'init-lisp)
 (require 'init-slime)

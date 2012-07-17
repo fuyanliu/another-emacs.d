@@ -61,7 +61,13 @@
 (if (< emacs-major-version 23)
   (setq rcirc-startup-channels-alist nil)
   (setq rcirc-server-alist
-        '(("irc.freenode.net" :channels ("#emacs"))))
+        '(("216.155.130.130"         ; ipv4 of 'irc.freenode.net', set ip for diable ipv6
+           :nick "sydi"
+           :port 6667
+           :password "sylv0324"
+           :full-name "Shi Yudi"
+           :channels ("#mysql" "#emacs" "#ubuntu-cn")))
+        )
   )
 
 (defun freenode ()

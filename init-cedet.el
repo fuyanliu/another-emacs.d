@@ -1,5 +1,5 @@
 ;; Maintainer: Sylvester
-;; Time-Stamp: <>
+;; Time-stamp: <2012-03-22 15:52:52 sydi>
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -45,20 +45,22 @@
   (setq ecb-tip-of-the-day nil)
   (setq ecb-auto-compatibility-check nil)
   (setq ecb-primary-secondary-mouse-buttons 'mouse-1--C-mouse-1)
-  (ecb-layout-define "my-cscope-layout" left nil
-                     (ecb-set-methods-buffer)
-                     (ecb-split-ver 0.4 t)
-                     (other-window 1)
-                     (ecb-set-history-buffer)
-                     (ecb-split-ver 0.5 t)
-                     (other-window 1)
-                     (ecb-set-cscope-buffer))
-  (defecb-window-dedicator-to-ecb-buffer 
-      ecb-set-cscope-buffer " *ECB cscope-buf*"
-      t (switch-to-buffer "*cscope*"))
+  ;; (ecb-layout-define "my-cscope-layout" left nil
+  ;;                    (ecb-set-methods-buffer)
+  ;;                    (ecb-split-ver 0.4 t)
+  ;;                    (other-window 1)
+  ;;                    (ecb-set-history-buffer)
+  ;;                    (ecb-split-ver 0.5 t)
+  ;;                    (other-window 1)
+  ;;                    (ecb-set-cscope-buffer))
+  ;; (defecb-window-dedicator-to-ecb-buffer 
+  ;;     ecb-set-cscope-buffer " *ECB cscope-buf*"
+  ;;     t (switch-to-buffer "*cscope*"))
   (setq ecb-layout-name "left6")
   ;; Disable buckets so that history buffer can display more entries
-  (setq ecb-history-make-buckets 'never))
+  (setq ecb-history-make-buckets 'never)
+  ;;(ecb-activate)
+  )
 ;;
 ;;(ecb-activate)
 
