@@ -28,7 +28,7 @@
 ;;----------------------------------------------------------------------------
 ;; Zap *up* to char is a more sensible default
 ;;----------------------------------------------------------------------------
-(autoload 'zap-up-to-char "misc" "Kill up to ARGth occurrence of CHAR.")
+(autoload 'zap-up-to-char "misc" "Kill up to, but not including ARGth occurrence of CHAR.")
 (global-set-key (kbd "M-z") 'zap-up-to-char)
 (global-set-key (kbd "M-Z") 'zap-to-char)
 
@@ -51,7 +51,12 @@
 ;;----------------------------------------------------------------------------
 (require 'autopair)
 (setq autopair-autowrap t)
+(autopair-global-mode t)
 
+(defun inhibit-autopair ()
+  "Prevent autopair from enabling in the current buffer."
+  (setq autopair-dont-activate t)
+  (autopair-mode -1))
 
 ;;----------------------------------------------------------------------------
 ;; Fix per-window memory of buffer point positions
@@ -85,8 +90,16 @@
 (global-set-key (kbd "M-T") 'transpose-lines)
 (global-set-key (kbd "C-.") 'set-mark-command)
 (global-set-key (kbd "C-x C-.") 'pop-global-mark)
-(global-set-key (kbd "C-;") 'iy-go-to-char)
-(global-set-key (kbd "C-\,") 'iy-go-to-char-backward)
+(global-set-key (kbd "C-;") 'ace-jump-mode)
+(global-set-key (kbd "C-:") 'ace-jump-word-mode)
+
+
+;; Mark-multiple and friends
+(global-set-key (kbd "C-x r t") 'inline-string-rectangle)
+(global-set-key (kbd "C-<") 'mark-previous-like-this)
+(global-set-key (kbd "C->") 'mark-next-like-this)
+(global-set-key (kbd "C-M-m") 'mark-more-like-this)
+
 
 (defun duplicate-line ()
   (interactive)
@@ -103,6 +116,31 @@
 ;; Train myself to use M-f and M-b instead
 (global-unset-key [M-left])
 (global-unset-key [M-right])
+
+
+
+;;----------------------------------------------------------------------------
+;; Fill column indicator
+;;----------------------------------------------------------------------------
+(defun sanityinc/prog-mode-fci-settings ()
+  (turn-on-fci-mode)
+  (when show-trailing-whitespace
+    (set (make-local-variable 'whitespace-style) '(face trailing))
+    (whitespace-mode 1)))
+
+(add-hook 'prog-mode-hook 'sanityinc/prog-mode-fci-settings)
+
+(defvar sanityinc/fci-mode-suppressed nil)
+(defadvice popup-create (before suppress-fci-mode activate)
+  "Suspend fci-mode while popups are visible"
+  (set (make-local-variable 'sanityinc/fci-mode-suppressed) fci-mode)
+  (when fci-mode
+    (turn-off-fci-mode)))
+(defadvice popup-delete (after restore-fci-mode activate)
+  "Restore fci-mode when all popups have closed"
+  (when (and (not popup-instances) sanityinc/fci-mode-suppressed)
+    (setq sanityinc/fci-mode-suppressed nil)
+    (turn-on-fci-mode)))
 
 
 ;;----------------------------------------------------------------------------
@@ -149,25 +187,6 @@
              (,mode-name 1)))))))
 
 (suspend-mode-during-cua-rect-selection 'whole-line-or-region-mode)
-
-
-;;----------------------------------------------------------------------------
-;; Unfill regions or paragraphs (see http://xahlee.org/emacs/emacs_unfill-paragraph.html)
-;;----------------------------------------------------------------------------
-(defun unfill-paragraph ()
-  "Replace newline chars in current paragraph by single spaces.
-This command does the reverse of `fill-paragraph'."
-  (interactive)
-  (let ((fill-column most-positive-fixnum))
-    (fill-paragraph nil)))
-
-(defun unfill-region (start end)
-  "Replace newline chars in region by single spaces.
-This command does the reverse of `fill-region'."
-  (interactive "r")
-  (let ((fill-column most-positive-fixnum))
-    (fill-region start end)))
-
 
 
 ;;----------------------------------------------------------------------------

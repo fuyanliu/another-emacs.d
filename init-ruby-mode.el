@@ -6,15 +6,13 @@
 
 
 (autoload 'run-ruby "inf-ruby" "Run an inferior Ruby process")
-(autoload 'inf-ruby-keys "inf-ruby"
-  "Set local key defs for inf-ruby in ruby-mode")
-
-(add-hook 'ruby-mode-hook 'inf-ruby-keys)
 
 (setq ruby-use-encoding-map nil)
 
 (eval-after-load 'ruby-mode
-  '(define-key ruby-mode-map (kbd "RET") 'reindent-then-newline-and-indent))
+  '(progn
+     (define-key ruby-mode-map (kbd "RET") 'reindent-then-newline-and-indent)
+     (define-key ruby-mode-map (kbd "TAB") 'indent-for-tab-command)))
 
 
 ;;----------------------------------------------------------------------------

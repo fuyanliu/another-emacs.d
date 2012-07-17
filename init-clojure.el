@@ -12,7 +12,7 @@
      (durendal-enable t)
      (durendal-disable-slime-repl-font-lock)))
 
-(add-hook 'clojure-mode-hook 'smp-lisp-setup)
+(add-hook 'clojure-mode-hook 'sanityinc/lisp-setup)
 
 
 (defun slime-clojure-repl-setup ()
@@ -24,7 +24,8 @@
 
     (set-syntax-table clojure-mode-syntax-table)
     (setq lisp-indent-function 'clojure-indent-function)
-    (clojure-mode-font-lock-setup)))
+    (let (font-lock-mode)
+      (clojure-mode-font-lock-setup))))
 
 (add-hook 'slime-repl-mode-hook 'slime-clojure-repl-setup)
 
