@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2012-07-16 16:55:10 sydi>
+;; Time-stamp: <2012-07-18 19:55:59 sydi>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -70,7 +70,7 @@
 (require 'init-javascript)
 (require 'init-sh)
 (require 'init-php)
-(require 'init-org-mode)
+(require 'init-org)
 (require 'init-nxml)
 (require 'init-css)
 (require 'init-haml)
