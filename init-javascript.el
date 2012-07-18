@@ -20,7 +20,6 @@
 (eval-after-load 'js
   '(add-hook 'js-mode-hook 'flymake-jslint-load))
 
-
 ;; js2-mode
 (setq js2-use-font-lock-faces t
       js2-mode-must-byte-compile nil
