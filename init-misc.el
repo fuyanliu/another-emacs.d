@@ -21,12 +21,6 @@
 
 (put 'narrow-to-region 'disabled nil)
 
-(when (fboundp 'windmove-left)
-  (global-set-key "\C-ch" 'windmove-left)
-  (global-set-key "\C-cj" 'windmove-down)
-  (global-set-key "\C-ck" 'windmove-up)
-  (global-set-key "\C-cl" 'windmove-right))
-
 ; from RobinH
 ;Time management
 (display-time)
@@ -177,19 +171,34 @@
     (progn
      ; my clipboard manager only intercept CLIPBOARD
       (shell-command-on-region (region-beginning) (region-end)
-        (if *cygwin* "putclip" "xclip -selection clipboard"))
+        (cond
+         (*cygwin* "putclip")
+         (*is-a-mac* "pbcopy")
+         (t "xclip -selection clipboard")
+         )
+        )
       (message "Yanked region to clipboard!")
       (deactivate-mark))
     (message "No region active; can't yank to clipboard!")))
 
 (defun paste-from-x-clipboard()
   (interactive)
-    (shell-command (if *cygwin* "getclip" "xclip -o") 1)
+    (shell-command
+        (cond
+         (*cygwin* "getclip")
+         (*is-a-mac* "pbpaste")
+         (t "xclip -o")
+         )
+     1)
   )
 
 (eval-after-load "speedbar" '(if (load "mwheel" t) (mwheel-install)))
 
 (track-closed-files-mode)
+
+; @see http://www.emacswiki.org/emacs/SavePlace
+(require 'saveplace)
+(setq-default save-place t)
 
 ; if emacs-nox, use C-@, else, use C-2;
 (if t ;; window-system
@@ -210,5 +219,10 @@
 
 ;; xcscope load
 (require 'xcscope)
+
+;; move window/buffer
+(require 'buffer-move)
+(require 'window-numbering)
+(window-numbering-mode 1)
 
 (provide 'init-misc)

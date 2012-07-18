@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2012-07-18 19:55:59 sydi>
+;; Time-stamp: <2012-07-18 20:04:31 sydi>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -49,8 +49,6 @@
 (require 'init-recentf)
 (require 'init-ido)
 (require 'init-hippie-expand)
-(require 'init-yasnippet)
-(require 'init-auto-complete)
 (require 'init-windows)
 (require 'init-sessions)
 (require 'init-fonts)
@@ -95,11 +93,13 @@
 (require 'init-themes) ; color-themes 6.6.1 has some problem
 (require 'init-org2blog)
 (require 'init-fill-column-indicator)
-;; (require 'init-better-registers)
+(require 'init-yasnippet)
+(require 'init-better-registers) ; C-x j - jump to register
+(require 'init-zencoding-mode) ;behind init-better-register to override C-j
 (require 'init-yari)
 ;(require 'init-etags-select)
 (require 'init-cc-mode)
-;(require 'init-auto-complete-clang)
+(require 'init-auto-complete) ; after init-yasnippeta to override TAB
 (require 'init-semantic)
 (require 'init-cmake-mode)
 (require 'init-csharp-mode)
@@ -116,8 +116,9 @@
 (require 'init-pomodoro)
 (require 'init-undo-tree)
 (require 'init-moz)
-
+(require 'init-evil) ; use evil mode (vi key binding)
 (require 'init-misc)
+(require 'init-ctags)
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
@@ -125,13 +126,12 @@
 (unless (server-running-p)
   (server-start))
 
-
 ;;----------------------------------------------------------------------------
 ;; Variables configured via the interactive 'customize' interface
 ;;----------------------------------------------------------------------------
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file)
-
+(if (file-readable-p (expand-file-name "~/.emacs.d/custom.el"))
+     (load-file (expand-file-name "~/.emacs.d/custom.el"))
+       nil)
 
 ;;----------------------------------------------------------------------------
 ;; Allow users to provide an optional "init-local" containing personal settings
