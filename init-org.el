@@ -11,7 +11,6 @@
       org-agenda-include-diary t
       org-agenda-window-setup 'current-window
       org-fast-tag-selection-single-key 'expert
-      org-export-kill-product-buffer-when-displayed t
       org-tags-column 80)
 
 
@@ -128,7 +127,22 @@
  '(remember-annotation-functions (quote (org-remember-annotation)))
  '(remember-handler-functions (quote (org-remember-handler))))
 
-(add-hook 'org-mode-hook 'inhibit-autopair)
+;; org-mode latex settings.
+(require 'org-latex)
+(setq org-export-latex-listings t)
+(add-to-list 'org-export-latex-classes
+             '("org-article"
+               "\\documentclass{org-article}
+                 [NO-DEFAULT-PACKAGES]
+                 [EXTRA]"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
+(setq org-latex-to-pdf-process
+'("xelatex -interaction nonstopmode %b"
+"xelatex -interaction nonstopmode %b"))
 
 (provide 'init-org)
