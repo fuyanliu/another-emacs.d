@@ -4,7 +4,8 @@
 (setq-default
  blink-cursor-delay 0
  blink-cursor-interval 0.4
- bookmark-default-file "~/.emacs.d/bookmarks.el"
+ bookmark-defaulgt-file "~/.emacs.d/bookmarks.el"
+ custom-file "~/.emacs.d/custom.el"
  buffers-menu-max-size 30
  case-fold-search t
  x-select-enable-clipboard t

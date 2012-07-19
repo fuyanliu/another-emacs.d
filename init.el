@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2012-07-18 20:04:31 sydi>
+;; Time-stamp: <2012-07-18 20:57:53 sydi>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -74,9 +74,9 @@
 (require 'init-haml)
 (require 'init-python-mode)
 (require 'init-haskell)
-(require 'init-ruby-mode)
-(require 'init-rails)
-(require 'init-rcirc)
+;; (require 'init-ruby-mode)
+;; (require 'init-rails)
+;; (require 'init-rcirc)
 ;; (require 'init-erc)
 
 (require 'init-lisp)
@@ -116,7 +116,7 @@
 (require 'init-pomodoro)
 (require 'init-undo-tree)
 (require 'init-moz)
-(require 'init-evil) ; use evil mode (vi key binding)
+;; (require 'init-evil) ; use evil mode (vi key binding)
 (require 'init-misc)
 (require 'init-ctags)
 ;;----------------------------------------------------------------------------
