@@ -158,4 +158,24 @@
 <a href=\"http://www.sydi.org/\">%a</a> @ %d</p>")
      ))
 
+(eval-after-load "org-publish"
+  '(setq org-publish-project-alist
+         '(("org-notes"
+           :base-directory "~/personal/sydi.org/org"
+           :base-extension "org"
+           :publishing-directory "~/personal/sydi.org/html"
+           :recursive t
+           :publishing-function org-publish-org-to-html
+           :headline-levels 4     ; Just the default for this project.
+           :auto-preamble t
+           )
+          ("org-static"
+           :base-directory "~/personal/sydi.org/org"
+           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+           :publishing-directory "~/personal/sydi.org/html"
+           :recursive t
+           :publishing-function org-publish-attachment
+           )
+          ("org" :components ("org-notes" "org-static"))
+          )))
 (provide 'init-org)

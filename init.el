@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2012-07-18 20:57:53 sydi>
+;; Time-stamp: <2012-07-21 10:55:04 sydi>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -47,7 +47,9 @@
 (require 'init-flymake)
 (require 'init-artbollocks-mode)
 (require 'init-recentf)
-(require 'init-ido)
+(require 'init-better-registers)        ; C-x j - jump to register
+(require 'init-zencoding-mode) ;behind init-better-register to override C-j
+(require 'init-ido)            ;override C-j
 (require 'init-hippie-expand)
 (require 'init-windows)
 (require 'init-sessions)
@@ -94,8 +96,6 @@
 (require 'init-org2blog)
 (require 'init-fill-column-indicator)
 (require 'init-yasnippet)
-(require 'init-better-registers) ; C-x j - jump to register
-(require 'init-zencoding-mode) ;behind init-better-register to override C-j
 (require 'init-yari)
 ;(require 'init-etags-select)
 (require 'init-cc-mode)
