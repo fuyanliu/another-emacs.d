@@ -171,7 +171,7 @@
            )
           ("org-static"
            :base-directory "~/personal/sydi.org/org"
-           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|html\\|in"
            :publishing-directory "~/personal/sydi.org/html"
            :recursive t
            :publishing-function org-publish-attachment

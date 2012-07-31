@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2012-07-21 10:55:04 sydi>
+;; Time-stamp: <2012-07-31 20:15:41 sydi>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -48,19 +48,21 @@
 (require 'init-artbollocks-mode)
 (require 'init-recentf)
 (require 'init-better-registers)        ; C-x j - jump to register
-(require 'init-zencoding-mode) ;behind init-better-register to override C-j
-(require 'init-ido)            ;override C-j
+(require 'init-zencoding-mode) ; behind init-better-register to override C-j
+(require 'init-ido)            ; override C-j
 (require 'init-hippie-expand)
 (require 'init-windows)
 (require 'init-sessions)
 (require 'init-fonts)
 (require 'init-mmm)
-;(require 'init-growl)
+(require 'init-growl)
 
 (require 'init-editing-utils)
 
 (require 'init-darcs)
 (require 'init-git)
+
+(require 'init-doxymacs)
 
 (require 'init-crontab)
 (require 'init-textile)
@@ -93,17 +95,17 @@
 
 ;; Finally set up themes, after most possibly-customised faces have been defined
 (require 'init-themes) ; color-themes 6.6.1 has some problem
-(require 'init-org2blog)
-(require 'init-fill-column-indicator)
+;; (require 'init-org2blog)
+;; (require 'init-fill-column-indicator)
 (require 'init-yasnippet)
 (require 'init-yari)
-;(require 'init-etags-select)
+(require 'init-etags-select)
 (require 'init-cc-mode)
 (require 'init-auto-complete) ; after init-yasnippeta to override TAB
 (require 'init-semantic)
 (require 'init-cmake-mode)
 (require 'init-csharp-mode)
-;; (require 'init-linum-mode)
+(require 'init-linum-mode)
 (require 'init-delicious)
 (require 'init-emacs-w3m)
 ;; Chinese inut method
