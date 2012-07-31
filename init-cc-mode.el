@@ -35,7 +35,7 @@
   (local-set-key "\C-m" 'newline-and-indent)
 
   ;syntax-highlight aggressively
-  ;(setq font-lock-support-mode 'lazy-lock-mode)
+  ;; (setq font-lock-support-mode 'lazy-lock-mode)
   (setq lazy-lock-defer-contextually t)
   (setq lazy-lock-defer-time 0)
 
@@ -57,9 +57,10 @@
 
   ; @see https://github.com/seanfisk/cmake-flymake
   ; make sure you project use cmake
-  (flymake-mode)
+  ;; (flymake-mode)
 
   )
+
 (add-hook 'c-mode-common-hook 'my-c-mode-hook)
 
 ;; c++-mode for h files.
