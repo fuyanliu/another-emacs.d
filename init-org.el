@@ -38,33 +38,6 @@
 ;; Removes clocked tasks with 0:00 duration
 (setq org-clock-out-remove-zero-time-clocks t)
 
-;; ;; Show iCal calendars in the org agenda
-;; (when *is-a-mac*
-;;   (eval-after-load "org"
-;;     '(if *is-a-mac* (require 'org-mac-iCal)))
-;;   (setq org-agenda-include-diary t)
-;; 
-;;   (setq org-agenda-custom-commands
-;;         '(("I" "Import diary from iCal" agenda ""
-;;            ((org-agenda-mode-hook
-;;              (lambda ()
-;;                (org-mac-iCal)))))))
-;; 
-;;   (add-hook 'org-agenda-cleanup-fancy-diary-hook
-;;             (lambda ()
-;;               (goto-char (point-min))
-;;               (save-excursion
-;;                 (while (re-search-forward "^[a-z]" nil t)
-;;                   (goto-char (match-beginning 0))
-;;                   (insert "0:00-24:00 ")))
-;;               (while (re-search-forward "^ [a-z]" nil t)
-;;                 (goto-char (match-beginning 0))
-;;                 (save-excursion
-;;                   (re-search-backward "^[0-9]+:[0-9]+-[0-9]+:[0-9]+ " nil t))
-;;                 (insert (match-string 0)))))
-;;   )
-
-
 (eval-after-load 'org
   '(progn
      (require 'org-exp)
@@ -83,6 +56,15 @@
        (setq truncate-lines nil)
        (setq word-wrap t)
        )
+     (setq org-export-with-sub-superscripts nil) ; 取消^和_字体上浮和下沉的特殊性
+     (setq org-export-html-style-include-scripts nil) ; 不加载默认js
+     (setq org-export-html-style-include-default nil) ; 不加载默认css
+     (setq org-export-html-style "<link rel=\"stylesheet\" type=\"text/css\" href=\"/site.css\">\n")
+     (setq org-export-html-style-extra
+           (concat
+            "<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js\"></script>"
+            "\n"
+            "<script type=\"text/javascript\" src=\"/site.js\"></script>"))
      ))
 
 (require 'remember)
@@ -144,8 +126,6 @@
       '("xelatex -interaction nonstopmode %b"
         "xelatex -interaction nonstopmode %b"))
 
-(add-to-list 'org-export-language-setup
-             '("cn" "作者" "日期" "目录" "脚注"))
 
 (eval-after-load 'org-html
   '(progn
@@ -156,26 +136,42 @@
 ;;; add a horizontal line before postamble.
      (setq org-export-html-postamble "<hr /><p class=\"postamble\">
 <a href=\"http://www.sydi.org/\">%a</a> @ %d</p>")
+     (add-to-list 'org-export-language-setup
+             '("zh-CN" "作者" "日期" "目录" "脚注"))
+     (setq org-export-default-language "zh-CN")
      ))
 
+;;;###autoload
+(defun sydi/refact-html ()
+  (when (string-match ".*\\.html" buffer-file-name)
+    (goto-char (point-min))
+    (while (search-forward "<body>" nil t)
+      (replace-match "<body>\n<div id=\"wrapper\">" nil t))
+    (goto-char (point-min))
+    (while (search-forward "</body>" nil t)
+      (replace-match "</div><div id=\"sidebar\"></div>\n</body>" nil t))))
+
 (eval-after-load "org-publish"
-  '(setq org-publish-project-alist
-         '(("org-notes"
-           :base-directory "~/personal/sydi.org/org"
-           :base-extension "org"
-           :publishing-directory "~/personal/sydi.org/html"
-           :recursive t
-           :publishing-function org-publish-org-to-html
-           :headline-levels 4     ; Just the default for this project.
-           :auto-preamble t
-           )
-          ("org-static"
-           :base-directory "~/personal/sydi.org/org"
-           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|html\\|in"
-           :publishing-directory "~/personal/sydi.org/html"
-           :recursive t
-           :publishing-function org-publish-attachment
-           )
-          ("org" :components ("org-notes" "org-static"))
-          )))
+  '(progn
+     (setq org-publish-project-alist
+           '(("org-notes"
+              :base-directory "~/personal/sydi.org/org"
+              :base-extension "org"
+              :publishing-directory "~/personal/sydi.org/html"
+              :recursive t
+              :publishing-function org-publish-org-to-html
+              :headline-levels 4  ; Just the default for this project.
+              :auto-preamble t
+              )
+             ("org-static"
+              :base-directory "~/personal/sydi.org/org"
+              :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|html\\|div"
+              :publishing-directory "~/personal/sydi.org/html"
+              :recursive t
+              :publishing-function org-publish-attachment
+              )
+             ("org" :components ("org-notes" "org-static"))
+             ))
+     (add-hook 'org-publish-after-export-hook 'sydi/refact-html)
+     ))
 (provide 'init-org)
