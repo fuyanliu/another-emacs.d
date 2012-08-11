@@ -1,7 +1,7 @@
 ;; (if window-system
-;;     (color-theme-sanityinc-tomorrow-bright)
-;;   ;; (color-theme-sanityinc-solarized-dark)
-;;     )
+;;      (color-theme-sanityinc-tomorrow-bright)
+;;    ;; (color-theme-sanityinc-solarized-dark)
+;; )
 
 ;;------------------------------------------------------------------------------
 ;; Old-style color theming support (via color-theme.el)
@@ -9,7 +9,7 @@
 (defcustom window-system-color-theme 'color-theme-sanityinc-solarized-dark
   "Color theme to use in window-system frames.
 If Emacs' native theme support is available, this setting is
-ignored: use `custom-enabled-themes' instead."
+inored: use `custom-enabled-themes' instead."
   :type 'symbol)
 
 (defcustom tty-color-theme 'color-theme-terminal
@@ -53,7 +53,7 @@ ignored: use `custom-enabled-themes' instead."
     (unless (custom-theme-p theme)
       (load-theme theme)
       (message "Consider using 'M-x customize-themes' to save your preferred theme.")))
-  (custom-set-variables `(custom-enabled-themes ,custom-enabled-themes)))
+  (custom-set-variables '(custom-enabled-themes custom-enabled-themes)))
 
 (add-hook 'after-init-hook 'reapply-themes)
 
