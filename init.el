@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2012-07-31 20:15:41 sydi>
+;; Time-stamp: <2012-08-14 11:42:31 sydi>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -34,12 +34,12 @@
 (require 'init-site-lisp) ;; Must come before elpa, as it may provide package.el
 (require 'init-elpa)
 (require 'init-exec-path) ;; Set up $PATH
-(require 'init-frame-hooks)
+;; (require 'init-frame-hooks)
 (require 'init-xterm)
-(require 'init-osx-keys)
+;; (require 'init-osx-keys)
 (require 'init-gui-frames)
-(require 'init-maxframe)
-(require 'init-proxies)
+;; (require 'init-maxframe)
+;; (require 'init-proxies) ; mac only.
 (require 'init-dired)
 (require 'init-isearch)
 (require 'init-uniquify)
@@ -56,33 +56,30 @@
 (require 'init-fonts)
 (require 'init-mmm)
 (require 'init-growl)
-
 (require 'init-editing-utils)
 
-(require 'init-darcs)
+;; (require 'init-darcs)
 (require 'init-git)
 
 (require 'init-doxymacs)
-
-(require 'init-crontab)
-(require 'init-textile)
-(require 'init-markdown)
+;; (require 'init-crontab)
+;; (require 'init-textile)
+;; (require 'init-markdown)
 (require 'init-csv)
-(require 'init-erlang)
+;; (require 'init-erlang)
 (require 'init-javascript)
 (require 'init-sh)
-(require 'init-php)
+;; (require 'init-php)
 (require 'init-org)
 (require 'init-nxml)
 (require 'init-css)
-(require 'init-haml)
+;; (require 'init-haml)
 (require 'init-python-mode)
-(require 'init-haskell)
-;; (require 'init-ruby-mode)
+;; (require 'init-haskell)
+(require 'init-ruby-mode)
 ;; (require 'init-rails)
 ;; (require 'init-rcirc)
 ;; (require 'init-erc)
-
 (require 'init-lisp)
 (require 'init-slime)
 (require 'init-clojure)
@@ -92,9 +89,8 @@
   (require 'init-spelling))
 
 (require 'init-marmalade)
-
 ;; Finally set up themes, after most possibly-customised faces have been defined
-(require 'init-themes) ; color-themes 6.6.1 has some problem
+(require 'init-themes)        ; color-themes 6.6.1 has some problem
 ;; (require 'init-org2blog)
 ;; (require 'init-fill-column-indicator)
 (require 'init-yasnippet)
@@ -105,7 +101,7 @@
 (require 'init-semantic)
 (require 'init-cmake-mode)
 (require 'init-csharp-mode)
-(require 'init-linum-mode)
+;; (require 'init-linum-mode)
 (require 'init-delicious)
 (require 'init-emacs-w3m)
 ;; Chinese inut method
@@ -121,6 +117,7 @@
 ;; (require 'init-evil) ; use evil mode (vi key binding)
 (require 'init-misc)
 (require 'init-ctags)
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
@@ -154,3 +151,4 @@
 ;;; Local Variables:
 ;;; no-byte-compile: t
 ;;; End:
+(put 'scroll-left 'disabled nil)

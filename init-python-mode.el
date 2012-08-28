@@ -1,5 +1,7 @@
 (autoload 'doctest-mode "doctest-mode" "Python doctest editing mode." t)
 
+(require 'python-mode)
+
 (setq auto-mode-alist
       (append '(("\\.py$" . python-mode)
 		("SConstruct$" . python-mode)
@@ -14,7 +16,10 @@
 ;; On-the-fly syntax checking via flymake
 ;;----------------------------------------------------------------------------
 (eval-after-load 'python
-  '(require 'flymake-python-pyflakes))
+  '(progn
+     (require 'flymake-python-pyflakes)
+     (require 'ipython)
+     ))
 
 (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
 

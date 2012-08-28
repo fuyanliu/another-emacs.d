@@ -75,7 +75,7 @@
 ;;----------------------------------------------------------------------------
 ;; Rectangle selections, and overwrite text when the selection is active
 ;;----------------------------------------------------------------------------
-; (cua-selection-mode t)                  ; for rectangles, CUA is nice
+                                        ; (cua-selection-mode t)                  ; for rectangles, CUA is nice
 
 
 ;;----------------------------------------------------------------------------
@@ -123,25 +123,25 @@
 ;;----------------------------------------------------------------------------
 ;; Fill column indicator
 ;;----------------------------------------------------------------------------
-(defun sanityinc/prog-mode-fci-settings ()
-  (turn-on-fci-mode)
-  (when show-trailing-whitespace
-    (set (make-local-variable 'whitespace-style) '(face trailing))
-    (whitespace-mode 1)))
+;; (defun sanityinc/prog-mode-fci-settings ()
+;;   (turn-on-fci-mode)
+;;   (when show-trailing-whitespace
+;;     (set (make-local-variable 'whitespace-style) '(face trailing))
+;;     (whitespace-mode 1)))
 
-(add-hook 'prog-mode-hook 'sanityinc/prog-mode-fci-settings)
+;; (add-hook 'prog-mode-hook 'sanityinc/prog-mode-fci-settings)
 
-(defvar sanityinc/fci-mode-suppressed nil)
-(defadvice popup-create (before suppress-fci-mode activate)
-  "Suspend fci-mode while popups are visible"
-  (set (make-local-variable 'sanityinc/fci-mode-suppressed) fci-mode)
-  (when fci-mode
-    (turn-off-fci-mode)))
-(defadvice popup-delete (after restore-fci-mode activate)
-  "Restore fci-mode when all popups have closed"
-  (when (and (not popup-instances) sanityinc/fci-mode-suppressed)
-    (setq sanityinc/fci-mode-suppressed nil)
-    (turn-on-fci-mode)))
+;; (defvar sanityinc/fci-mode-suppressed nil)
+;; (defadvice popup-create (before suppress-fci-mode activate)
+;;   "Suspend fci-mode while popups are visible"
+;;   (set (make-local-variable 'sanityinc/fci-mode-suppressed) fci-mode)
+;;   (when fci-mode
+;;     (turn-off-fci-mode)))
+;; (defadvice popup-delete (after restore-fci-mode activate)
+;;   "Restore fci-mode when all popups have closed"
+;;   (when (and (not popup-instances) sanityinc/fci-mode-suppressed)
+;;     (setq sanityinc/fci-mode-suppressed nil)
+;;     (turn-on-fci-mode)))
 
 
 ;;----------------------------------------------------------------------------
@@ -206,7 +206,7 @@
                    (lambda (s1 s2) (eq (random 2) 0)))))))
 
 ;; copy word, check function mark-sexp
-; @see http://www.emacswiki.org/emacs/CopyWithoutSelection
+                                        ; @see http://www.emacswiki.org/emacs/CopyWithoutSelection
 ;; http://emacser.com/torture-emacs.htm
 (defun qiang-comment-dwim-line (&optional arg)
   "Replacement for the comment-dwim command.
@@ -216,8 +216,8 @@
   (interactive "*P")
   (comment-normalize-vars)
   (if (and (not (region-active-p)) (not (looking-at "[ \t]*$")))
-    (comment-or-uncomment-region
-     (line-beginning-position) (line-end-position))
+      (comment-or-uncomment-region
+       (line-beginning-position) (line-end-position))
     (comment-dwim arg)))
 (global-set-key "\M-;" 'qiang-comment-dwim-line)
 
@@ -255,7 +255,7 @@
   (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
 (global-set-key (kbd "M-k") 'qiang-copy-line)
 
-;need install browse-kill-ring
+                                        ;need install browse-kill-ring
 (browse-kill-ring-default-keybindings)
 
 (provide 'init-editing-utils)

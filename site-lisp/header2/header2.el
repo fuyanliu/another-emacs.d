@@ -163,7 +163,7 @@
 ;;
 ;;; Change Log:
 ;; 
-;; 2012/07/29    Ryan Shi
+;; 2012/07/29    sydi
 ;;     add `comment-end-p' to `make-revision'.
 ;; 2011/12/19 dadams
 ;;     delete-and-forget-line: Use line-end-position, not end-of-line + point.
@@ -394,8 +394,8 @@ t means use local time with timezone; nil means use UTC."
                               header-description
                               ;;header-status
                               header-author
-                              header-maintainer
-                              header-copyright
+                              ;header-maintainer
+                              ;header-copyright
                               header-creation-date
                               ;;header-rcs-id
                               header-version
@@ -403,16 +403,16 @@ t means use local time with timezone; nil means use UTC."
                               header-modification-date
                               header-modification-author
                               header-update-count
-                              header-url
-                              header-keywords
-                              header-compatibility
-                              header-blank
-                              header-lib-requires
-                              header-end-line
-                              header-commentary
-                              header-blank
-                              header-blank
-                              header-blank
+                              ;header-url
+                              ;header-keywords
+                              ;header-compatibility
+                              ;header-blank
+                              ;header-lib-requires
+                              ;header-end-line
+                              ;header-commentary
+                              ;header-blank
+                              ;header-blank
+                              ;header-blank
                               header-end-line
                               header-history
                               header-blank
@@ -880,12 +880,7 @@ the comment."
       (save-excursion (insert "\n" comment-end)))
     ;; We are now on the line with the header-history-label label
     (insert "\n" header-prefix-string
-            (let ((str  (current-time-string)))
-              (concat (if (equal ?\  (aref str 8))
-                          (substring str 9 10)
-                        (substring str 8 10))
-                      "-" (substring str 4 7) "-" (substring str 20 24)))
-            "    " (user-full-name)
+            (format-time-string "%Y-%m-%d") "    " (user-full-name)
             ;;"  |>Ident<|\n"
             "  \n" header-prefix-string "   ")
     ;; Add details about the history of the file before its modification

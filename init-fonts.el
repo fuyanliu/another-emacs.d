@@ -1,6 +1,5 @@
 (require 'cl)
 
-
 (defun font-name-replace-size (font-name new-size)
   (let ((parts (split-string font-name "-")))
     (setcar (nthcdr 7 parts) (format "%d" new-size))
