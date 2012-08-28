@@ -225,4 +225,10 @@
 (require 'window-numbering)
 (window-numbering-mode 1)
 
+(define-prefix-command 'ctl-z-map)
+(global-set-key (kbd "C-z") 'ctl-z-map)
+
+(global-unset-key (kbd "C-x C-z"))
+(global-unset-key (kbd "C-z"))
+
 (provide 'init-misc)

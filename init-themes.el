@@ -10,12 +10,14 @@
   "Color theme to use in window-system frames.
 If Emacs' native theme support is available, this setting is
 inored: use `custom-enabled-themes' instead."
+  :group 'color-theme
   :type 'symbol)
 
 (defcustom tty-color-theme 'color-theme-terminal
   "Color theme to use in TTY frames.
 If Emacs' native theme support is available, this setting is
 ignored: use `custom-enabled-themes' instead."
+  :group 'color-theme
   :type 'symbol)
 
 (unless (boundp 'custom-enabled-themes)
@@ -57,22 +59,47 @@ ignored: use `custom-enabled-themes' instead."
 
 (add-hook 'after-init-hook 'reapply-themes)
 
-
 ;;------------------------------------------------------------------------------
-;; Toggle between light and dark
+;; Toggle between color themes
 ;;------------------------------------------------------------------------------
+;;;###autoload
 (defun light ()
   "Activate a light color theme."
   (interactive)
   (if (boundp 'custom-enabled-themes)
-      (custom-set-variables '(custom-enabled-themes '(sanityinc-solarized-light)))
-    (color-theme-sanityinc-solarized-light)))
+      (custom-set-variables '(custom-enabled-themes '(sanityinc-tomorrow-day)))
+    (color-theme-sanityinc-tomorrow-day)))
 
+;;;###autoload
 (defun dark ()
   "Activate a dark color theme."
   (interactive)
   (if (boundp 'custom-enabled-themes)
+      (custom-set-variables '(custom-enabled-themes '(sanityinc-tomorrow-bright)))
+    (color-theme-sanityinc-tomorrow-bright)))
+
+;;;###autoload
+(defun grey ()
+  "Activate a grey color theme."
+  (interactive)
+  (if (boundp 'custom-enabled-themes)
+      (custom-set-variables '(custom-enabled-themes '(sanityinc-tomorrow-night)))
+    (color-theme-sanityinc-tomorrow-night)))
+
+;;;###autoload
+(defun dark-blue ()
+  "Activate a dark blue color theme."
+  (interactive)
+  (if (boundp 'custom-enabled-themes)
       (custom-set-variables '(custom-enabled-themes '(sanityinc-solarized-dark)))
     (color-theme-sanityinc-solarized-dark)))
+
+;;;###autoload
+(defun pink ()
+  "Activate a pink color theme."
+  (interactive)
+  (if (boundp 'custom-enabled-themes)
+      (custom-set-variables '(custom-enabled-themes '(sanityinc-solarized-light)))
+    (color-theme-sanityinc-solarized-light)))
 
 (provide 'init-themes)

@@ -75,7 +75,7 @@
 ;;----------------------------------------------------------------------------
 ;; Rectangle selections, and overwrite text when the selection is active
 ;;----------------------------------------------------------------------------
-; (cua-selection-mode t)                  ; for rectangles, CUA is nice
+                                        ; (cua-selection-mode t)                  ; for rectangles, CUA is nice
 
 
 ;;----------------------------------------------------------------------------
@@ -206,7 +206,7 @@
                    (lambda (s1 s2) (eq (random 2) 0)))))))
 
 ;; copy word, check function mark-sexp
-; @see http://www.emacswiki.org/emacs/CopyWithoutSelection
+                                        ; @see http://www.emacswiki.org/emacs/CopyWithoutSelection
 ;; http://emacser.com/torture-emacs.htm
 (defun qiang-comment-dwim-line (&optional arg)
   "Replacement for the comment-dwim command.
@@ -216,8 +216,8 @@
   (interactive "*P")
   (comment-normalize-vars)
   (if (and (not (region-active-p)) (not (looking-at "[ \t]*$")))
-    (comment-or-uncomment-region
-     (line-beginning-position) (line-end-position))
+      (comment-or-uncomment-region
+       (line-beginning-position) (line-end-position))
     (comment-dwim arg)))
 (global-set-key "\M-;" 'qiang-comment-dwim-line)
 
@@ -255,7 +255,7 @@
   (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
 (global-set-key (kbd "M-k") 'qiang-copy-line)
 
-;need install browse-kill-ring
+                                        ;need install browse-kill-ring
 (browse-kill-ring-default-keybindings)
 
 (provide 'init-editing-utils)

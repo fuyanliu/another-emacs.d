@@ -64,13 +64,13 @@
 
 ;;; (add-hook 'c-mode-common-hook 'my-c-mode-hook)
 
+;;;###autoload
 (defun sydi/c++-mode-hook ()
   (setq comment-start "/* ")
   (setq comment-end " */")
   (c-set-style "oceanbase")
-  (local-set-key "\M-f" 'subword-forward)
-  (local-set-key "\M-b" 'subword-backward)
-)
+  ;; (subword-mode)
+  )
 
 ;; c++-mode for h files.
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))

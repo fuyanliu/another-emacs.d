@@ -19,9 +19,9 @@
 
 (eval-after-load 'org
   '(progn
-     (require 'org-exp)
-     (require 'org-clock)
-     (require 'org-latex)
+     ;; (require 'org-exp)
+     ;; (require 'org-clock)
+     ;; (require 'org-latex)
 
      ;; Various preferences
      (setq org-log-done t
@@ -35,11 +35,11 @@
            org-tags-column 80
            org-src-fontify-natively t)
 
-                                        ; Refile targets include this file and any file contributing to the agenda - up to 5 levels deep
+     ;; Refile targets include this file and any file contributing to the agenda - up to 5 levels deep
      (setq org-refile-targets (quote ((nil :maxlevel . 5) (org-agenda-files :maxlevel . 5))))
-                                        ; Targets start with the file name - allows creating level 1 tasks
+     ;; Targets start with the file name - allows creating level 1 tasks
      (setq org-refile-use-outline-path (quote file))
-                                        ; Targets complete in steps so we start with filename, TAB shows the next level of targets etc
+     ;; Targets complete in steps so we start with filename, TAB shows the next level of targets etc
      (setq org-outline-path-complete-in-steps t)
 
      (setq org-todo-keywords
@@ -47,7 +47,7 @@
                    (sequence "WAITING(w@/!)" "SOMEDAY(S)" "PROJECT(P@)" "|" "CANCELLED(c@/!)"))))
      
                                         ; @see http://irreal.org/blog/?p=671
-     ;;(require 'org-checklist)
+     ;; (require 'org-checklist)
      (require 'org-fstree)
      (setq org-ditaa-jar-path (format "%s%s" (if *cygwin* "c:/cygwin" "")
                                       (expand-file-name "~/.emacs.d/elpa/contrib/scripts/ditaa.jar")) )
