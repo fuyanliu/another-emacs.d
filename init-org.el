@@ -154,6 +154,13 @@
     (while (search-forward "</body>" nil t)
       (replace-match "</div><div id=\"sidebar\"></div>\n</body>" nil t))))
 
+;;;###autoload
+(defun sydi/sync-server ()
+  (message "sync file to server")
+  (async-shell-command "update_sydi_org.sh")
+  (message "sync file to server complete")
+  )
+
 (eval-after-load "org-publish"
   '(progn
      (setq org-publish-project-alist
@@ -165,6 +172,8 @@
               :publishing-function org-publish-org-to-html
               :headline-levels 4  ; Just the default for this project.
               :auto-preamble t
+              :auto-sitemap t
+              :completion-function (sydi/sync-server)
               )
              ("org-static"
               :base-directory "~/personal/sydi.org/org"
@@ -172,8 +181,11 @@
               :publishing-directory "~/personal/sydi.org/html"
               :recursive t
               :publishing-function org-publish-attachment
+              :completion-function (sydi/sync-server)
               )
-             ("org" :components ("org-notes" "org-static"))
+             ("org"
+              :components ("org-notes" "org-static")
+              )
              ))
      (add-hook 'org-publish-after-export-hook 'sydi/refact-html)
      ))
