@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2012-10-17 11:36:54 ryan>
+;; Time-stamp: <2012-10-17 13:09:28 ryan>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -103,6 +103,7 @@
 (require 'init-themes) ; color-themes 6.6.1 has some problem
 ;; Chinese inut method
 ;; (require 'init-org2blog)
+(require 'init-org2blog)
 ;; (require 'init-fill-column-indicator) ;make auto-complete dropdown wierd
 (require 'init-yasnippet)
 (require 'init-yari)
@@ -113,7 +114,7 @@
 (require 'init-cmake-mode)
 (require 'init-csharp-mode)
 (require 'init-linum-mode)
-;; (require 'init-delicious)
+;(require 'init-delicious) ;make startup slow, I don't use delicious in w3m
 (require 'init-emacs-w3m)
 ;; Chinese inut method
 ;; (require 'init-eim)

@@ -217,17 +217,11 @@
 
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 
-<<<<<<< HEAD
 ;; add time stamp if need.
 (add-hook 'before-save-hook 'time-stamp)
 
 ;; xcscope load
 (require 'xcscope)
-
-;; move window/buffer
-(require 'buffer-move)
-(require 'window-numbering)
-(window-numbering-mode 1)
 
 (define-prefix-command 'ctl-z-map)
 (global-set-key (kbd "C-z") 'ctl-z-map)
@@ -237,7 +231,6 @@
 
 (global-set-key (kbd "C-`") (lambda () (interactive) (compile "make -j 10")))
 (global-set-key (kbd "C-~") 'compile)
-=======
 ; http://tapoueh.org/emacs/switch-window.html
 (require 'switch-window)
 
@@ -246,11 +239,10 @@
 (global-set-key (kbd "M-n") 'move-text-down)
 
 ;; move window
-(require 'window-numbering)
-(window-numbering-mode 1)
+;; (require 'window-numbering)
+;; (window-numbering-mode 1)
 
 ;; sig-quote
 ;(require 'sig-quote)
->>>>>>> redguardtoo
 
 (provide 'init-misc)

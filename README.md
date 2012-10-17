@@ -73,11 +73,8 @@ You need manually `M-x list-packages` and install it.
 * I downgraded the yasnippet to an older version because latest yasnippet is
 not compatible with auto-complete.
 
-============================================================
+# Sylvester's README
 
-Chen Bin's configurations fit for me well except for some few key bindings.
-I rehacked it and canceled some odd key bindings of unnecessary packages.
-
--Shi Yudi
-
-
+* some keys' binding
+* orgmode publishing configuration
+* some other misc...
