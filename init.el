@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2012-08-14 11:42:31 sydi>
+;; Time-stamp: <2012-09-05 13:33:50 ryan>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -44,7 +44,7 @@
 (require 'init-isearch)
 (require 'init-uniquify)
 (require 'init-ibuffer)
-(require 'init-flymake)
+;;; (require 'init-flymake)
 (require 'init-artbollocks-mode)
 (require 'init-recentf)
 (require 'init-better-registers)        ; C-x j - jump to register

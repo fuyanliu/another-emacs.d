@@ -98,7 +98,7 @@
      (setq org-export-with-sub-superscripts nil) ; 取消^和_字体上浮和下沉的特殊性
      (setq org-export-html-style-include-scripts nil) ; 不加载默认js
      (setq org-export-html-style-include-default nil) ; 不加载默认css
-     (setq org-export-html-style "<link rel=\"stylesheet\" type=\"text/css\" href=\"/site.css\">\n")
+     (setq org-export-html-style "<link rel=\"stylesheet\" type=\"text/css\" href=\"/site.css\" />\n")
      (setq org-export-html-style-extra
            (concat
             "<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js\"></script>"
@@ -137,7 +137,7 @@
            (concat "<hr />" org-export-html-footnotes-section))
 
 ;;; add a horizontal line before postamble.
-     (setq org-export-html-postamble "<hr /><p class=\"postamble\">
+     (setq org-export-html-postamble "<hr /><p id=\"postamble-line\">
 <a href=\"http://www.sydi.org/\">%a</a> @ %d</p>")
      (add-to-list 'org-export-language-setup
                   '("zh-CN" "作者" "日期" "目录" "脚注"))
@@ -149,10 +149,20 @@
   (when (string-match ".*\\.html" buffer-file-name)
     (goto-char (point-min))
     (while (search-forward "<body>" nil t)
-      (replace-match "<body>\n<div id=\"wrapper\">" nil t))
+      (replace-match "<body>\n<div id=\"frame-table\"><div id=\"frame-table-row\"><div id=\"content-wrapper\">" nil t))
     (goto-char (point-min))
     (while (search-forward "</body>" nil t)
-      (replace-match "</div><div id=\"sidebar\"></div>\n</body>" nil t))))
+      (replace-match "</div><div id=\"sidebar\"></div></div></div>\n</body>" nil t)))
+  )
+
+(defun test-comment ()
+  (message (plist-get opt-plist :author))
+  (if (plist-get opt-plist :comment-box)
+                     (message "comment-box")
+                   (message "no-comment-box")))
+
+(add-hook 'org-export-html-final-hook
+          'test-comment)
 
 ;;;###autoload
 (defun sydi/sync-server ()
@@ -164,7 +174,7 @@
 (eval-after-load "org-publish"
   '(progn
      (setq org-publish-project-alist
-           '(("org-notes"
+           '(("sydi.org.html"
               :base-directory "~/personal/sydi.org/org"
               :base-extension "org"
               :publishing-directory "~/personal/sydi.org/html"
@@ -173,6 +183,18 @@
               :headline-levels 4  ; Just the default for this project.
               :auto-preamble t
               :auto-sitemap t
+              :sitemap-filename "sitemap.org"
+              :exclude ".*my-wife.*\.org"
+              :sitemap-title "站点地图 for 本网站"
+              :htmlize-source t
+              :completion-function (sydi/sync-server)
+              )
+             ("sydi.org.org"
+              :base-directory "~/personal/sydi.org/org"
+              :base-extension "org"
+              :publishing-directory "~/personal/sydi.org/html/org"
+              :recursive t
+              :publishing-function org-publish-attachment
               :completion-function (sydi/sync-server)
               )
              ("org-static"
@@ -181,7 +203,6 @@
               :publishing-directory "~/personal/sydi.org/html"
               :recursive t
               :publishing-function org-publish-attachment
-              :completion-function (sydi/sync-server)
               )
              ("org"
               :components ("org-notes" "org-static")

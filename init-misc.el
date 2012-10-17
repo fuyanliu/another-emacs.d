@@ -231,4 +231,7 @@
 (global-unset-key (kbd "C-x C-z"))
 (global-unset-key (kbd "C-z"))
 
+(global-set-key (kbd "C-`") (lambda () (interactive) (compile "make -j 10")))
+(global-set-key (kbd "C-~") 'compile)
+
 (provide 'init-misc)
