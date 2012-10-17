@@ -24,5 +24,5 @@
 ;;If you use viper mode :
 ;(define-key viper-vi-global-user-map (kbd "SPC") 'ace-jump-mode)
 ;;If you use evil
-(define-key evil-normal-state-map (kbd "SPC") 'ace-jump-mode)
+;(define-key evil-normal-state-map (kbd "SPC") 'ace-jump-mode)
 (provide 'init-ace-jump-mode)
