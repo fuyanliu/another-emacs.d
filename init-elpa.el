@@ -64,7 +64,10 @@ ARCHIVE is the string name of the package archive.")
 ;;------------------------------------------------------------------------------
 
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-(add-to-list 'package-archives '("tromey" . "http://tromey.com/elpa/"))
+
+;; We include the org repository for completeness, but don't normally
+;; use it.
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 
 
 ;;------------------------------------------------------------------------------
@@ -73,26 +76,15 @@ ARCHIVE is the string name of the package archive.")
 
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 
+(defvar melpa-exclude-packages
+  '(slime)
+  "Don't install Melpa versions of these packages.")
+
 ;; Don't take Melpa versions of certain packages
 (setq package-filter-function
       (lambda (package version archive)
         (or (not (string-equal archive "melpa"))
-            (not (memq package
-                       '(
-                         ruby-compilation
-                         slime
-                         color-theme-sanityinc-solarized
-                         color-theme-sanityinc-tomorrow
-                         elisp-slime-nav
-                         findr))))))
-
-
-(defadvice package-download-transaction
-  (around disable-keepalives (&optional args) activate)
-  "Disable HTTP keep-alives to work around network issues with Melpa host."
-  (require 'url-http)
-  (let ((url-http-attempt-keepalives nil))
-    ad-do-it))
+            (not (memq package melpa-exclude-packages)))))
 
 
 ;;------------------------------------------------------------------------------
@@ -110,15 +102,17 @@ ARCHIVE is the string name of the package archive.")
 (require-package 'color-theme-sanityinc-solarized)
 (require-package 'color-theme-sanityinc-tomorrow)
 (require-package 'ace-jump-mode)
-(require-package 'fill-column-indicator)
 (require-package 'mark-multiple)
+(require-package 'multiple-cursors)
+(require-package 'expand-region '(20120705 0 0) nil)
 (require-package 'fringe-helper)
-(require-package 'popup '(20120724))
+;;; (require-package 'popup '(20120724))
 (require-package 'gnuplot)
 (require-package 'haskell-mode)
 (require-package 'tuareg)
 (require-package 'magit)
 (require-package 'git-blame)
+(require-package 'wgrep)
 (require-package 'flymake-cursor)
 (require-package 'csv-mode)
 (require-package 'csv-nav)
@@ -129,19 +123,20 @@ ARCHIVE is the string name of the package archive.")
 (require-package 'python-mode)
 (require-package 'project-local-variables)
 (require-package 'ruby-mode)
-(require-package 'inf-ruby)
+(require-package 'inf-ruby '(20120722 0 0) nil)
 (require-package 'yari)
 (require-package 'rvm)
 (require-package 'yaml-mode)
 (require-package 'paredit)
 (require-package 'eldoc-eval)
 (require-package 'legalese)
+(require-package 'erlang)
 (require-package 'slime)
 (require-package 'slime-fuzzy)
 (require-package 'slime-repl)
 (require-package 'browse-kill-ring)
 (require-package 'findr)
-;; (require-package 'jump)
+(require-package 'jump '(20120820 1951 0) nil)
 (require-package 'anything)
 (require-package 'gist)
 (require-package 'haml-mode)
@@ -154,17 +149,19 @@ ARCHIVE is the string name of the package archive.")
 (require-package 'rainbow-mode)
 (require-package 'maxframe)
 (when (< emacs-major-version 24)
-  (require-package 'org))
+  (require-package 'org '(20120824 0 0) nil))
 (require-package 'org-fstree)
 (require-package 'htmlize)
-(require-package 'org2blog)
+(require-package 'org2blog '(20120825 0 0) nil)
 (require-package 'clojure-mode)
 (require-package 'clojure-test-mode)
 (require-package 'clojurescript-mode)
+(require-package 'nrepl)
 (require-package 'diminish)
-(require-package 'autopair)
+(require-package 'autopair '(20120818 1646 0) nil)
 (require-package 'js-comint)
 (require-package 'php-mode)
+(require-package 'smarty-mode)
 (require-package 'scratch)
 (require-package 'mic-paren)
 (require-package 'rainbow-delimiters)
@@ -176,17 +173,20 @@ ARCHIVE is the string name of the package archive.")
 
 ;; I maintain this chunk:
 (require-package 'ac-slime)
+(require-package 'ac-nrepl)
 (require-package 'coffee-mode)
 ;; (require-package 'color-theme-sanityinc-solarized)
 ;; (require-package 'color-theme-sanityinc-tomorrow)
 (require-package 'crontab-mode)
 (require-package 'dsvn)
 (require-package 'elisp-slime-nav)
+(require-package 'exec-path-from-shell)
 (require-package 'flymake-coffee)
 (require-package 'flymake-css)
 (require-package 'flymake-haml)
 (require-package 'flymake-jslint)
 (require-package 'flymake-php)
+(require-package 'flymake-python-pyflakes)
 (require-package 'flymake-ruby)
 (require-package 'flymake-sass)
 (require-package 'flymake-shell)
@@ -194,38 +194,45 @@ ARCHIVE is the string name of the package archive.")
 (require-package 'hl-sexp)
 (require-package 'ibuffer-vc)
 (require-package 'less-css-mode)
+(require-package 'lively)
 (require-package 'mmm-mode)
 (require-package 'move-text)
 (require-package 'mwe-log-commands)
 (require-package 'pointback)
 (require-package 'regex-tool)
-;; (require-package 'rinari '(2 8 0) nil) ; use latest rinari
+(require-package 'rinari '(20100804 1340 0) nil) ; use latest rinari
 (require-package 'ruby-compilation)
 (require-package 'iy-go-to-char)
 (require-package 'csharp-mode)
 (require-package 'cmake-mode)
 (require-package 'keyfreq)
 (require-package 'fuzzy)
+
 (require-package 'auto-complete '(20120717)) ;auto-complete is dependent on fuzzy
 (require-package 'yasnippet '(20120717) nil)
 (require-package 'yasnippet-bundle)
 (require-package 'auto-complete-clang '(20120612) nil)
+
 (require-package 'zencoding-mode)
 (require-package 'session)
 (require-package 'tidy)
 (require-package 'unfill)
 (require-package 'vc-darcs)
 (require-package 'whole-line-or-region)
-(require-package 'expand-region '(0 6 0) nil)
 (require-package 'undo-tree '(0 3 3) nil)
-(require-package 'ace-jump-mode)
 (require-package 'track-closed-files)
 (require-package 'highline)
 (require-package 'auctex)
-(require-package 'evil)
+(when (< emacs-major-version 24)
+  (require-package 'ert)) ; evil-20120724 requires ert
+(require-package 'evil '(20120807 0 0) nil)
+(require-package 'evil-leader)
 (require-package 'w3m)
 (require-package 'sunrise-commander)
 (require-package 'idomenu)
 (require-package 'ctags)
+(require-package 'buffer-move)
+(require-package 'go-mode)
+(require-package 'switch-window)
 
 (provide 'init-elpa)

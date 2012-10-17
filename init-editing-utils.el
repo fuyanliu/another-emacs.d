@@ -46,7 +46,6 @@
 ;;----------------------------------------------------------------------------
 (paren-activate)     ; activating mic-paren
 
-
 ;;----------------------------------------------------------------------------
 ;; Autopair quotes and parentheses
 ;;----------------------------------------------------------------------------
@@ -91,16 +90,18 @@
 (global-set-key (kbd "M-T") 'transpose-lines)
 (global-set-key (kbd "C-.") 'set-mark-command)
 (global-set-key (kbd "C-x C-.") 'pop-global-mark)
-(global-set-key (kbd "C-;") 'ace-jump-mode)
-(global-set-key (kbd "C-:") 'ace-jump-word-mode)
 
 
-;; Mark-multiple and friends
-(global-set-key (kbd "C-x r t") 'inline-string-rectangle)
-(global-set-key (kbd "C-<") 'mark-previous-like-this)
-(global-set-key (kbd "C->") 'mark-next-like-this)
-(global-set-key (kbd "C-M-m") 'mark-more-like-this)
-
+;; multiple-cursors
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-+") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+;; From active region to multiple cursors:
+(global-set-key (kbd "C-c c r") 'set-rectangular-region-anchor)
+(global-set-key (kbd "C-c c c") 'mc/edit-lines)
+(global-set-key (kbd "C-c c e") 'mc/edit-ends-of-lines)
+(global-set-key (kbd "C-c c a") 'mc/edit-beginnings-of-lines)
 
 (defun duplicate-line ()
   (interactive)
@@ -118,30 +119,14 @@
 (global-unset-key [M-left])
 (global-unset-key [M-right])
 
+(defun kill-back-to-indentation ()
+  "Kill from point back to the first non-whitespace character on the line."
+  (interactive)
+  (let ((prev-pos (point)))
+    (back-to-indentation)
+    (kill-region (point) prev-pos)))
 
-
-;;----------------------------------------------------------------------------
-;; Fill column indicator
-;;----------------------------------------------------------------------------
-;; (defun sanityinc/prog-mode-fci-settings ()
-;;   (turn-on-fci-mode)
-;;   (when show-trailing-whitespace
-;;     (set (make-local-variable 'whitespace-style) '(face trailing))
-;;     (whitespace-mode 1)))
-
-;; (add-hook 'prog-mode-hook 'sanityinc/prog-mode-fci-settings)
-
-;; (defvar sanityinc/fci-mode-suppressed nil)
-;; (defadvice popup-create (before suppress-fci-mode activate)
-;;   "Suspend fci-mode while popups are visible"
-;;   (set (make-local-variable 'sanityinc/fci-mode-suppressed) fci-mode)
-;;   (when fci-mode
-;;     (turn-off-fci-mode)))
-;; (defadvice popup-delete (after restore-fci-mode activate)
-;;   "Restore fci-mode when all popups have closed"
-;;   (when (and (not popup-instances) sanityinc/fci-mode-suppressed)
-;;     (setq sanityinc/fci-mode-suppressed nil)
-;;     (turn-on-fci-mode)))
+(global-set-key (kbd "C-M-<backspace>") 'kill-back-to-indentation)
 
 
 ;;----------------------------------------------------------------------------
@@ -257,5 +242,13 @@
 
                                         ;need install browse-kill-ring
 (browse-kill-ring-default-keybindings)
+
+; turns on auto-fill-mode, don't use text-mode-hook becasue for some
+; mode (org-mode for example), this will make the exported document 
+; ugly!
+(add-hook 'markdown-mode-hook 'turn-on-auto-fill)
+(add-hook 'change-log-mode-hook 'turn-on-auto-fill)
+(add-hook 'cc-mode-hook 'turn-on-auto-fill)
+(global-set-key (kbd "C-c q") 'auto-fill-mode)
 
 (provide 'init-editing-utils)

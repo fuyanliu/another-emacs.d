@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2012-09-05 13:33:50 ryan>
+;; Time-stamp: <2012-10-17 11:36:54 ryan>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -19,6 +19,14 @@
 (setq *xemacs* (featurep 'xemacs))
 (setq *emacs23* (and (not *xemacs*) (or (>= emacs-major-version 23))))
 
+;----------------------------------------------------------------------------
+; Functions (load all files in defuns-dir)
+; Copied from https://github.com/magnars/.emacs.d/blob/master/init.el
+;----------------------------------------------------------------------------
+(setq defuns-dir (expand-file-name "~/.emacs.d/defuns"))
+(dolist (file (directory-files defuns-dir t "\\w+"))
+  (when (file-regular-p file)
+      (load file)))
 ;----------------------------------------------------------------------------
 ; Load configs for specific features and modes
 ;----------------------------------------------------------------------------
@@ -80,6 +88,8 @@
 ;; (require 'init-rails)
 ;; (require 'init-rcirc)
 ;; (require 'init-erc)
+(require 'init-rails)
+
 (require 'init-lisp)
 (require 'init-slime)
 (require 'init-clojure)
@@ -90,9 +100,10 @@
 
 (require 'init-marmalade)
 ;; Finally set up themes, after most possibly-customised faces have been defined
-(require 'init-themes)        ; color-themes 6.6.1 has some problem
+(require 'init-themes) ; color-themes 6.6.1 has some problem
+;; Chinese inut method
 ;; (require 'init-org2blog)
-;; (require 'init-fill-column-indicator)
+;; (require 'init-fill-column-indicator) ;make auto-complete dropdown wierd
 (require 'init-yasnippet)
 (require 'init-yari)
 (require 'init-etags-select)
@@ -101,8 +112,8 @@
 (require 'init-semantic)
 (require 'init-cmake-mode)
 (require 'init-csharp-mode)
-;; (require 'init-linum-mode)
-(require 'init-delicious)
+(require 'init-linum-mode)
+;; (require 'init-delicious)
 (require 'init-emacs-w3m)
 ;; Chinese inut method
 ;; (require 'init-eim)
@@ -118,12 +129,32 @@
 (require 'init-misc)
 (require 'init-ctags)
 
+(require 'init-ace-jump-mode)
+(require 'init-multiple-cursors)
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
-(require 'server)
-(unless (server-running-p)
-  (server-start))
+(defconst --batch-mode (member "--batch-mode" command-line-args)
+          "True when running in batch-mode (--batch-mode command-line switch set).")
+
+(unless --batch-mode
+  (require 'server)
+  (when (and (= emacs-major-version 23)
+             (= emacs-minor-version 1)
+             (equal window-system 'w32))
+    ;; Suppress error "directory ~/.emacs.d/server is unsafe" on Windows.
+    (defun server-ensure-safe-dir (dir) "Noop" t))
+  (condition-case nil
+      (unless (server-running-p) (server-start))
+    (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
+    (error
+     (let* ((server-dir (if server-use-tcp server-auth-dir server-socket-dir)))
+       (when (and server-use-tcp
+                  (not (file-accessible-directory-p server-dir)))
+         (display-warning
+          'server (format "Creating %S" server-dir) :warning)
+         (make-directory server-dir t)
+         (server-start))))))
 
 ;;----------------------------------------------------------------------------
 ;; Variables configured via the interactive 'customize' interface

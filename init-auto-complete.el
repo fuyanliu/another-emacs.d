@@ -30,7 +30,10 @@
 ;; @see https://github.com/brianjcj/auto-complete-clang
 (defun my-ac-cc-mode-setup ()
   (require 'auto-complete-clang)
-  (setq ac-sources (append '(ac-source-clang) ac-sources))
+  (when (and (not *cygwin*) (not *win32*))
+    ; I don't do C++ stuff with cygwin+clang
+    (setq ac-sources (append '(ac-source-clang) ac-sources))
+    )
   (setq clang-include-dir-str
         (cond
          (*is-a-mac* "
@@ -49,7 +52,7 @@
 /usr/include
 /usr/lib/gcc/i686-pc-cygwin/3.4.4/../../../../include/w32api
 ")
-         (t "
+         (*linux* "
 /usr/include
 /usr/lib/wx/include/gtk2-unicode-release-2.8
 /usr/include/wx-2.8
@@ -65,6 +68,7 @@
 /usr/include/freetype2
 /usr/include/libpng14
 ")
+         (t "") ; other platforms
          )
         )
   (setq ac-clang-flags

@@ -192,7 +192,10 @@
      1)
   )
 
-(eval-after-load "speedbar" '(if (load "mwheel" t) (mwheel-install)))
+(eval-after-load "speedbar" '(if (load "mwheel" t)
+                               ;; Enable wheelmouse support by default
+                               (cond (window-system
+                                       (mwheel-install)))))
 
 (track-closed-files-mode)
 
@@ -214,6 +217,7 @@
 
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 
+<<<<<<< HEAD
 ;; add time stamp if need.
 (add-hook 'before-save-hook 'time-stamp)
 
@@ -233,5 +237,20 @@
 
 (global-set-key (kbd "C-`") (lambda () (interactive) (compile "make -j 10")))
 (global-set-key (kbd "C-~") 'compile)
+=======
+; http://tapoueh.org/emacs/switch-window.html
+(require 'switch-window)
+
+;;move-text stuff, move line up/down by pressing hotkey
+(global-set-key (kbd "M-p") 'move-text-up)
+(global-set-key (kbd "M-n") 'move-text-down)
+
+;; move window
+(require 'window-numbering)
+(window-numbering-mode 1)
+
+;; sig-quote
+;(require 'sig-quote)
+>>>>>>> redguardtoo
 
 (provide 'init-misc)
