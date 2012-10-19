@@ -143,6 +143,7 @@
      (setq org-export-default-language "zh-CN")
      (setq org-export-htmlize-output-type "css")
      (setq org-export-htmlize-css-font-prefix "")
+     (setq org-export-allow-BIND t)
      ))
 
 ;;;###autoload
@@ -151,19 +152,20 @@
     (goto-char (point-min))
     (while (search-forward "<body>" nil t)
       (replace-match "<body>\n<div id=\"frame-table\"><div id=\"frame-table-row\"><div id=\"content-wrapper\">" nil t))
+    
     (goto-char (point-min))
     (while (search-forward "</body>" nil t)
-      (replace-match "</div><div id=\"sidebar\"></div></div></div>\n</body>" nil t)))
-  )
-
-(defun test-comment ()
-  (message (plist-get opt-plist :author))
-  (if (plist-get opt-plist :comment-box)
-                     (message "comment-box")
-                   (message "no-comment-box")))
-
-(add-hook 'org-export-html-final-hook
-          'test-comment)
+      (replace-match "</div><div id=\"sidebar\"></div></div></div>\n</body>" nil t))
+    
+    ;; if need add comment box...
+    (if (boundp 'comment-box)
+        (progn
+          (goto-char (point-min))
+          (while (search-forward "<div id=\"postamble\">" nil t)
+            (replace-match "<script type='text/javascript' charset='utf-8' src='http://open.denglu.cc/connect/commentcode?appid=21489dengpEAtSRBbxboLxnwPmaqRA'></script>\n<div id=\"postamble\">" nil t))))
+    
+    (todochiku-message (buffer-name) "" (todochiku-icon 'bell))
+    ))
 
 ;;;###autoload
 (defun sydi/sync-server ()
