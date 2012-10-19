@@ -141,6 +141,8 @@
      (add-to-list 'org-export-language-setup
                   '("zh-CN" "作者" "日期" "目录" "脚注"))
      (setq org-export-default-language "zh-CN")
+     (setq org-export-htmlize-output-type "css")
+     (setq org-export-htmlize-css-font-prefix "")
      ))
 
 ;;;###autoload
