@@ -97,12 +97,17 @@
      (setq org-export-with-sub-superscripts nil) ; 取消^和_字体上浮和下沉的特殊性
      (setq org-export-html-style-include-scripts nil) ; 不加载默认js
      (setq org-export-html-style-include-default nil) ; 不加载默认css
-     (setq org-export-html-style "<link rel=\"stylesheet\" type=\"text/css\" href=\"/site.css\" />\n")
      (setq org-export-html-style-extra
            (concat
-            "<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js\"></script>"
+            "<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js\"></script>"
             "\n"
-            "<script type=\"text/javascript\" src=\"/site.js\"></script>"))
+            "<script src=\"/images/site.js\"></script>"
+            "\n"
+            "<link rel=\"stylesheet\" type=\"text/css\" href=\"/images/site.css\" />"
+            "\n"
+            "<script src=\"/images/mediaelement/mediaelement-and-player.min.js\"></script>"
+            "\n"
+            "<link rel=\"stylesheet\" href=\"mediaelementplayer.css\" />"))
      (message "load org-mode")
      ))
 
@@ -147,25 +152,27 @@
      ))
 
 ;;;###autoload
-(defun sydi/refact-html ()
+(defun sydi/after-export-org ()
   (when (string-match ".*\\.html" buffer-file-name)
-    (goto-char (point-min))
-    (while (search-forward "<body>" nil t)
-      (replace-match "<body>\n<div id=\"frame-table\"><div id=\"frame-table-row\"><div id=\"content-wrapper\">" nil t))
-    
-    (goto-char (point-min))
-    (while (search-forward "</body>" nil t)
-      (replace-match "</div><div id=\"sidebar\"></div></div></div>\n</body>" nil t))
-    
+    (save-excursion
+      (while (search-forward "<body>" nil t)
+        (replace-match "<body>\n<div id=\"frame-table\"><div id=\"frame-table-row\"><div id=\"content-wrapper\">" nil t)))
+    (save-excursion
+      (while (search-forward "</body>" nil t)
+        (replace-match "</div><div id=\"sidebar\"></div></div></div>\n</body>" nil t)))
     ;; if need add comment box...
-    (if (boundp 'comment-box)
-        (progn
-          (goto-char (point-min))
-          (while (search-forward "<div id=\"postamble\">" nil t)
-            (replace-match "<script type='text/javascript' charset='utf-8' src='http://open.denglu.cc/connect/commentcode?appid=21489dengpEAtSRBbxboLxnwPmaqRA'></script>\n<div id=\"postamble\">" nil t))))
-    
-    (todochiku-message (buffer-name) "" (todochiku-icon 'bell))
-    ))
+    (save-excursion
+      (if (boundp 'comment-box)
+          (progn
+            (goto-char (point-min))
+            (while (search-forward "<div id=\"postamble\">" nil t)
+              (replace-match "<script type='text/javascript' charset='utf-8' src='http://open.denglu.cc/connect/commentcode?appid=21489dengpEAtSRBbxboLxnwPmaqRA'></script>\n<div id=\"postamble\">" nil t)))))
+    ;; add site-wide title
+    (save-excursion
+      (while (search-forward "</title>" nil t)
+        (replace-match " - 施宇迪的另一片空间</title>" nil t)))
+
+    (todochiku-message (nth 2 (assoc 'title (assoc 'head (libxml-parse-html-region (point-min) (point-max)))))  "" (todochiku-icon 'bell))))
 
 ;;;###autoload
 (defun sydi/sync-server ()
@@ -203,7 +210,7 @@
               :components ("sydi.org.html" "sydi.org.static")
               )
              ))
-     (add-hook 'org-publish-after-export-hook 'sydi/refact-html)
+     (add-hook 'org-publish-after-export-hook 'sydi/after-export-org)
      ))
 
 (provide 'init-org)
