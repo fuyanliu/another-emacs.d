@@ -16,6 +16,8 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
+(put 'scroll-left 'disabled nil)
+
 ;; no annoying beep on errors
 (setq backup-directory-alist '(("." . "~/.backups")))
 
@@ -43,23 +45,6 @@
 
 (global-set-key [f8] 'calendar)
 (global-set-key [f12] 'list-bookmarks)
-
-(when *win32*
-  ;; resize frame
-  (defun w32-maximize-frame ()
-    "Maximize the current frame."
-    (interactive)
-    (w32-send-sys-command 61488)
-    (global-set-key (kbd "C-c z") 'w32-restore-frame))
-
-  (global-set-key (kbd "C-c z") 'w32-maximize-frame)
-
-  (defun w32-restore-frame ()
-    "Restore a minimized frame."
-    (interactive)
-    (w32-send-sys-command 61728)
-    (global-set-key (kbd "C-c z") 'w32-maximize-frame))
-  )
 
 ;; M-x ct ENTER
 (defun ct (dir-name)
@@ -224,10 +209,10 @@
 (require 'xcscope)
 
 (define-prefix-command 'ctl-z-map)
+(global-unset-key (kbd "C-z"))
 (global-set-key (kbd "C-z") 'ctl-z-map)
 
 (global-unset-key (kbd "C-x C-z"))
-(global-unset-key (kbd "C-z"))
 
 (global-set-key (kbd "C-`") (lambda () (interactive) (compile "make -j 10")))
 (global-set-key (kbd "C-~") 'compile)
@@ -244,5 +229,14 @@
 
 ;; sig-quote
 ;(require 'sig-quote)
+
+(defun find-file-as-root ()
+  (interactive)
+  (find-file
+   (read-file-name
+    "sudo: "
+    "/sudo:root@localhost:/etc/")))
+
+(global-set-key (kbd "C-x C-r") 'find-file-as-root)
 
 (provide 'init-misc)
