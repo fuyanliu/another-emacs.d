@@ -1,11 +1,13 @@
 (defun ibuffer-set-up-preferred-filters ()
-  (ibuffer-vc-set-filter-groups-by-vc-root)
+  (setq ibuffer-filter-groups
+        (append (ibuffer-vc-generate-filter-groups-by-vc-root)
+                '(("Temps" (name . "\*.+\*")))
+                ))
+  (ibuffer-update nil t)
   (unless (eq ibuffer-sorting-mode 'filename/process)
     (ibuffer-do-sort-by-filename/process)))
 
 (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)
-
-
 
 (eval-after-load 'ibuffer
   '(progn

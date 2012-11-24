@@ -22,6 +22,7 @@
  tooltip-delay 1.5
  truncate-lines nil
  truncate-partial-width-windows nil
+ resize-mini-windows nil
  visible-bell nil)
 
 (transient-mark-mode t)

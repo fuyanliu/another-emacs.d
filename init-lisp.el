@@ -76,7 +76,7 @@
              buffer-file-name
              (string-match "\\.el$" buffer-file-name)
              (not (string-match "\\.dir-locals.el$" buffer-file-name))
-             (not (string-match "\\..+\\.el$" buffer-file-name)))
+             (not (string-match "\\..+\\.el$" (file-name-nondirectory buffer-file-name))))
     (save-excursion (byte-compile-file buffer-file-name))))
 
 

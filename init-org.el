@@ -2,19 +2,20 @@
 (define-key global-map "\C-ca" 'org-agenda)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
+(require 'org-capture)
 (eval-after-load 'org-clock
   '(progn
-    ;; Save the running clock and all clock history when exiting Emacs, load it on startup
-    (setq org-clock-persistence-insinuate t)
-    (setq org-clock-persist t)
-    (setq org-clock-in-resume t)
-    ;; Change task state to STARTED when clocking in
-    (setq org-clock-in-switch-to-state "STARTED")
-    ;; Save clock data and notes in the LOGBOOK drawer
-    (setq org-clock-into-drawer t)
-    ;; Removes clocked tasks with 0:00 duration
-    (setq org-clock-out-remove-zero-time-clocks t)
-    ))
+     ;; Save the running clock and all clock history when exiting Emacs, load it on startup
+     (setq org-clock-persistence-insinuate t)
+     (setq org-clock-persist t)
+     (setq org-clock-in-resume t)
+     ;; Change task state to STARTED when clocking in
+     (setq org-clock-in-switch-to-state "STARTED")
+     ;; Save clock data and notes in the LOGBOOK drawer
+     (setq org-clock-into-drawer t)
+     ;; Removes clocked tasks with 0:00 duration
+     (setq org-clock-out-remove-zero-time-clocks t)
+     ))
 
 (eval-after-load 'org
   '(progn
@@ -95,19 +96,6 @@
       '(remember-handler-functions (quote (org-remember-handler))))
 
      (setq org-export-with-sub-superscripts nil) ; 取消^和_字体上浮和下沉的特殊性
-     (setq org-export-html-style-include-scripts nil) ; 不加载默认js
-     (setq org-export-html-style-include-default nil) ; 不加载默认css
-     (setq org-export-html-style-extra
-           (concat
-            "<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js\"></script>"
-            "\n"
-            "<script src=\"/images/site.js\"></script>"
-            "\n"
-            "<link rel=\"stylesheet\" type=\"text/css\" href=\"/images/site.css\" />"
-            "\n"
-            "<script src=\"/images/mediaelement/mediaelement-and-player.min.js\"></script>"
-            "\n"
-            "<link rel=\"stylesheet\" href=\"mediaelementplayer.css\" />"))
      (message "load org-mode")
      ))
 
@@ -118,21 +106,21 @@
 ;; org-mode latex settings.
 (eval-after-load 'org-latex
   '(progn
-    (setq org-export-latex-listings t)
-    (setq org-latex-to-pdf-process
-          '("xelatex -interaction nonstopmode %b"
-            "xelatex -interaction nonstopmode %b"))
-    (add-to-list 'org-export-latex-classes
-                 '("org-article"
-                   "\\documentclass{org-article}
+     (setq org-export-latex-listings t)
+     (setq org-latex-to-pdf-process
+           '("xelatex -interaction nonstopmode %b"
+             "xelatex -interaction nonstopmode %b"))
+     (add-to-list 'org-export-latex-classes
+                  '("org-article"
+                    "\\documentclass{org-article}
                  [NO-DEFAULT-PACKAGES]
                  [EXTRA]"
-                   ("\\section{%s}" . "\\section*{%s}")
-                   ("\\subsection{%s}" . "\\subsection*{%s}")
-                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                   ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-    ))
+                    ("\\section{%s}" . "\\section*{%s}")
+                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+     ))
 
 (eval-after-load 'org-html
   '(progn
@@ -142,18 +130,26 @@
 
 ;;; add a horizontal line before postamble.
      (setq org-export-html-postamble "<hr /><p id=\"postamble-line\">
-<a href=\"http://www.sydi.org/\">%a</a> @ %d</p>")
+<a href=\"https://plus.google.com/112098239943590093765?rel=author\">By %a</a> @ %d <a href=\"http://sydi.org\">SYDI.ORG</a></p>")
      (add-to-list 'org-export-language-setup
                   '("zh-CN" "作者" "日期" "目录" "脚注"))
      (setq org-export-default-language "zh-CN")
      (setq org-export-htmlize-output-type "css")
      (setq org-export-htmlize-css-font-prefix "")
      (setq org-export-allow-BIND t)
-     ))
+     (setq org-export-html-style-include-scripts nil) ; 不加载默认js
+     (setq org-export-html-style-include-default nil) ; 不加载默认css
+     (setq org-export-html-link-home "http://sydi.org/")
+     (setq org-export-with-section-numbers nil) 
+     ;; (setq org-export-page-keywords "施宇迪 sydi.org")
+     ;; (setq org-export-page-description "施宇迪 sydi.org")
+     (setq org-export-html-preamble (lambda () "<g:plusone></g:plusone>"))
+     (setq org-export-html-home/up-format
+           "<div id=\"home-and-up\"> [ <a href=\"%s\"> UP </a> ] [ <a href=\"%s\"> HOME </a> ] <button class='btn btn-inverse' onclick='show_org_source()'>查看Org源文件</button></div>")))
 
 ;;;###autoload
 (defun sydi/after-export-org ()
-  (when (string-match ".*\\.html" buffer-file-name)
+  (when (and buffer-file-name (string-match ".*\\.html" buffer-file-name)) 
     (save-excursion
       (while (search-forward "<body>" nil t)
         (replace-match "<body>\n<div id=\"frame-table\"><div id=\"frame-table-row\"><div id=\"content-wrapper\">" nil t)))
@@ -181,36 +177,124 @@
   (message "sync file to server complete")
   )
 
+(defun sydi/htmlize-buffer ()
+  (with-current-buffer (htmlize-buffer)
+    (goto-char (point-min))
+    (let ((p1 (if (re-search-forward "<style" nil t) (match-beginning 0)) )
+          (p2 (if (re-search-forward "</style>" nil t) (1+ (match-end 0)))))
+      (delete-region p1 p2)
+      (current-buffer))))
+
+(defun sydi/org-publish-org-to-orghtml (plist filename pub-dir)
+  (unless (file-exists-p pub-dir)
+    (make-directory pub-dir t))
+  (let ((visiting (find-buffer-visiting filename))
+        (htmlize-output-type "css"))
+    (save-excursion
+      (org-pop-to-buffer-same-window (or visiting (find-file filename)))
+      (let* ((plist (cons :buffer-will-be-killed (cons t plist)))
+	     (init-buf (current-buffer))
+	     (init-point (point))
+	     (init-buf-string (buffer-string))
+	     (export-file (concat pub-dir
+                                  (file-name-nondirectory filename)
+                                  ".html")))
+	;; run hooks before exporting
+	(run-hooks 'org-publish-before-export-hook)
+	;; export the possibly modified buffer
+        (let ((export-buffer (sydi/htmlize-buffer)))
+          (when (and (bufferp export-buffer)
+                     (buffer-live-p export-buffer))
+            (with-current-buffer export-buffer
+              (goto-char (point-min))
+              (if (search-forward "</head>" nil t)
+                  (replace-match
+                   (concat org-export-html-style-extra "</head>") nil nil))
+              (write-file export-file)
+              (run-hooks 'org-publish-after-export-hook)
+              (if (buffer-modified-p) (save-buffer))
+              (kill-buffer export-buffer))))
+        ;; maybe restore buffer's content
+        (set-buffer init-buf)
+        (when (buffer-modified-p init-buf)
+          (erase-buffer)
+          (insert init-buf-string)
+          (save-buffer)
+          (goto-char init-point))
+        (unless visiting
+          (kill-buffer init-buf))))))
+
+;;;###autoload
+(defun set-org-publish-project-alist ()
+  (setq org-publish-project-alist
+        '(("sydi"
+           :components ("sydi-pages" "sydi-static"))
+          ("sydi-static"
+           :base-directory "~/sydi.org/org/"
+           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|html\\|div"
+           :publishing-directory "~/sydi.org/html"
+           :recursive t
+           :publishing-function org-publish-attachment)
+          ("sydi-pages"
+           :base-directory "~/sydi.org/org/"
+           :base-extension "org"
+           :publishing-directory "~/sydi.org/html/"
+           :html-extension "html"
+           :recursive t
+           :makeindex t
+           :auto-sitemap t
+           :sitemap-ignore-case t
+           :sitemap-filename "sitemap.org"
+           :htmlized-source t
+           :table-of-contents nil
+           :auto-preamble t
+           :exclude ".*my-wife.*\.org"
+           :sitemap-title "站点地图 for 本网站"
+           :author "施宇迪"
+           :email "a@sydi.org"
+           :language "zh-CN"
+           :style "<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js\"></script>
+<script type=\"text/javascript\" src=\"/images/site.js\"></script>
+<link rel=\"stylesheet\" href=\"/images/site.css\" />
+<link rel=\"stylesheet\" href=\"/images/me/mediaelementplayer.css\" />
+<link rel=\"stylesheet\" href=\"/images/bootstrap/css/bootstrap.css\" />
+<link rel=\"stylesheet\" href=\"/images/bootstrap/css/bootstrap-responsive.css\" />
+<script type=\"text/javascript\" href=\"/images/bootstrap/js/bootstrap.min.js\"></script> 
+<link href='http://sydi.org/images/logo.png' rel='icon' type='image/x-icon'/>
+"
+           :publishing-function (org-publish-org-to-html
+                                 org-publish-org-to-org) 
+           :completion-function (sydi/sync-server)))))
+
 (eval-after-load "org-publish"
-  '(progn
-     (setq org-publish-project-alist
-           '(("sydi.org.html"
-              :base-directory "~/personal/sydi.org/org"
-              :base-extension "org"
-              :publishing-directory "~/personal/sydi.org/html"
-              :recursive t
-              :publishing-function org-publish-org-to-html
-              :headline-levels 4  ; Just the default for this project.
-              :auto-preamble t
-              :auto-sitemap t
-              :sitemap-filename "sitemap.org"
-              :exclude ".*my-wife.*\.org"
-              :sitemap-title "站点地图 for 本网站"
-              :htmlize-source t
-              :completion-function (sydi/sync-server)
-              )
-             ("sydi.org.static"
-              :base-directory "~/personal/sydi.org/org"
-              :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|html\\|div\\|org"
-              :publishing-directory "~/personal/sydi.org/html"
-              :recursive t
-              :publishing-function org-publish-attachment
-              )
-             ("sydi.org"
-              :components ("sydi.org.html" "sydi.org.static")
-              )
-             ))
-     (add-hook 'org-publish-after-export-hook 'sydi/after-export-org)
-     ))
+  (add-hook 'org-publish-after-export-hook 'sydi/after-export-org))
+
+(defun worg-fix-symbol-table ()
+  (when (string-match "org-symbols\\.html" buffer-file-name)
+    (goto-char (point-min))
+    (while (re-search-forward "<td>&amp;\\([^<;]+;\\)" nil t)
+      (replace-match (concat "<td>&" (match-string 1)) t t))))
+
+(setq sydi-base-directory "~/sydi.org/org/")
+(setq sydi-base-code-directory "~/sydi.org/html/code/")
+;; (sydi-base-color-themes-directory "~/sydi.org/worg/color-themes/")
+(setq sydi-base-images-directory "~/sydi.org/html/images/")
+(setq sydi-publish-directory "~/sydi.org/html/")
+
+(defun publish-sydi nil
+  "Publish Worg in htmlized pages."
+  (interactive)
+  (add-hook 'org-publish-after-export-hook 'worg-fix-symbol-table)
+  (let ((org-format-latex-signal-error nil)
+        (org-startup-folded nil)
+        (sydi-base-directory "~/sydi.org/org/")
+        (sydi-base-code-directory "~/sydi.org/html/code/")
+        ;; (sydi-base-color-themes-directory "~/sydi.org/worg/color-themes/")
+        (sydi-base-images-directory "~/sydi.org/html/images/")
+        (sydi-publish-directory "~/sydi.org/html/"))
+    (set-org-publish-project-alist)
+    (message "Emacs %s" emacs-version)
+    (org-version)
+    (org-publish-project "sydi")))
 
 (provide 'init-org)

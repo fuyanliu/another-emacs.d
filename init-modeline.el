@@ -28,6 +28,25 @@
               'help-echo buffer-file-coding-system))
     "] "
 
+    ;; distinction between remote and local
+    "["
+    '(:eval
+      (propertize
+       (let ((user-name
+              (or (file-remote-p default-directory 'user)
+                  (user-login-name)))
+             (host-name
+              (or (file-remote-p default-directory 'host)
+                  (system-name))))
+         (concat
+          user-name
+          "@"
+          (if (string-match "^.*\\.\\([^.]*\\)" host-name)
+              (substring host-name (match-beginning 1))
+            host-name)))
+       'face 'font-lock-function-name-face)
+      )
+    "] "
 
     "[" ;; insert vs overwrite mode, input-method in a tooltip
     '(:eval (propertize (if overwrite-mode "Ovr" "Ins")
@@ -49,7 +68,7 @@
     "] "
 
     ;;global-mode-string, org-timer-set-timer in org-mode need this
-    (propertize "%M" 'face 'font-lock-type-face)
+    ;; (propertize "%M" 'face 'font-lock-type-face)
 
     " --"
     ;; i don't want to see minor-modes; but if you want, uncomment this:

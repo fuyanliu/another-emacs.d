@@ -98,6 +98,7 @@
            (setq i (+ i 1))
            (insert (format "%4d %c\n" i i))))
   (goto-char (point-min)))
+                          
 
 ;insert date into buffer
 (defun insert-date ()
@@ -190,15 +191,12 @@
 
 ; if emacs-nox, use C-@, else, use C-2;
 (if t ;; window-system
- (progn
-   (define-key global-map (kbd "C-2") 'er/expand-region)
-   (define-key global-map (kbd "C-M-2") 'er/contract-region)
-   )
- (progn
-   (define-key global-map (kbd "C-@") 'er/expand-region)
-   (define-key global-map (kbd "C-M-@") 'er/contract-region)
- )
-)
+    (progn
+      (define-key global-map (kbd "C-2") 'er/expand-region)
+      (define-key global-map (kbd "C-M-2") 'er/contract-region))
+  (progn
+    (define-key global-map (kbd "C-@") 'er/expand-region)
+    (define-key global-map (kbd "C-M-@") 'er/contract-region)))
 
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 
@@ -226,9 +224,6 @@
 ;; move window
 ;; (require 'window-numbering)
 ;; (window-numbering-mode 1)
-
-;; sig-quote
-;(require 'sig-quote)
 
 (defun find-file-as-root ()
   (interactive)

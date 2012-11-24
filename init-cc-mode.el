@@ -59,26 +59,23 @@
                                         ; @see https://github.com/seanfisk/cmake-flymake
                                         ; make sure you project use cmake
   ;; (flymake-mode)
-
-  )
+)
 
 ;;; (add-hook 'c-mode-common-hook 'my-c-mode-hook)
 
 ;;;###autoload
 (defun sydi/c++-mode-hook ()
+  (require 'oceanbase-style)
   (setq comment-start "/* ")
   (setq comment-end " */")
   (c-set-style "oceanbase")
+  (local-set-key (kbd "RET") 'newline-and-indent)
   ;; (subword-mode)
   )
 
 ;; c++-mode for h files.
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.ipp\\'" . c++-mode))
 (add-hook 'c++-mode-hook 'sydi/c++-mode-hook)
-
-(require 'oceanbase-style)
-(add-hook 'c-mode-hook
-	  '(lambda ()
-	     (c-set-style "oceanbase")))
 
 (provide 'init-cc-mode)

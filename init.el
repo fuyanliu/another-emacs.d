@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2012-10-17 13:09:28 ryan>
+;; Time-stamp: <2012-11-13 21:06:35 ryan>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -35,12 +35,13 @@
 ;;----------------------------------------------------------------------------
 ;; Load configs for specific features and modes
 ;;----------------------------------------------------------------------------
-;; (require 'init-cedet)
+;;; (require 'init-cedet)
 
 (require 'init-compat)
 (require 'init-utils)
 (require 'init-site-lisp) ;; Must come before elpa, as it may provide package.el
 (require 'init-elpa)
+;; (require 'init-ecb)
 (require 'init-exec-path) ;; Set up $PATH
 ;; (require 'init-frame-hooks)
 (require 'init-xterm)
@@ -103,25 +104,24 @@
 (require 'init-themes) ; color-themes 6.6.1 has some problem
 ;; Chinese inut method
 ;; (require 'init-org2blog)
-(require 'init-org2blog)
 ;; (require 'init-fill-column-indicator) ;make auto-complete dropdown wierd
 (require 'init-yasnippet)
 (require 'init-yari)
 (require 'init-etags-select)
 (require 'init-cc-mode)
 (require 'init-auto-complete) ; after init-yasnippeta to override TAB
-(require 'init-semantic)
+;;; (require 'init-semantic)
 (require 'init-cmake-mode)
 (require 'init-csharp-mode)
-(require 'init-linum-mode)
-;(require 'init-delicious) ;make startup slow, I don't use delicious in w3m
+;;; (require 'init-linum-mode)
+;;; (require 'init-delicious) ;make startup slow, I don't use delicious in w3m
 (require 'init-emacs-w3m)
 ;; Chinese inut method
 ;; (require 'init-eim)
 (require 'init-thing-edit)
 (require 'init-which-func)
 (require 'init-keyfreq)
-(require 'init-gist)
+;; (require 'init-gist)
 ;; (require 'init-emacspeak)
 (require 'init-pomodoro)
 (require 'init-undo-tree)
@@ -129,9 +129,13 @@
 ;; (require 'init-evil) ; use evil mode (vi key binding)
 (require 'init-misc)
 (require 'init-ctags)
+(require 'init-gtags)
 
 (require 'init-ace-jump-mode)
 (require 'init-multiple-cursors)
+
+(require 'init-anything)
+(require 'init-dot)
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
@@ -183,4 +187,3 @@
 ;;; Local Variables:
 ;;; no-byte-compile: t
 ;;; End:
-(put 'scroll-left 'disabled nil)
