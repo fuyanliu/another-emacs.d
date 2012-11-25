@@ -232,6 +232,15 @@
     "sudo: "
     "/sudo:root@localhost:/etc/")))
 
+
 (global-set-key (kbd "C-x C-r") 'find-file-as-root)
+
+;; max frame, @see https://github.com/rmm5t/maxframe.el
+(require 'maxframe)
+;(setq mf-max-width 1600) ;; Pixel width of main monitor. for dual-lcd only
+(add-hook 'window-setup-hook 'maximize-frame t)
+
+;; sig-quote
+;(require 'sig-quote)
 
 (provide 'init-misc)

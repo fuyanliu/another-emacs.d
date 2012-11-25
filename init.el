@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2012-11-25 17:09:49 ryan>
+;; Time-stamp: <2012-11-25 17:35:00 ryan>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -40,6 +40,15 @@
 (require 'init-compat)
 (require 'init-utils)
 (require 'init-site-lisp) ;; Must come before elpa, as it may provide package.el
+
+;; win32 auto configuration, assuming that cygwin is installed at "c:/cygwin"
+(if *win32*
+	(progn
+		(setq cygwin-mount-cygwin-bin-directory "c:/cygwin/bin")
+		(require 'setup-cygwin)
+		;(setenv "HOME" "c:/cygwin/home/someuser") ;; better to set HOME env in GUI
+		))
+
 (require 'init-elpa)
 ;; (require 'init-ecb)
 (require 'init-exec-path) ;; Set up $PATH
@@ -136,6 +145,13 @@
 
 (require 'init-anything)
 (require 'init-dot)
+
+(require 'init-uml)
+(require 'init-sunrise-commander)
+(require 'init-gnus)
+(require 'init-golden-ratio)
+(require 'init-smarter-compile)
+
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------

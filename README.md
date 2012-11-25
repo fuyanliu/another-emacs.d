@@ -32,6 +32,7 @@ I base my configuration on Purcell's and sync from his frequently.
 
 ## My additions
 
+* 'git submodule update --init' is NOT needed. I removed all the 'git submodule' stuff.
 * some major/minor modes for C/C++ developers
 * emacs-w3m (console browser)
 * eim (Chinese pinyin input method)
@@ -45,6 +46,7 @@ I base my configuration on Purcell's and sync from his frequently.
 Purcell won't list all the 3rd party tools you need install. I will
 try to list them HERE,
 
+* w3m (web browser in console)
 * jsl (jslint)
 * aspell, and some dictionary like aspell-en
 * tidy
@@ -55,6 +57,7 @@ try to list them HERE,
 * pyflakes
   install pip, then `pip install pyflakes`, but on cygwin you need install
   setuptool in order to install pip.
+* ditaa, grapviz and planetuml to convert ascii art to diagram and uml.
 
 To install the tools, I suggest using,
 * apt-cyg at Cygwin
@@ -73,8 +76,13 @@ You need manually `M-x list-packages` and install it.
 * I downgraded the yasnippet to an older version because latest yasnippet is
 not compatible with auto-complete.
 
+## My personal Emacs configuration (custom.el)
+It's publicized at http://blog.binchen.org/?p=430 .
+
 # Sylvester's README
 
 * some keys' binding
 * orgmode publishing configuration
 * some other misc...
+
+

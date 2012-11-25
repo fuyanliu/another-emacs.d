@@ -1,45 +1,8 @@
-;; (if window-system
-;;      (color-theme-sanityinc-tomorrow-bright)
-;;    ;; (color-theme-sanityinc-solarized-dark)
-;; )
-
-;;------------------------------------------------------------------------------
-;; Old-style color theming support (via color-theme.el)
-;;------------------------------------------------------------------------------
-(defcustom window-system-color-theme 'color-theme-sanityinc-solarized-dark
-  "Color theme to use in window-system frames.
-If Emacs' native theme support is available, this setting is
-inored: use `custom-enabled-themes' instead."
-  :group 'color-theme
-  :type 'symbol)
-
-(defcustom tty-color-theme 'color-theme-terminal
-  "Color theme to use in TTY frames.
-If Emacs' native theme support is available, this setting is
-ignored: use `custom-enabled-themes' instead."
-  :group 'color-theme
-  :type 'symbol)
-
-(unless (boundp 'custom-enabled-themes)
-  (defun color-theme-terminal ()
-    (interactive)
-    (color-theme-sanityinc-solarized-dark))
-
-  (defun apply-best-color-theme-for-frame-type (frame)
-    (with-selected-frame frame
-      (funcall (if window-system
-                   window-system-color-theme
-                 tty-color-theme))))
-
-  (defun reapply-color-themes ()
-    (interactive)
-    (mapcar 'apply-best-color-theme-for-frame-type (frame-list)))
-
-  (set-variable 'color-theme-is-global nil)
-  (add-hook 'after-make-frame-functions 'apply-best-color-theme-for-frame-type)
-  (add-hook 'after-init-hook 'reapply-color-themes)
-  (apply-best-color-theme-for-frame-type (selected-frame)))
-
+(if window-system
+    ;; (color-theme-sanityinc-solarized-dark)
+    ;; (color-theme-sanityinc-tomorrow-bright)
+    (color-theme-sanityinc-tomorrow-night)
+  )
 
 ;;------------------------------------------------------------------------------
 ;; New-style theme support, in which per-frame theming is not possible
@@ -105,5 +68,6 @@ ignored: use `custom-enabled-themes' instead."
       (custom-set-variables
        '(custom-enabled-themes '(sanityinc-solarized-light)))
     (color-theme-sanityinc-solarized-light)))
+
 
 (provide 'init-themes)
