@@ -23,6 +23,4 @@
 
 (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
 
-
-
 (provide 'init-python-mode)

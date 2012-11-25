@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2012-11-13 21:06:35 ryan>
+;; Time-stamp: <2012-11-25 17:09:49 ryan>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -71,7 +71,7 @@
 (require 'init-git)
 
 (require 'init-doxymacs)
-;; (require 'init-crontab)
+(require 'init-crontab)
 ;; (require 'init-textile)
 ;; (require 'init-markdown)
 (require 'init-csv)
@@ -83,7 +83,7 @@
 (require 'init-nxml)
 (require 'init-css)
 ;; (require 'init-haml)
-(require 'init-python-mode)
+;; (require 'init-python-mode)
 ;; (require 'init-haskell)
 (require 'init-ruby-mode)
 ;; (require 'init-rails)
@@ -109,7 +109,7 @@
 (require 'init-yari)
 (require 'init-etags-select)
 (require 'init-cc-mode)
-(require 'init-auto-complete) ; after init-yasnippeta to override TAB
+(require 'init-auto-complete) ;; after init-yasnippeta to override TAB
 ;;; (require 'init-semantic)
 (require 'init-cmake-mode)
 (require 'init-csharp-mode)

@@ -17,6 +17,11 @@
  indent-tabs-mode nil
  line-spacing 0.2
  make-backup-files nil
+ version-control t
+ kept-new-versions 3
+ delete-old-versions t
+ kept-old-versions 2
+ dired-kept-versions 1
  mouse-yank-at-point t
  set-mark-command-repeat-pop t
  tooltip-delay 1.5
@@ -63,7 +68,6 @@
 ;; Fix per-window memory of buffer point positions
 ;;----------------------------------------------------------------------------
 (global-pointback-mode)
-
 
 ;;----------------------------------------------------------------------------
 ;; Don't disable case-change functions
