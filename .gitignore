@@ -3,6 +3,8 @@
 /auto-save-list
 /.session
 /custom.el
+/site-lisp/cedet
+/site-lisp/ecb
 *.elc
 CVS
 .svn
@@ -26,6 +28,5 @@ semanticdb/
 *.swp
 *~
 abbrev_defs
-/swank
 /swank
 /.mc-lists.el
