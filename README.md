@@ -1,4 +1,3 @@
-# Steve Purcell's original README
 This is an emacs configuration tree that supports a number of
 programming languages, particularly Ruby/Rails and other dynamic
 languages including Clojure, PHP, Python etc.
@@ -25,6 +24,12 @@ environments too, with any Emacs version >= 23. If not, please file an
 issue on the github project: https://github.com/purcell/emacs.d
 
 -Steve Purcell
+
+<hr>
+
+[![](http://api.coderwall.com/purcell/endorsecount.png)](http://coderwall.com/purcell)
+
+[![](http://www.linkedin.com/img/webpromo/btn_liprofile_blue_80x15.png)](http://uk.linkedin.com/in/stevepurcell)
 
 # Chen Bin's README
 
@@ -84,5 +89,3 @@ It's publicized at http://blog.binchen.org/?p=430 .
 * some keys' binding
 * orgmode publishing configuration
 * some other misc...
-
-
