@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2012-11-25 17:35:00 ryan>
+;; Time-stamp: <2012-12-01 18:17:56 ryan>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -50,6 +50,8 @@
 		))
 
 (require 'init-elpa)
+(require 'init-org)
+
 ;; (require 'init-ecb)
 (require 'init-exec-path) ;; Set up $PATH
 ;; (require 'init-frame-hooks)
@@ -88,7 +90,6 @@
 (require 'init-javascript)
 (require 'init-sh)
 ;; (require 'init-php)
-(require 'init-org)
 (require 'init-nxml)
 (require 'init-css)
 ;; (require 'init-haml)
@@ -96,8 +97,8 @@
 ;; (require 'init-haskell)
 (require 'init-ruby-mode)
 ;; (require 'init-rails)
-;; (require 'init-rcirc)
-;; (require 'init-erc)
+(require 'init-rcirc)
+;;(require 'init-erc)
 (require 'init-rails)
 
 (require 'init-lisp)
@@ -149,8 +150,9 @@
 (require 'init-uml)
 (require 'init-sunrise-commander)
 (require 'init-gnus)
-(require 'init-golden-ratio)
 (require 'init-smarter-compile)
+
+(require 'init-header)
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient

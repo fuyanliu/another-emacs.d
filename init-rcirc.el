@@ -40,7 +40,7 @@
                       channels))))
 
 ;; Turn the debugging mode on
-;(setq rcirc-debug-flag t)
+(setq rcirc-debug-flag t)
 
 ;; Adjust the colors of one of the faces.
 (set-face-foreground 'rcirc-my-nick "red" nil)

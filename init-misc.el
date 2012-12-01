@@ -3,8 +3,10 @@
 ;;----------------------------------------------------------------------------
 (add-auto-mode 'tcl-mode "Portfile$")
 (fset 'yes-or-no-p 'y-or-n-p)
+(setq user-full-name "Yudi Shi <a@sydi.org>")
 (add-hook 'find-file-hooks 'goto-address-prog-mode)
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+
 (setq goto-address-mail-face 'link)
 
 (column-number-mode 1)
@@ -98,7 +100,7 @@
            (setq i (+ i 1))
            (insert (format "%4d %c\n" i i))))
   (goto-char (point-min)))
-                          
+
 
 ;insert date into buffer
 (defun insert-date ()
@@ -204,7 +206,7 @@
 (add-hook 'before-save-hook 'time-stamp)
 
 ;; xcscope load
-(require 'xcscope)
+;;; (require 'xcscope)
 
 (define-prefix-command 'ctl-z-map)
 (global-unset-key (kbd "C-z"))
@@ -221,17 +223,12 @@
 (global-set-key (kbd "M-p") 'move-text-up)
 (global-set-key (kbd "M-n") 'move-text-down)
 
-;; move window
-;; (require 'window-numbering)
-;; (window-numbering-mode 1)
-
 (defun find-file-as-root ()
   (interactive)
   (find-file
    (read-file-name
     "sudo: "
     "/sudo:root@localhost:/etc/")))
-
 
 (global-set-key (kbd "C-x C-r") 'find-file-as-root)
 

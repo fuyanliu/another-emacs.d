@@ -15,7 +15,7 @@
       org-fast-tag-selection-single-key 'expert
       org-export-kill-product-buffer-when-displayed t
       org-tags-column 80
-      ;org-startup-indented t
+      org-startup-indented t
       )
 
 ; Refile targets include this file and any file contributing to the agenda - up to 5 levels deep
@@ -100,12 +100,11 @@
      (setq org-todo-keywords
            (quote ((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d!/!)")
                    (sequence "WAITING(w@/!)" "SOMEDAY(S)" "PROJECT(P@)" "|" "CANCELLED(c@/!)"))))
-     
+
                                         ; @see http://irreal.org/blog/?p=671
      ;; (require 'org-checklist)
-     (require 'org-fstree)
-     (setq org-ditaa-jar-path (format "%s%s" (if *cygwin* "c:/cygwin" "")
-                                      (expand-file-name "~/.emacs.d/elpa/contrib/scripts/ditaa.jar")) )
+     ;; (require 'org-fstree)
+     (setq org-ditaa-jar-path (expand-file-name "~/.emacs.d/elpa/contrib/scripts/ditaa.jar"))
      (add-hook 'org-mode-hook 'soft-wrap-lines)
      (defun soft-wrap-lines ()
        "Make lines wrap at window edge and on word boundary,
@@ -150,7 +149,6 @@
       '(remember-annotation-functions (quote (org-remember-annotation)))
       '(remember-handler-functions (quote (org-remember-handler))))
 
-     (setq org-export-with-sub-superscripts nil) ; 取消^和_字体上浮和下沉的特殊性
      (message "load org-mode")
      ))
 
@@ -158,24 +156,25 @@
 (add-hook 'remember-mode-hook 'org-remember-apply-template)
 (define-key global-map [(control meta ?r)] 'remember)
 
+(require 'org-latex)
 ;; org-mode latex settings.
-(eval-after-load 'org-latex
-  '(progn
-     (setq org-export-latex-listings t)
-     (setq org-latex-to-pdf-process
-           '("xelatex -interaction nonstopmode %b"
-             "xelatex -interaction nonstopmode %b"))
-     (add-to-list 'org-export-latex-classes
-                  '("org-article"
-                    "\\documentclass{org-article}
+(setq org-export-with-sub-superscripts nil) ; 取消^和_字体上浮和下沉的特殊性
+(setq org-export-latex-listings t)
+(setq org-latex-to-pdf-process
+      '("xelatex -interaction nonstopmode %b"
+        "xelatex -interaction nonstopmode %b"))
+(add-to-list 'org-export-latex-classes
+             '("org-article"
+               "\\documentclass{org-article}
+                 \\usepackage{zhfontcfg}
                  [NO-DEFAULT-PACKAGES]
                  [EXTRA]"
-                    ("\\section{%s}" . "\\section*{%s}")
-                    ("\\subsection{%s}" . "\\subsection*{%s}")
-                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-     ))
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
 
 (eval-after-load 'org-html
   '(progn
@@ -195,7 +194,7 @@
      (setq org-export-html-style-include-scripts nil) ; 不加载默认js
      (setq org-export-html-style-include-default nil) ; 不加载默认css
      (setq org-export-html-link-home "http://sydi.org/")
-     (setq org-export-with-section-numbers nil) 
+     (setq org-export-with-section-numbers nil)
      ;; (setq org-export-page-keywords "施宇迪 sydi.org")
      ;; (setq org-export-page-description "施宇迪 sydi.org")
      (setq org-export-html-preamble (lambda () "<g:plusone></g:plusone>"))
@@ -204,7 +203,7 @@
 
 ;;;###autoload
 (defun sydi/after-export-org ()
-  (when (and buffer-file-name (string-match ".*\\.html" buffer-file-name)) 
+  (when (and buffer-file-name (string-match ".*\\.html" buffer-file-name))
     (save-excursion
       (while (search-forward "<body>" nil t)
         (replace-match "<body>\n<div id=\"frame-table\"><div id=\"frame-table-row\"><div id=\"content-wrapper\">" nil t)))
@@ -314,11 +313,11 @@
 <link rel=\"stylesheet\" href=\"/images/me/mediaelementplayer.css\" />
 <link rel=\"stylesheet\" href=\"/images/bootstrap/css/bootstrap.css\" />
 <link rel=\"stylesheet\" href=\"/images/bootstrap/css/bootstrap-responsive.css\" />
-<script type=\"text/javascript\" href=\"/images/bootstrap/js/bootstrap.min.js\"></script> 
+<script type=\"text/javascript\" href=\"/images/bootstrap/js/bootstrap.min.js\"></script>
 <link href='http://sydi.org/images/logo.png' rel='icon' type='image/x-icon'/>
 "
            :publishing-function (org-publish-org-to-html
-                                 org-publish-org-to-org) 
+                                 org-publish-org-to-org)
            :completion-function (sydi/sync-server)))))
 
 (eval-after-load "org-publish"
@@ -354,11 +353,7 @@
 
 ; external browser should be firefox
 (setq browse-url-generic-program
-      (cond
-       (*is-a-mac* "open")
-       (*linux* (executable-find "firefox"))
-       )
-      )
+      (executable-find "chromium"))
 
 (defadvice org-open-at-point (around org-open-at-point-choose-browser activate)
   (let ((browse-url-browser-function
@@ -371,6 +366,48 @@
                   (w3m-browse-url url t))))))
     ad-do-it))
 
-(add-hook 'org-mode-hook 'inhibit-autopair)
+;; (add-hook 'org-mode-hook 'inhibit-autopair)
+
+(defun sort-by-date ()
+  (interactive)
+  (require 'find-lisp)
+  (save-excursion
+    (let* ((org-files (sort
+                      (find-lisp-find-files "~/sydi.org/org/" "\\.org$")
+                      'org-date-compare))
+           (rss-filename "rss2.xml")
+           (visiting (find-buffer-visiting rss-filename))
+           (rss-buffer (or visiting (find-file rss-filename))))
+      (with-current-buffer rss-buffer
+        (kill-region (point-min) (point-max))
+        (insert "<?xml version=\"1.0\" encoding=\"utf-8\" ?>
+<rss version=\"2.0\">
+  <channel>
+    <title>SYDI.ORG 施宇迪的另一片空间</title>
+    <link>http://sydi.org</link>
+    <description>施宇迪的个人网站博客，设计Archlinux、Emacs、Awesome、Perl、分布式数据</description>")
+        (dolist (file org-files)
+          (with-current-buffer rss-buffer
+            (insert "<item>
+  <title>title</title>
+  <link>http://sydi.org/</link>
+  <description>")
+            )
+          (with-current-buffer (find-file file)
+            (org-export-as-html t nil nil "*tmp-rss*" t))
+          (with-current-buffer rss-buffer
+            (insert-buffer-substring-no-properties "*tmp-rss*")
+            (kill-buffer "*tmp-rss*")
+            (insert "</description></item>")
+            (insert "</channel></rss>")
+            (save-buffer)))))))
+
+(defun org-date-compare (a b)
+  (require 'org-publish)
+  (let* ((adate (org-publish-find-date a))
+         (bdate (org-publish-find-date b))
+         (A (+ (lsh (car adate) 16) (cadr adate)))
+         (B (+ (lsh (car bdate) 16) (cadr bdate))))
+    (>= A B)))
 
 (provide 'init-org)

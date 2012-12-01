@@ -28,7 +28,8 @@
  truncate-lines nil
  truncate-partial-width-windows nil
  resize-mini-windows nil
- visible-bell nil)
+ visible-bell nil
+ show-trailing-whitespace t)
 
 (transient-mark-mode t)
 
@@ -142,8 +143,9 @@
 ;; Fill column indicator
 ;;----------------------------------------------------------------------------
 (when (> emacs-major-version 23)
+  (require 'fill-column-indicator)
   (defun sanityinc/prog-mode-fci-settings ()
-    (turn-on-fci-mode)
+    ;; (turn-on-fci-mode)
     (when show-trailing-whitespace
       (set (make-local-variable 'whitespace-style) '(face trailing))
       (whitespace-mode 1)))
