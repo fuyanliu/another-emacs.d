@@ -18,4 +18,6 @@
      "Use `yas/completing-prompt' for `yas/prompt-functions' but only here..."
        (let ((yas/prompt-functions '(yas/completing-prompt)))
              ad-do-it))
+;;; set yasnippet directory
+(setq yas/root-directory "~/.emacs.d/snippets")
 (provide 'init-yasnippet)
