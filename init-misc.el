@@ -2,8 +2,9 @@
 ;; Misc config - yet to be placed in separate files
 ;;----------------------------------------------------------------------------
 (add-auto-mode 'tcl-mode "Portfile$")
+(add-auto-mode 'mail-mode "/mutt-sydi-[-0-9]+$")
 (fset 'yes-or-no-p 'y-or-n-p)
-(setq user-full-name "Yudi Shi <a@sydi.org>")
+(setq user-full-name "Yudi Shi")
 (add-hook 'find-file-hooks 'goto-address-prog-mode)
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
