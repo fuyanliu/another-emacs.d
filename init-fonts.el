@@ -33,12 +33,17 @@ DELTA should be a multiple of 10, in the units used by the
 (global-set-key (kbd "C-M-=") 'increase-default-font-height)
 (global-set-key (kbd "C-M--") 'decrease-default-font-height)
 
-(when *linux-x*
-  (set-frame-font "Monaco:pixelsize=13")
+(defun sydi-set-font ()
+  (when *linux-x*
+    (set-frame-font "Monaco:pixelsize=13")
 ;;; (set-frame-font "Monaco:pixelsize=14:antialias=True:hinting=True")
-  (dolist (charset '(han kana symbol cjk-misc bopomofo))
-    (set-fontset-font (frame-parameter nil 'font)
-		      charset
-		      (font-spec :family "WenQuanYi Zen Hei" :size 16 :antialias t))))
+    (dolist (charset '(han kana symbol cjk-misc bopomofo))
+      (set-fontset-font
+       (frame-parameter nil 'font)
+       charset
+       (font-spec :family "WenQuanYi Zen Hei" :size 16 :antialias t)))))
+
+(add-hook 'before-make-frame-hook 'sydi-set-font)
+
 
 (provide 'init-fonts)
