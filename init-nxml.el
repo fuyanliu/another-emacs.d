@@ -1,6 +1,6 @@
 ;;; (load-library "rng-auto")
 (add-to-list 'auto-mode-alist
-              (cons (concat "\\." (regexp-opt '("cshtml" "aspx" "xml" "xsd" "sch" "rng" "xslt" "svg" "rss" "bkl" "bkgen") t) "\\'")
+              (cons (concat "\\." (regexp-opt '("cshtml" "aspx" "xml" "xsd" "sch" "rng" "xslt" "svg" "rss" "bkl" "bkgen" "tpl" "inc") t) "\\'")
                     'nxml-mode))
 (setq magic-mode-alist (cons '("<\\?xml " . nxml-mode) magic-mode-alist))
 (fset 'html-mode 'nxml-mode)
@@ -29,6 +29,6 @@ indentation rules."
 (add-hook 'nxml-mode-hook (lambda () (tidy-build-menu nxml-mode-map)))
 (add-hook 'html-mode-hook (lambda () (tidy-build-menu html-mode-map)))
 
-(add-auto-mode 'html-mode "\\.(jsp|tmpl)$")
+(add-auto-mode 'html-mode "\\.(jsp|tmpl)\\'")
 
 (provide 'init-nxml)

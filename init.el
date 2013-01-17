@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2013-01-13 12:10:00 ryan>
+;; Time-stamp: <2013-01-17 16:10:44 ryan>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -75,13 +75,10 @@
 (require 'init-sessions)
 (require 'init-fonts)
 (require 'init-mmm)
-(require 'init-growl)
+;(require 'init-growl)
 (require 'init-editing-utils)
-
-;; (require 'init-darcs)
 (require 'init-git)
 
-(require 'init-doxymacs)
 (require 'init-crontab)
 ;; (require 'init-textile)
 ;; (require 'init-markdown)
@@ -89,7 +86,11 @@
 ;; (require 'init-erlang)
 (require 'init-javascript)
 (require 'init-sh)
-;; (require 'init-php)
+
+(require 'init-php)
+(require 'init-org)
+(require 'init-org-mime)
+
 (require 'init-nxml)
 (require 'init-css)
 ;; (require 'init-haml)
@@ -115,9 +116,11 @@
 ;; Chinese inut method
 (require 'init-org2blog)
 ;; (require 'init-fill-column-indicator) ;make auto-complete dropdown wierd
-(require 'init-yasnippet)
+;;; (require 'init-yasnippet)
 (require 'init-yari)
+
 (require 'init-etags-select)
+
 (require 'init-cc-mode)
 (require 'init-auto-complete) ;; after init-yasnippeta to override TAB
 ;;; (require 'init-semantic)
@@ -136,7 +139,10 @@
 (require 'init-pomodoro)
 (require 'init-undo-tree)
 (require 'init-moz)
-;; (require 'init-evil) ; use evil mode (vi key binding)
+
+(require 'init-gtags)
+; (require 'init-evil) ; use evil mode (vi key binding)
+
 (require 'init-misc)
 (require 'init-ctags)
 (require 'init-gtags)
@@ -147,37 +153,47 @@
 (require 'init-anything)
 (require 'init-dot)
 
-(require 'init-uml)
+;; (require 'init-uml)
+
 (require 'init-sunrise-commander)
+;; (require 'init-bbdb)
 (require 'init-gnus)
 (require 'init-smarter-compile)
+(require 'init-twittering-mode)
+(require 'init-weibo)
+;; itune cannot play flac, so I use mplayer+emms instead (updated, use mpd!)
+;; (if *is-a-mac* (require 'init-emms))
+(require 'init-lua-mode)
+(require 'init-doxygen)
+(require 'init-workgroups)
 
 (require 'init-header)
 
 ;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
-(defconst --batch-mode (member "--batch-mode" command-line-args)
-          "True when running in batch-mode (--batch-mode command-line switch set).")
-
-(unless --batch-mode
-  (require 'server)
-  (when (and (= emacs-major-version 23)
-             (= emacs-minor-version 1)
-             (equal window-system 'w32))
-    ;; Suppress error "directory ~/.emacs.d/server is unsafe" on Windows.
-    (defun server-ensure-safe-dir (dir) "Noop" t))
-  (condition-case nil
-      (unless (server-running-p) (server-start))
-    (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
-    (error
-     (let* ((server-dir (if server-use-tcp server-auth-dir server-socket-dir)))
-       (when (and server-use-tcp
-                  (not (file-accessible-directory-p server-dir)))
-         (display-warning
-          'server (format "Creating %S" server-dir) :warning)
-         (make-directory server-dir t)
-         (server-start))))))
+;; Don't use emacsclient, and this code make emacs start up slow
+;;(defconst --batch-mode (member "--batch-mode" command-line-args)
+;;          "True when running in batch-mode (--batch-mode command-line switch set).")
+;;
+;;(unless --batch-mode
+;;  (require 'server)
+;;  (when (and (= emacs-major-version 23)
+;;             (= emacs-minor-version 1)
+;;             (equal window-system 'w32))
+;;    ;; Suppress error "directory ~/.emacs.d/server is unsafe" on Windows.
+;;    (defun server-ensure-safe-dir (dir) "Noop" t))
+;;  (condition-case nil
+;;      (unless (server-running-p) (server-start))
+;;    (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
+;;    (error
+;;     (let* ((server-dir (if server-use-tcp server-auth-dir server-socket-dir)))
+;;       (when (and server-use-tcp
+;;                  (not (file-accessible-directory-p server-dir)))
+;;         (display-warning
+;;          'server (format "Creating %S" server-dir) :warning)
+;;         (make-directory server-dir t)
+;;         (server-start))))))
 
 ;;----------------------------------------------------------------------------
 ;; Variables configured via the interactive 'customize' interface
@@ -199,9 +215,10 @@
 
 
 (when (require 'time-date nil t)
-  (message "Emacs startup time: %d seconds."
-           (time-to-seconds (time-since emacs-load-start-time)))
-  )
+   (message "Emacs startup time: %d seconds."
+    (time-to-seconds (time-since emacs-load-start-time)))
+   )
+
 ;;; Local Variables:
 ;;; no-byte-compile: t
 ;;; End:

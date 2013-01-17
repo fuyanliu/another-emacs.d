@@ -24,7 +24,25 @@
 ;; no annoying beep on errors
 (setq backup-directory-alist '(("." . "~/.backups")))
 
+;; Write backup files to own directory
+(if (not (file-exists-p (expand-file-name "~/.backups")))
+    (make-directory (expand-file-name "~/.backups"))
+    )
+(setq
+  backup-by-coping t ; don't clobber symlinks
+  backup-directory-alist '(("." . "~/.backups"))
+  delete-old-versions t
+  kept-new-versions 6
+  kept-old-versions 2
+  version-control t  ;use versioned backups
+  )
+;; Make backups of files, even when they're in version control
+(setq vc-make-backup-files t)
+
+;; Don't disable narrowing commands
 (put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+(put 'narrow-to-defun 'disabled nil)
 
 ; from RobinH
 ;Time management
@@ -46,8 +64,8 @@
  		    'face 'sydi-display-time-face)
         "]"))
 
-(global-set-key [f8] 'calendar)
 (global-set-key [f12] 'list-bookmarks)
+(global-set-key (kbd "M-o") 'switch-window)
 
 ;; M-x ct ENTER
 (defun ct (dir-name)
@@ -109,6 +127,12 @@
   (interactive)
   (insert (format-time-string "%a %b %e, %Y %l:%M %p")))
 
+(defun insert-blog-version ()
+  "insert version of my blog post"
+  (interactive)
+  (insert (format-time-string "%Y%m%d"))
+  )
+
 ;;compute the length of the marked region
 (defun region-length ()
   "length of a region"
@@ -129,11 +153,6 @@
 ;global keyb maps
 (global-set-key "\C-xc" 'clipboard-kill-ring-save)
 (global-set-key "\C-cc" 'copy-region-as-kill)
-(global-set-key [home] 'beginning-of-line)
-(global-set-key [end] 'end-of-line)
-(global-set-key [\C-home] '(goto-char (point-min)))
-(global-set-key [\C-end] 'end-of-buffer)
-; (global-set-key [?\C-/] 'void) ;forward reference
 
 ;; @see http://www.emacswiki.org/emacs/BetterRegisters
 ;; This is used in the function below to make marked points visible
@@ -186,8 +205,6 @@
                                (cond (window-system
                                        (mwheel-install)))))
 
-(track-closed-files-mode)
-
 ; @see http://www.emacswiki.org/emacs/SavePlace
 (require 'saveplace)
 (setq-default save-place t)
@@ -217,12 +234,12 @@
 
 (global-set-key (kbd "C-`") (lambda () (interactive) (compile "make -j 10")))
 (global-set-key (kbd "C-~") 'compile)
-; http://tapoueh.org/emacs/switch-window.html
+
+;; http://tapoueh.org/emacs/switch-window.html
 (require 'switch-window)
 
-;;move-text stuff, move line up/down by pressing hotkey
-(global-set-key (kbd "M-p") 'move-text-up)
-(global-set-key (kbd "M-n") 'move-text-down)
+;;iedit-mode
+(global-set-key (kbd "C-c ;") 'iedit-mode-toggle-on-function)
 
 (defun find-file-as-root ()
   (interactive)
@@ -233,12 +250,30 @@
 
 (global-set-key (kbd "C-x C-r") 'find-file-as-root)
 
+;; my screen is tiny, so I use minimum eshell prompt
+(setq eshell-prompt-function
+       (lambda ()
+         (concat (getenv "USER") " $ ")))
+
 ;; max frame, @see https://github.com/rmm5t/maxframe.el
 (require 'maxframe)
 ;(setq mf-max-width 1600) ;; Pixel width of main monitor. for dual-lcd only
 (add-hook 'window-setup-hook 'maximize-frame t)
 
-;; sig-quote
-;(require 'sig-quote)
+(defun toggle-env-http-proxy ()
+  "set/unset the environment variable http_proxy which w3m uses"
+  (interactive)
+  (let ((proxy "http://127.0.0.1:8000"))
+    (if (string= (getenv "http_proxy") proxy)
+        ;; clear the the proxy
+        (progn
+          (setenv "http_proxy" "")
+          (message "env http_proxy is empty now")
+          )
+      ;; set the proxy
+      (setenv "http_proxy" proxy)
+      (message "env http_proxy is %s now" proxy)
+        )
+    ))
 
 (provide 'init-misc)

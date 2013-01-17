@@ -1,6 +1,10 @@
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
-(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+
+(if *is-a-mac*
+  ; make soffice visible when converting odt to doc
+  (setenv "PATH" (concat (getenv "PATH") "/Applications/LibreOffice.app/Contents/MacOS"))
+  )
 
 (require 'org-capture)
 
@@ -14,6 +18,7 @@
       org-agenda-window-setup 'current-window
       org-fast-tag-selection-single-key 'expert
       org-export-kill-product-buffer-when-displayed t
+      org-export-odt-preferred-output-format "doc"
       org-tags-column 80
       org-startup-indented t
       )
@@ -427,6 +432,8 @@
     (message "Emacs %s" emacs-version)
     (org-version)
     (org-publish-project "sydi")))
+
+(add-hook 'org-mode-hook 'inhibit-autopair)
 
 ; external browser should be firefox
 (setq browse-url-generic-program

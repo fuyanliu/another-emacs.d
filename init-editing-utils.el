@@ -1,3 +1,5 @@
+;; Use evil-mode (strongly recommended) will make this file much smaller!
+
 ;;----------------------------------------------------------------------------
 ;; Some basic preferences
 ;;----------------------------------------------------------------------------
@@ -28,10 +30,21 @@
  truncate-lines nil
  truncate-partial-width-windows nil
  resize-mini-windows nil
- visible-bell nil
  show-trailing-whitespace t)
+ ;; no annoying beep on errors
+ visible-bell t)
+
+(global-auto-revert-mode)
+(setq global-auto-revert-non-file-buffers t
+      auto-revert-verbose nil)
+
+;; But don't show trailing whitespace in SQLi, inf-ruby etc.
+(add-hook 'comint-mode-hook
+          (lambda () (setq show-trailing-whitespace nil)))
 
 (transient-mark-mode t)
+
+(define-key global-map (kbd "RET") 'newline-and-indent)
 
 ;;----------------------------------------------------------------------------
 ;; Zap *up* to char is a more sensible default
@@ -56,9 +69,10 @@
 ;;----------------------------------------------------------------------------
 ;; Autopair quotes and parentheses
 ;;----------------------------------------------------------------------------
-(require 'autopair)
-(setq autopair-autowrap t)
-(autopair-global-mode t)
+(add-hook 'prog-mode-hook (lambda ()
+                            (setq autopair-autowrap t)
+                            (autopair-global-mode t)
+                            ))
 
 (defun inhibit-autopair ()
   "Prevent autopair from enabling in the current buffer."
@@ -80,7 +94,7 @@
 ;;----------------------------------------------------------------------------
 ;; Rectangle selections, and overwrite text when the selection is active
 ;;----------------------------------------------------------------------------
-                                        ; (cua-selection-mode t)                  ; for rectangles, CUA is nice
+; (cua-selection-mode t)                  ; for rectangles, CUA is nice
 
 
 ;;----------------------------------------------------------------------------
@@ -89,11 +103,6 @@
 ;; To be able to M-x without meta
 (global-set-key (kbd "C-x C-m") 'execute-extended-command)
 
-;; Vimmy alternatives to M-^ and C-u M-^
-(global-set-key (kbd "C-c j") 'join-line)
-(global-set-key (kbd "C-c J") (lambda () (interactive) (join-line 1)))
-
-(global-set-key (kbd "M-T") 'transpose-lines)
 (global-set-key (kbd "C-.") 'set-mark-command)
 (global-set-key (kbd "C-x C-.") 'pop-global-mark)
 
@@ -182,21 +191,6 @@
 ;;----------------------------------------------------------------------------
 (move-text-default-bindings)
 
-
-;;----------------------------------------------------------------------------
-;; Fix backward-up-list to understand quotes, see http://bit.ly/h7mdIL
-;;----------------------------------------------------------------------------
-(defun backward-up-sexp (arg)
-  (interactive "p")
-  (let ((ppss (syntax-ppss)))
-    (cond ((elt ppss 3)
-           (goto-char (elt ppss 8))
-           (backward-up-sexp (1- arg)))
-          ((backward-up-list arg)))))
-
-(global-set-key [remap backward-up-list] 'backward-up-sexp) ; C-M-u, C-M-up
-
-
 ;;----------------------------------------------------------------------------
 ;; Cut/copy the current line if no region is active
 ;;----------------------------------------------------------------------------
@@ -221,7 +215,6 @@
              (,mode-name 1)))))))
 
 (suspend-mode-during-cua-rect-selection 'whole-line-or-region-mode)
-
 
 ;;----------------------------------------------------------------------------
 ;; Random line sorting
@@ -287,16 +280,25 @@
                   (line-end-position))
   (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
 (global-set-key (kbd "M-k") 'qiang-copy-line)
+;; comment/uncomment lines
+(evilnc-default-hotkeys)
 
                                         ;need install browse-kill-ring
 (browse-kill-ring-default-keybindings)
 
-; turns on auto-fill-mode, don't use text-mode-hook becasue for some
-; mode (org-mode for example), this will make the exported document 
-; ugly!
+;; show trailing spaces in a programming mod
+(add-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace t)))
+
+;; turns on auto-fill-mode, don't use text-mode-hook becasue for some
+;; mode (org-mode for example), this will make the exported document
+;; ugly!
 (add-hook 'markdown-mode-hook 'turn-on-auto-fill)
 (add-hook 'change-log-mode-hook 'turn-on-auto-fill)
 (add-hook 'cc-mode-hook 'turn-on-auto-fill)
 (global-set-key (kbd "C-c q") 'auto-fill-mode)
+
+;; delim-pad, control space padding around delimiters
+(require 'delim-pad)
+(delim-pad-mode 1)
 
 (provide 'init-editing-utils)

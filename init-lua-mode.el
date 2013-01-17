@@ -33,3 +33,14 @@ I want it. Makes sure spaces are used for indentation, not tabs."
 ;; add `my-lua-setup' as a call-back that is invoked whenever lua-mode
 ;; is activated.
 (add-hook 'lua-mode-hook 'my-lua-setup)
+(add-hook 'lua-mode-hook
+          (lambda ()
+            (setq safe-local-variable-values
+                  '((lua-indent-level . 2)
+                    (lua-indent-level . 3)
+                    (lua-indent-level . 4)
+                    (lua-indent-level . 8)))
+            (flymake-lua-load)
+            ))
+
+(provide 'init-lua-mode)

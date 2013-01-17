@@ -1,3 +1,4 @@
+.wg-file.el
 /url/cache
 /.emacs.desktop
 /auto-save-list
@@ -30,3 +31,9 @@ semanticdb/
 abbrev_defs
 /swank
 /.mc-lists.el
+TAGS
+GTAGS
+GPATH
+GRTAGS
+emms/
+/var

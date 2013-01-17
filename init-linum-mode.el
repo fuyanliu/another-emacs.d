@@ -8,8 +8,13 @@
                                          erc-mode
                                          jabber-roster-mode
                                          jabber-chat-mode
+                                         twittering-mode
+                                         compilation-mode
+                                         weibo-timeline-mode
+                                         woman-mode
                                          gnus-group-mode
                                          inf-ruby-mode
+                                         gud-mode
                                          w3m-mode
                                          gnus-summary-mode
                                          gnus-article-mode
