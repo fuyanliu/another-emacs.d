@@ -43,7 +43,7 @@ DELTA should be a multiple of 10, in the units used by the
        charset
        (font-spec :family "WenQuanYi Zen Hei" :size 16 :antialias t)))))
 
+(sydi-set-font)
 (add-hook 'before-make-frame-hook 'sydi-set-font)
-
 
 (provide 'init-fonts)

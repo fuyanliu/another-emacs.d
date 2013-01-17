@@ -8,6 +8,7 @@
       (progn
         (setq load-path
               (append
+               (list my-lisp-dir)
                (loop for dir in (directory-files my-lisp-dir)
                      unless (string-match "^\\." dir)
                      collecting (expand-file-name dir))

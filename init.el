@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2012-12-01 18:17:56 ryan>
+;; Time-stamp: <2013-01-13 12:10:00 ryan>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -113,7 +113,7 @@
 ;; Finally set up themes, after most possibly-customised faces have been defined
 (require 'init-themes) ; color-themes 6.6.1 has some problem
 ;; Chinese inut method
-;; (require 'init-org2blog)
+(require 'init-org2blog)
 ;; (require 'init-fill-column-indicator) ;make auto-complete dropdown wierd
 (require 'init-yasnippet)
 (require 'init-yari)

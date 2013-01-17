@@ -17,7 +17,7 @@
           (lambda ()
             (when (< emacs-major-version 23)
               (fix-up-xterm-control-arrows))
-            (xterm-mouse-mode 1) ; Mouse in a terminal (Use shift to paste with middle button)
+            (xterm-mouse-mode 0) ; Mouse in a terminal (Use shift to paste with middle button)
             ;; Enable wheelmouse support by default
             (cond (window-system
                    (mwheel-install)))

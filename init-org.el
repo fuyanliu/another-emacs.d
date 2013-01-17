@@ -202,14 +202,18 @@
            "<div id=\"home-and-up\"> [ <a href=\"%s\"> UP </a> ] [ <a href=\"%s\"> HOME </a> ] <button class='btn btn-inverse' onclick='show_org_source()'>查看Org源文件</button></div>")))
 
 ;;;###autoload
+(defun sydi/sitefram
+  ())
+
+;;;###autoload
 (defun sydi/after-export-org ()
   (when (and buffer-file-name (string-match ".*\\.html" buffer-file-name))
-    (save-excursion
-      (while (search-forward "<body>" nil t)
-        (replace-match "<body>\n<div id=\"frame-table\"><div id=\"frame-table-row\"><div id=\"content-wrapper\">" nil t)))
-    (save-excursion
-      (while (search-forward "</body>" nil t)
-        (replace-match "</div><div id=\"sidebar\"></div></div></div>\n</body>" nil t)))
+    ;; (save-excursion
+    ;;   (while (search-forward "<body>" nil t)
+    ;;     (replace-match "<body>\n<div id=\"frame-table\"><div id=\"frame-table-row\"><div id=\"content-wrapper\">" nil t)))
+    ;; (save-excursion
+    ;;   (while (search-forward "</body>" nil t)
+    ;;     (replace-match "</div><div class=\"sidebar\"></div></div></div>\n</body>" nil t)))
     ;; if need add comment box...
     (save-excursion
       (if (boundp 'comment-box)
@@ -220,16 +224,86 @@
     ;; add site-wide title
     (save-excursion
       (while (search-forward "</title>" nil t)
-        (replace-match " - 施宇迪的另一片空间</title>" nil t)))
+        (replace-match " - 施宇迪的另一片空间</title>" nil t)))))
 
-    (todochiku-message (nth 2 (assoc 'title (assoc 'head (libxml-parse-html-region (point-min) (point-max)))))  "" (todochiku-icon 'bell))))
-
+;;; (todochiku-message (nth 2 (assoc 'title (assoc 'head (libxml-parse-html-region (point-min) (point-max)))))  "" (todochiku-icon 'bell))
 ;;;###autoload
 (defun sydi/sync-server ()
   (message "sync file to server")
   (async-shell-command "update_sydi_org.sh")
-  (message "sync file to server complete")
-  )
+  (message "sync file to server complete"))
+
+;;;###autoload
+;;; The hook is run after org-html export html done and
+;;; still stay on the output html file.
+(defun sydi/final-export ()
+  ;; declear free-varible
+  (defvar opt-plist)
+  (save-excursion
+    (let ((title (plist-get opt-plist :title))
+          (email (plist-get opt-plist :email))
+          (author (plist-get opt-plist :author))
+          (body-only (plist-get opt-plist :body-only))
+          (date (plist-get opt-plist :date))
+          (language    (plist-get opt-plist :language))
+          (keywords    (org-html-expand (plist-get opt-plist :keywords)))
+          (description (org-html-expand (plist-get opt-plist :description)))
+          (style (plist-get opt-plist :style))
+          (charset (and coding-system-for-write
+                        (fboundp 'coding-system-get)
+                        (coding-system-get coding-system-for-write
+                                           'mime-charset))))
+      (when body-only
+        (goto-char (point-min))
+        (insert (format "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"
+               \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
+<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"%s\" xml:lang=\"%s\">
+<head>
+<title>%s</title>
+<meta http-equiv=\"Content-Type\" content=\"text/html;charset=%s\"/>
+<meta name=\"title\" content=\"%s\"/>
+<meta name=\"generator\" content=\"Org-mode modify by Yudi Shi\"/>
+<meta name=\"generated\" content=\"%s\"/>
+<meta name=\"author\" content=\"%s\"/>
+<meta name=\"description\" content=\"%s\"/>
+<meta name=\"keywords\" content=\"%s\"/>
+%s
+</head>
+<body>
+<div class=\"navbar navbar-inverse navbar-fixed-top\"></div>
+<div class=\"container-fluid\">
+  <div id=\"main\" class=\"row-fluid\">
+    <div class=\"span4\">
+      <div class=\"sidebar sidebar-nav well \"></div>
+    </div><!--/span-->
+    <div class=\"span8\">
+      <div class=\"well\">
+"
+                        language
+                        language
+                        title
+                        charset
+                        title
+                        date
+                        author
+                        description
+                        keywords
+                        style
+                        ))
+        (goto-char (point-max))
+        (insert
+         (format "</div></div></div>
+<div class=\"bottom\"></div>
+<footer><p><a href=\"https://plus.google.com/112098239943590093765?rel=author\">By %s</a> @ %s <a href=\"http://sydi.org\">SYDI.ORG</a></p></footer>
+</div></body></html>"
+                 author
+                 date)))))
+  ;; notify it
+  (save-excursion
+    (todochiku-message
+     (or (plist-get opt-plist :title) "unknow title")
+     "exporing..."
+     (todochiku-icon 'bell))))
 
 (defun sydi/htmlize-buffer ()
   (with-current-buffer (htmlize-buffer)
@@ -285,7 +359,7 @@
            :components ("sydi-pages" "sydi-static"))
           ("sydi-static"
            :base-directory "~/sydi.org/org/"
-           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|html\\|div"
+           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|html\\|div\\|pl\\|template"
            :publishing-directory "~/sydi.org/html"
            :recursive t
            :publishing-function org-publish-attachment)
@@ -302,22 +376,24 @@
            :htmlized-source t
            :table-of-contents nil
            :auto-preamble t
-           :exclude ".*my-wife.*\.org"
+           ;; :exclude ".*my-wife.*\.org"
            :sitemap-title "站点地图 for 本网站"
            :author "施宇迪"
            :email "a@sydi.org"
            :language "zh-CN"
-           :style "<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js\"></script>
+           :style "
+<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js\"></script>
 <script type=\"text/javascript\" src=\"/images/site.js\"></script>
-<link rel=\"stylesheet\" href=\"/images/site.css\" />
+<script type=\"text/javascript\" src=\"/images/js/bootstrap.min.js\"></script>
 <link rel=\"stylesheet\" href=\"/images/me/mediaelementplayer.css\" />
-<link rel=\"stylesheet\" href=\"/images/bootstrap/css/bootstrap.css\" />
-<link rel=\"stylesheet\" href=\"/images/bootstrap/css/bootstrap-responsive.css\" />
-<script type=\"text/javascript\" href=\"/images/bootstrap/js/bootstrap.min.js\"></script>
+<link rel=\"stylesheet\" href=\"/images/css/bootstrap.min.css\" />
+<link rel=\"stylesheet\" href=\"/images/css/bootstrap-responsive.css\" />
+<link rel=\"stylesheet\" href=\"/images/site.css\" />
 <link href='http://sydi.org/images/logo.png' rel='icon' type='image/x-icon'/>
 "
            :publishing-function (org-publish-org-to-html
                                  org-publish-org-to-org)
+           :body-only t
            :completion-function (sydi/sync-server)))))
 
 (eval-after-load "org-publish"
@@ -339,6 +415,7 @@
   "Publish Worg in htmlized pages."
   (interactive)
   (add-hook 'org-publish-after-export-hook 'worg-fix-symbol-table)
+  (add-hook 'org-export-html-final-hook 'sydi/final-export)
   (let ((org-format-latex-signal-error nil)
         (org-startup-folded nil)
         (sydi-base-directory "~/sydi.org/org/")
@@ -410,4 +487,69 @@
          (B (+ (lsh (car bdate) 16) (cadr bdate))))
     (>= A B)))
 
+(require 'org-octopress)
+
+(setq org-publish-project-alist
+      '(("blog-org" .  (:base-directory "~/octopress/source/org_posts/"
+                                        :base-extension "org"
+                                        :publishing-directory "~/octopress/source/_posts/"
+                                        :sub-superscript nil
+                                        :recursive t
+                                        :publishing-function org-publish-org-to-octopress
+                                        :headline-levels 4
+                                        :table-of-contents nil
+                                        :html-extension "markdown"
+                                        :octopress-extension "markdown"
+                                        :body-only t))
+        ("blog-extra" . (:base-directory "~/octopress/source/org_posts/"
+                                         :publishing-directory "~/octopress/source/"
+                                         :base-extension "css\\|pdf\\|png\\|jpg\\|gif\\|svg"
+                                         :publishing-function org-publish-attachment
+                                         :recursive t
+                                         :author nil
+                                         ))
+        ("blog" . (:components ("blog-org" "blog-extra")))
+        ))
+
+;; (org-set-generic-type
+;;  "Markdown" 
+;;  '(:file-suffix ".markdown"
+;;    :key-binding ?M
+;;    :title-format "%s\n"
+;;    :title-suffix ?=
+;;    :body-header-section-numbers t
+;;    :body-header-section-number-format "%s) "
+;;    :body-section-header-prefix	("\n## " "\n### " "\n#### " "\n##### " "\n###### ")
+;;    :body-section-header-format	"%s"
+;;    :body-section-header-suffix "\n"
+;;    :todo-keywords-export t
+;;    :body-line-format "  %s\n"
+;;    :body-tags-export	t
+;;    :body-tags-prefix	" <tags>"
+;;    :body-tags-suffix	"</tags>\n"
+;;    ;;:body-section-prefix	"<secprefix>\n"
+;;    ;;:body-section-suffix	"</secsuffix>\n"
+;;    :body-line-export-preformated	t
+;;    :body-line-fixed-prefix	"<pre>\n"
+;;    :body-line-fixed-suffix	"\n</pre>\n"
+;;    :body-line-fixed-format	"%s\n"
+;;    :body-list-prefix	"\n"
+;;    :body-list-suffix	"\n"
+;;    :body-list-format	"  * %s\n"
+;;    ;;:body-number-list-prefix	"<ol>\n"
+;;    ;;:body-number-list-suffix	"</ol>\n"
+;;    ;;:body-number-list-format	"<li>%s</li>\n"
+;;    ;;:body-number-list-leave-number	t
+;;    :body-list-checkbox-todo	"[_] "
+;;    :body-list-checkbox-todo-end	""
+;;    :body-list-checkbox-done	"[X] "
+;;    :body-list-checkbox-done-end ""
+;;    :body-line-format	"%s"
+;;    :body-line-wrap	75
+;;    :body-text-prefix	""
+;;    :body-text-suffix	""
+;;    ))
+
 (provide 'init-org)
+
+
