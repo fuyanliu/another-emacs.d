@@ -1,6 +1,6 @@
 (require 'yasnippet)
 
-(yasya-global-mode 1)
+(yas/global-mode 1)
 
 ;; default TAB key is occupied by auto-complete
 (global-set-key (kbd "C-c k") 'yas/expand)

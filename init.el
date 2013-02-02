@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2013-01-17 16:10:44 ryan>
+;; Time-stamp: <2013-01-22 21:02:40 ryan>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -43,14 +43,13 @@
 
 ;; win32 auto configuration, assuming that cygwin is installed at "c:/cygwin"
 (if *win32*
-	(progn
-		(setq cygwin-mount-cygwin-bin-directory "c:/cygwin/bin")
-		(require 'setup-cygwin)
-		;(setenv "HOME" "c:/cygwin/home/someuser") ;; better to set HOME env in GUI
-		))
+    (progn
+      (setq cygwin-mount-cygwin-bin-directory "c:/cygwin/bin")
+      (require 'setup-cygwin)
+      ;(setenv "HOME" "c:/cygwin/home/someuser") ;; better to set HOME env in GUI
+      ))
 
 (require 'init-elpa)
-(require 'init-org)
 
 ;; (require 'init-ecb)
 (require 'init-exec-path) ;; Set up $PATH
@@ -64,7 +63,7 @@
 (require 'init-isearch)
 (require 'init-uniquify)
 (require 'init-ibuffer)
-;;; (require 'init-flymake)
+;; (require 'init-flymake)
 (require 'init-artbollocks-mode)
 (require 'init-recentf)
 (require 'init-better-registers)        ; C-x j - jump to register
@@ -89,12 +88,14 @@
 
 (require 'init-php)
 (require 'init-org)
-(require 'init-org-mime)
+(require 'init-org-clock)
+(require 'init-org-capture)
+;;; (require 'init-org-mime)
 
 (require 'init-nxml)
 (require 'init-css)
 ;; (require 'init-haml)
-;; (require 'init-python-mode)
+(require 'init-python-mode)
 ;; (require 'init-haskell)
 (require 'init-ruby-mode)
 ;; (require 'init-rails)
@@ -116,7 +117,7 @@
 ;; Chinese inut method
 (require 'init-org2blog)
 ;; (require 'init-fill-column-indicator) ;make auto-complete dropdown wierd
-;;; (require 'init-yasnippet)
+(require 'init-yasnippet)
 (require 'init-yari)
 
 (require 'init-etags-select)
@@ -173,27 +174,27 @@
 ;; Allow access from emacsclient
 ;;----------------------------------------------------------------------------
 ;; Don't use emacsclient, and this code make emacs start up slow
-;;(defconst --batch-mode (member "--batch-mode" command-line-args)
-;;          "True when running in batch-mode (--batch-mode command-line switch set).")
-;;
-;;(unless --batch-mode
-;;  (require 'server)
-;;  (when (and (= emacs-major-version 23)
-;;             (= emacs-minor-version 1)
-;;             (equal window-system 'w32))
-;;    ;; Suppress error "directory ~/.emacs.d/server is unsafe" on Windows.
-;;    (defun server-ensure-safe-dir (dir) "Noop" t))
-;;  (condition-case nil
-;;      (unless (server-running-p) (server-start))
-;;    (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
-;;    (error
-;;     (let* ((server-dir (if server-use-tcp server-auth-dir server-socket-dir)))
-;;       (when (and server-use-tcp
-;;                  (not (file-accessible-directory-p server-dir)))
-;;         (display-warning
-;;          'server (format "Creating %S" server-dir) :warning)
-;;         (make-directory server-dir t)
-;;         (server-start))))))
+(defconst --batch-mode (member "--batch-mode" command-line-args)
+         "True when running in batch-mode (--batch-mode command-line switch set).")
+
+(unless --batch-mode
+ (require 'server)
+ (when (and (= emacs-major-version 23)
+            (= emacs-minor-version 1)
+            (equal window-system 'w32))
+   ;; Suppress error "directory ~/.emacs.d/server is unsafe" on Windows.
+   (defun server-ensure-safe-dir (dir) "Noop" t))
+ (condition-case nil
+     (unless (server-running-p) (server-start))
+   (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
+   (error
+    (let* ((server-dir (if server-use-tcp server-auth-dir server-socket-dir)))
+      (when (and server-use-tcp
+                 (not (file-accessible-directory-p server-dir)))
+        (display-warning
+         'server (format "Creating %S" server-dir) :warning)
+        (make-directory server-dir t)
+        (server-start))))))
 
 ;;----------------------------------------------------------------------------
 ;; Variables configured via the interactive 'customize' interface

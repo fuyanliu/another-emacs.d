@@ -7,5 +7,5 @@
      (setq header-date-format "%Y-%m-%d %T (%z)")
      ))
 
-(add-hook 'before-save-hook 'update-file-header)
+;;; (add-hook 'before-save-hook 'update-file-header)
 (provide 'init-header)

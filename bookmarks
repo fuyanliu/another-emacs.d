@@ -2,7 +2,20 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("deploy" 0 6
+(#1=(#("org-capture-last-stored" 0 23
+      (bmkp-full-record #1#))
+    (filename . "~/org/gtd.org")
+    (buffer-name . "gtd.org")
+    (front-context-string . "** TODO CS配置中缺少汇")
+    (rear-context-string . "'org-capture)]]\n")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(20743 44773 434725))
+    (created . #2#)
+    (position . 1504)
+    (end-position . 1504))
+#1=(#("deploy" 0 6
       (bmkp-full-record #1#))
     (buffer-name . "deploy")
     (front-context-string . "deploy.py\n  drwx")

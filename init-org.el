@@ -1,86 +1,10 @@
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
 
-(if *is-a-mac*
-  ; make soffice visible when converting odt to doc
-  (setenv "PATH" (concat (getenv "PATH") "/Applications/LibreOffice.app/Contents/MacOS"))
-  )
-
-(require 'org-capture)
-
-;; Various preferences
-(setq org-log-done t
-      org-completion-use-ido t
-      org-edit-timestamp-down-means-later t
-      org-agenda-start-on-weekday nil
-      org-agenda-span 14
-      org-agenda-include-diary t
-      org-agenda-window-setup 'current-window
-      org-fast-tag-selection-single-key 'expert
-      org-export-kill-product-buffer-when-displayed t
-      org-export-odt-preferred-output-format "doc"
-      org-tags-column 80
-      org-startup-indented t
-      )
-
-; Refile targets include this file and any file contributing to the agenda - up to 5 levels deep
-(setq org-refile-targets (quote ((nil :maxlevel . 5) (org-agenda-files :maxlevel . 5))))
-; Targets start with the file name - allows creating level 1 tasks
-(setq org-refile-use-outline-path (quote file))
-; Targets complete in steps so we start with filename, TAB shows the next level of targets etc
-(setq org-outline-path-complete-in-steps t)
-
-
-(setq org-todo-keywords
-      (quote ((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d!/!)")
-              (sequence "WAITING(w@/!)" "SOMEDAY(S)" "PROJECT(P@)" "|" "CANCELLED(c@/!)"))))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Org clock
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Save the running clock and all clock history when exiting Emacs, load it on startup
-(setq org-clock-persistence-insinuate t)
-(setq org-clock-persist t)
-(setq org-clock-in-resume t)
-
-;; Change task state to STARTED when clocking in
-(setq org-clock-in-switch-to-state "STARTED")
-;; Save clock data and notes in the LOGBOOK drawer
-(setq org-clock-into-drawer t)
-;; Removes clocked tasks with 0:00 duration
-(setq org-clock-out-remove-zero-time-clocks t)
-
-;; Show the clocked-in task - if any - in the header line
-(defun sanityinc/show-org-clock-in-header-line ()
-  (setq-default header-line-format '((" " org-mode-line-string " "))))
-
-(defun sanityinc/hide-org-clock-from-header-line ()
-  (setq-default header-line-format nil))
-
-(add-hook 'org-clock-in-hook 'sanityinc/show-org-clock-in-header-line)
-(add-hook 'org-clock-out-hook 'sanityinc/hide-org-clock-from-header-line)
-(add-hook 'org-clock-cancel-hook 'sanityinc/hide-org-clock-from-header-line)
-
-(eval-after-load 'org-clock
-  '(progn
-     ;; Save the running clock and all clock history when exiting Emacs, load it on startup
-     (setq org-clock-persistence-insinuate t)
-     (setq org-clock-persist t)
-     (setq org-clock-in-resume t)
-     ;; Change task state to STARTED when clocking in
-     (setq org-clock-in-switch-to-state "STARTED")
-     ;; Save clock data and notes in the LOGBOOK drawer
-     (setq org-clock-into-drawer t)
-     ;; Removes clocked tasks with 0:00 duration
-     (setq org-clock-out-remove-zero-time-clocks t)
-     ))
-
 (eval-after-load 'org
   '(progn
      ;; (require 'org-exp)
-     ;; (require 'org-clock)
+     (require 'org-clock)
      ;; (require 'org-latex)
 
      ;; Various preferences
@@ -92,8 +16,12 @@
            org-agenda-include-diary t
            org-agenda-window-setup 'current-window
            org-fast-tag-selection-single-key 'expert
+           org-export-kill-product-buffer-when-displayed t
+           org-export-odt-preferred-output-format "doc"
            org-tags-column 80
-           org-src-fontify-natively t)
+           org-src-fontify-natively t
+           org-startup-indented t
+           )
 
      ;; Refile targets include this file and any file contributing to the agenda - up to 5 levels deep
      (setq org-refile-targets (quote ((nil :maxlevel . 5) (org-agenda-files :maxlevel . 5))))
@@ -106,7 +34,7 @@
            (quote ((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d!/!)")
                    (sequence "WAITING(w@/!)" "SOMEDAY(S)" "PROJECT(P@)" "|" "CANCELLED(c@/!)"))))
 
-                                        ; @see http://irreal.org/blog/?p=671
+     ;; @see http://irreal.org/blog/?p=671
      ;; (require 'org-checklist)
      ;; (require 'org-fstree)
      (setq org-ditaa-jar-path (expand-file-name "~/.emacs.d/elpa/contrib/scripts/ditaa.jar"))
@@ -116,8 +44,7 @@
         in current buffer."
        (interactive)
        (setq truncate-lines nil)
-       (setq word-wrap t)
-       )
+       (setq word-wrap t))
 
      (custom-set-variables
       '(org-agenda-files (quote ("~/personal/todo.org")))
@@ -146,20 +73,8 @@
                    (lambda nil
                      (org-agenda-skip-entry-if (quote scheduled) (quote deadline)
                                                (quote regexp) "\n]+>")))
-                  (org-agenda-overriding-header "Unscheduled TODO entries: "))))))
-      '(org-remember-store-without-prompt t)
-      '(org-remember-templates
-        (quote ((?t "* TODO %?\n  %u" "~/personal/todo.org" "Tasks")
-                (?n "* %u %?" "~/personal/notes.org" "Notes"))))
-      '(remember-annotation-functions (quote (org-remember-annotation)))
-      '(remember-handler-functions (quote (org-remember-handler))))
-
-     (message "load org-mode")
-     ))
-
-(require 'remember)
-(add-hook 'remember-mode-hook 'org-remember-apply-template)
-(define-key global-map [(control meta ?r)] 'remember)
+                  (org-agenda-overriding-header "Unscheduled TODO entries: ")))))))
+     (message "load org-mode")))
 
 (require 'org-latex)
 ;; org-mode latex settings.
@@ -207,10 +122,6 @@
            "<div id=\"home-and-up\"> [ <a href=\"%s\"> UP </a> ] [ <a href=\"%s\"> HOME </a> ] <button class='btn btn-inverse' onclick='show_org_source()'>查看Org源文件</button></div>")))
 
 ;;;###autoload
-(defun sydi/sitefram
-  ())
-
-;;;###autoload
 (defun sydi/after-export-org ()
   (when (and buffer-file-name (string-match ".*\\.html" buffer-file-name))
     ;; (save-excursion
@@ -231,7 +142,6 @@
       (while (search-forward "</title>" nil t)
         (replace-match " - 施宇迪的另一片空间</title>" nil t)))))
 
-;;; (todochiku-message (nth 2 (assoc 'title (assoc 'head (libxml-parse-html-region (point-min) (point-max)))))  "" (todochiku-icon 'bell))
 ;;;###autoload
 (defun sydi/sync-server ()
   (message "sync file to server")
@@ -257,9 +167,10 @@
           (charset (and coding-system-for-write
                         (fboundp 'coding-system-get)
                         (coding-system-get coding-system-for-write
-                                           'mime-charset))))
+                                           'mime-charset)))
+          (content (prog1 (buffer-substring-no-properties (point-min) (point-max))
+                     (kill-region (point-min) (point-max)))))
       (when body-only
-        (goto-char (point-min))
         (insert (format "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"
                \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
 <html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"%s\" xml:lang=\"%s\">
@@ -275,15 +186,23 @@
 %s
 </head>
 <body>
-<div class=\"navbar navbar-inverse navbar-fixed-top\"></div>
-<div class=\"container-fluid\">
-  <div id=\"main\" class=\"row-fluid\">
+<div class=\"container-fluid main-wrapper\">
+  <div id=\"header\"></div>
+  <div id=\"main\" class=\"row-fluid main\">
     <div class=\"span4\">
       <div class=\"sidebar sidebar-nav well \"></div>
     </div><!--/span-->
-    <div class=\"span8\">
+    <div class=\"span8 content\">
       <div class=\"well\">
-"
+        <h1 class=\"title\">%s</h1>
+        %s
+        <div class=\"comments ds-thread\"></div>
+      </div>
+    </div>
+  </div>
+<div class=\"bottom\"></div>
+<footer><p><a href=\"https://plus.google.com/112098239943590093765?rel=author\">By %s</a> @ %s <a href=\"http://sydi.org\">SYDI.ORG</a></p></footer>
+</div></body></html>"
                         language
                         language
                         title
@@ -294,21 +213,11 @@
                         description
                         keywords
                         style
-                        ))
-        (goto-char (point-max))
-        (insert
-         (format "</div></div></div>
-<div class=\"bottom\"></div>
-<footer><p><a href=\"https://plus.google.com/112098239943590093765?rel=author\">By %s</a> @ %s <a href=\"http://sydi.org\">SYDI.ORG</a></p></footer>
-</div></body></html>"
-                 author
-                 date)))))
-  ;; notify it
-  (save-excursion
-    (todochiku-message
-     (or (plist-get opt-plist :title) "unknow title")
-     "exporing..."
-     (todochiku-icon 'bell))))
+                        title
+                        content
+                        author
+                        date)))))
+  )
 
 (defun sydi/htmlize-buffer ()
   (with-current-buffer (htmlize-buffer)
@@ -394,14 +303,15 @@
 <link rel=\"stylesheet\" href=\"/images/css/bootstrap.min.css\" />
 <link rel=\"stylesheet\" href=\"/images/css/bootstrap-responsive.css\" />
 <link rel=\"stylesheet\" href=\"/images/site.css\" />
-<link href='http://sydi.org/images/logo.png' rel='icon' type='image/x-icon'/>
+<link href='/images/logo.png' rel='icon' type='image/x-icon' />
+<link href=\"atom.xml\" type=\"application/atom+xml\" rel=\"alternate\" title=\"sydi.org atom\" />
 "
            :publishing-function (org-publish-org-to-html
                                  org-publish-org-to-org)
            :body-only t
            :completion-function (sydi/sync-server)))))
 
-(eval-after-load "org-publish"
+(eval-after-load 'org-publish
   (add-hook 'org-publish-after-export-hook 'sydi/after-export-org))
 
 (defun worg-fix-symbol-table ()
@@ -416,7 +326,7 @@
 (setq sydi-base-images-directory "~/sydi.org/html/images/")
 (setq sydi-publish-directory "~/sydi.org/html/")
 
-(defun publish-sydi nil
+(defun publish-sydi ()
   "Publish Worg in htmlized pages."
   (interactive)
   (add-hook 'org-publish-after-export-hook 'worg-fix-symbol-table)
@@ -452,39 +362,58 @@
 
 ;; (add-hook 'org-mode-hook 'inhibit-autopair)
 
-(defun sort-by-date ()
+(defun generate-atom ()
   (interactive)
   (require 'find-lisp)
   (save-excursion
     (let* ((org-files (sort
                       (find-lisp-find-files "~/sydi.org/org/" "\\.org$")
                       'org-date-compare))
-           (rss-filename "rss2.xml")
-           (visiting (find-buffer-visiting rss-filename))
-           (rss-buffer (or visiting (find-file rss-filename))))
-      (with-current-buffer rss-buffer
+           (atom-filename "atom.xml")
+           (visiting (find-buffer-visiting atom-filename))
+           (atom-buffer (or visiting (find-file atom-filename)))
+           (title "SYDI.ORG 施宇迪的另一片空间")
+           (subtitle "Distributed Arch Linux Emacs Oceanbase Database")
+           (self-link "http://sydi.org/atom.xml")
+           (link "http://sydi.org/")
+           (id "http://sydi.org")
+           (author "施宇迪")
+           (email "a@sydi.org"))
+      (with-current-buffer atom-buffer
         (kill-region (point-min) (point-max))
-        (insert "<?xml version=\"1.0\" encoding=\"utf-8\" ?>
-<rss version=\"2.0\">
-  <channel>
-    <title>SYDI.ORG 施宇迪的另一片空间</title>
-    <link>http://sydi.org</link>
-    <description>施宇迪的个人网站博客，设计Archlinux、Emacs、Awesome、Perl、分布式数据</description>")
+        (insert (format
+                 "<?xml version=\"1.0\" encoding=\"utf-8\" ?>
+<feed xmlns=\"http://www.w3.org/2005/Atom\">
+  <title>%s</title>
+  <subtitle>%s</subtitle>
+  <link href=\"%s\" rel=\"self\"/>
+  <link href=\"%s\"/>
+  <updated>%s</updated>
+  <id>%s</id>
+  <author>
+    <name><![CDATA[%s]]></name><email>%s</email>
+  </author>
+  <generator uri=\"http://sydi.org/\">orgmode4sydi</generator>"
+                 title subtitle self-link link
+                 (format-time-string "%Y-%m-%dT%T%z")
+                 id author email))
         (dolist (file org-files)
-          (with-current-buffer rss-buffer
-            (insert "<item>
+          (let* ((org-file-buffer (find-file file))
+                (entry (concat
+                         "<entry>
   <title>title</title>
-  <link>http://sydi.org/</link>
-  <description>")
-            )
-          (with-current-buffer (find-file file)
-            (org-export-as-html t nil nil "*tmp-rss*" t))
-          (with-current-buffer rss-buffer
-            (insert-buffer-substring-no-properties "*tmp-rss*")
-            (kill-buffer "*tmp-rss*")
-            (insert "</description></item>")
-            (insert "</channel></rss>")
-            (save-buffer)))))))
+  <link href=\"http://sydi.org/\" />
+  <updated>1.2.2.3</updated>
+  <id>http://sydi.org/</id>
+  <content type=\"html\"><![CDATA["
+                         (progn
+                             (set-buffer org-file-buffer)
+                             (org-export-as-html 3 nil 'string t))
+                        "]]></content></entry>")))
+            (kill-buffer org-file-buffer)
+            (set-buffer atom-buffer)
+            (insert entry)))
+        (insert "</feed>")))))
 
 (defun org-date-compare (a b)
   (require 'org-publish)
@@ -494,69 +423,4 @@
          (B (+ (lsh (car bdate) 16) (cadr bdate))))
     (>= A B)))
 
-(require 'org-octopress)
-
-(setq org-publish-project-alist
-      '(("blog-org" .  (:base-directory "~/octopress/source/org_posts/"
-                                        :base-extension "org"
-                                        :publishing-directory "~/octopress/source/_posts/"
-                                        :sub-superscript nil
-                                        :recursive t
-                                        :publishing-function org-publish-org-to-octopress
-                                        :headline-levels 4
-                                        :table-of-contents nil
-                                        :html-extension "markdown"
-                                        :octopress-extension "markdown"
-                                        :body-only t))
-        ("blog-extra" . (:base-directory "~/octopress/source/org_posts/"
-                                         :publishing-directory "~/octopress/source/"
-                                         :base-extension "css\\|pdf\\|png\\|jpg\\|gif\\|svg"
-                                         :publishing-function org-publish-attachment
-                                         :recursive t
-                                         :author nil
-                                         ))
-        ("blog" . (:components ("blog-org" "blog-extra")))
-        ))
-
-;; (org-set-generic-type
-;;  "Markdown" 
-;;  '(:file-suffix ".markdown"
-;;    :key-binding ?M
-;;    :title-format "%s\n"
-;;    :title-suffix ?=
-;;    :body-header-section-numbers t
-;;    :body-header-section-number-format "%s) "
-;;    :body-section-header-prefix	("\n## " "\n### " "\n#### " "\n##### " "\n###### ")
-;;    :body-section-header-format	"%s"
-;;    :body-section-header-suffix "\n"
-;;    :todo-keywords-export t
-;;    :body-line-format "  %s\n"
-;;    :body-tags-export	t
-;;    :body-tags-prefix	" <tags>"
-;;    :body-tags-suffix	"</tags>\n"
-;;    ;;:body-section-prefix	"<secprefix>\n"
-;;    ;;:body-section-suffix	"</secsuffix>\n"
-;;    :body-line-export-preformated	t
-;;    :body-line-fixed-prefix	"<pre>\n"
-;;    :body-line-fixed-suffix	"\n</pre>\n"
-;;    :body-line-fixed-format	"%s\n"
-;;    :body-list-prefix	"\n"
-;;    :body-list-suffix	"\n"
-;;    :body-list-format	"  * %s\n"
-;;    ;;:body-number-list-prefix	"<ol>\n"
-;;    ;;:body-number-list-suffix	"</ol>\n"
-;;    ;;:body-number-list-format	"<li>%s</li>\n"
-;;    ;;:body-number-list-leave-number	t
-;;    :body-list-checkbox-todo	"[_] "
-;;    :body-list-checkbox-todo-end	""
-;;    :body-list-checkbox-done	"[X] "
-;;    :body-list-checkbox-done-end ""
-;;    :body-line-format	"%s"
-;;    :body-line-wrap	75
-;;    :body-text-prefix	""
-;;    :body-text-suffix	""
-;;    ))
-
 (provide 'init-org)
-
-
