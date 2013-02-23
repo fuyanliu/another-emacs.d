@@ -149,10 +149,11 @@
 (global-set-key (kbd "M-0") 'delete-window) ; was digit-argument
 (global-set-key (kbd "M-o") 'other-window) ; was facemenu-keymap
 (defalias 'list-buffers 'ibuffer)
-;KEYBOARD SECTION
-;global keyb maps
-(global-set-key "\C-xc" 'clipboard-kill-ring-save)
-(global-set-key "\C-cc" 'copy-region-as-kill)
+
+;;; KEYBOARD SECTION
+;;; global keyb maps
+;; (global-set-key "\C-xc" 'clipboard-kill-ring-save)
+;; (global-set-key "\C-cc" 'copy-region-as-kill)
 
 ;; @see http://www.emacswiki.org/emacs/BetterRegisters
 ;; This is used in the function below to make marked points visible
@@ -167,13 +168,10 @@
 ;effiective emacs item9
 (defalias 'qrr 'query-replace-regexp)
 
-;@see http://stackoverflow.com/questions/3509919/ \
-;emacs-c-opening-corresponding-header-file
-(global-set-key (kbd "C-x C-o") 'ff-find-other-file)
 (setq-default regex-tool-backend 'perl)
 
-;shortcut 'ytx', if smex installed
-(defun yank-to-x-clipboard ()
+;shortcut 'ctx', if smex installed
+(defun copy-to-x-clipboard ()
   (interactive)
   (if (region-active-p)
     (progn
@@ -257,8 +255,14 @@
 
 ;; max frame, @see https://github.com/rmm5t/maxframe.el
 (require 'maxframe)
-;(setq mf-max-width 1600) ;; Pixel width of main monitor. for dual-lcd only
+;; (setq mf-max-width 1600) ;; Pixel width of main monitor. for dual-lcd only
 (add-hook 'window-setup-hook 'maximize-frame t)
+
+;; command-frequency
+;; (require 'command-frequency)
+;; (command-frequency-table-load)
+;; (command-frequency-mode 1)
+;; (command-frequency-autosave-mode 1)
 
 (defun toggle-env-http-proxy ()
   "set/unset the environment variable http_proxy which w3m uses"

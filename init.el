@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2013-01-22 21:02:40 ryan>
+;; Time-stamp: <2013-02-23 21:14:12 ryan>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -80,7 +80,7 @@
 
 (require 'init-crontab)
 ;; (require 'init-textile)
-;; (require 'init-markdown)
+(require 'init-markdown)
 (require 'init-csv)
 ;; (require 'init-erlang)
 (require 'init-javascript)
@@ -90,6 +90,7 @@
 (require 'init-org)
 (require 'init-org-clock)
 (require 'init-org-capture)
+(require 'init-org-html)
 ;;; (require 'init-org-mime)
 
 (require 'init-nxml)
@@ -99,9 +100,9 @@
 ;; (require 'init-haskell)
 (require 'init-ruby-mode)
 ;; (require 'init-rails)
-(require 'init-rcirc)
 ;;(require 'init-erc)
-(require 'init-rails)
+(if (not (boundp 'light-weight-emacs)) (require 'init-rails))
+(require 'init-rcirc)
 
 (require 'init-lisp)
 (require 'init-slime)
@@ -117,10 +118,12 @@
 ;; Chinese inut method
 (require 'init-org2blog)
 ;; (require 'init-fill-column-indicator) ;make auto-complete dropdown wierd
-(require 'init-yasnippet)
-(require 'init-yari)
+(if (not (boundp 'light-weight-emacs)) (require 'init-yasnippet))
 
-(require 'init-etags-select)
+;; Use bookmark instead
+;; (require 'init-better-registers) ; C-x j - jump to register
+(require 'init-zencoding-mode) ;behind init-better-register to override C-j
+(require 'init-yari)
 
 (require 'init-cc-mode)
 (require 'init-auto-complete) ;; after init-yasnippeta to override TAB
@@ -136,13 +139,15 @@
 (require 'init-which-func)
 (require 'init-keyfreq)
 ;; (require 'init-gist)
-;; (require 'init-emacspeak)
+(require 'init-emacspeak)
+
 (require 'init-pomodoro)
 (require 'init-undo-tree)
 (require 'init-moz)
 
 (require 'init-gtags)
-; (require 'init-evil) ; use evil mode (vi key binding)
+;; use evil mode (vi key binding)
+;; (if (not (boundp 'light-weight-emacs)) (require 'init-evil))
 
 (require 'init-misc)
 (require 'init-ctags)
@@ -157,16 +162,19 @@
 ;; (require 'init-uml)
 
 (require 'init-sunrise-commander)
-;; (require 'init-bbdb)
+(require 'init-bbdb)
 (require 'init-gnus)
 (require 'init-smarter-compile)
 (require 'init-twittering-mode)
 (require 'init-weibo)
 ;; itune cannot play flac, so I use mplayer+emms instead (updated, use mpd!)
-;; (if *is-a-mac* (require 'init-emms))
+(if (not (boundp 'light-weight-emacs)) (if *is-a-mac* (require 'init-emms)) )
 (require 'init-lua-mode)
 (require 'init-doxygen)
 (require 'init-workgroups)
+(require 'init-move-window-buffer)
+(require 'init-term-mode)
+
 
 (require 'init-header)
 
@@ -220,6 +228,18 @@
     (time-to-seconds (time-since emacs-load-start-time)))
    )
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(bmkp-last-as-first-bookmark-file "~/.emacs.d/.bookmarks.el"))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(window-numbering-face ((t (:foreground "DeepPink" :underline "DeepPink" :weight bold))) t))
 ;;; Local Variables:
 ;;; no-byte-compile: t
 ;;; End:

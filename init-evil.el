@@ -5,21 +5,26 @@
 
 (evil-set-initial-state 'org-mode 'emacs)
 (evil-set-initial-state 'Info-mode 'emacs)
+(evil-set-initial-state 'term-mode 'emacs)
+(evil-set-initial-state 'log-edit-mode 'emacs)
 (evil-set-initial-state 'inf-ruby-mode 'emacs)
 (evil-set-initial-state 'yari-mode 'emacs)
+(evil-set-initial-state 'dired-mode 'emacs)
 (evil-set-initial-state 'erc-mode 'emacs)
 (evil-set-initial-state 'gud-mode 'emacs)
 (evil-set-initial-state 'help-mode 'emacs)
 ; I need copy words from eshell history
 (evil-set-initial-state 'eshell-mode 'emacs)
 (evil-set-initial-state 'shell-mode 'emacs)
-(evil-set-initial-state 'term-mode 'emacs)
 (evil-set-initial-state 'message-mode 'emacs)
+(evil-set-initial-state 'magit-log-edit-mode 'emacs)
 ; message buffer
 (evil-set-initial-state 'fundamental-mode 'emacs)
 (evil-set-initial-state 'gtags-select-mode 'emacs)
 (evil-set-initial-state 'weibo-timeline-mode 'emacs)
 (evil-set-initial-state 'weibo-post-mode 'emacs)
+(evil-set-initial-state 'diff-mode 'emacs)
+(evil-set-initial-state 'sr-mode 'emacs)
 
 (define-key evil-normal-state-map "Y" (kbd "y$"))
 (define-key evil-normal-state-map "+" 'evil-numbers/inc-at-pt)
@@ -34,7 +39,7 @@
   "cc" 'evilnc-comment-or-uncomment-to-the-line
   "ct" 'ctags-create-or-update-tags-table
   "t" 'ido-goto-symbol ;; same as my vim hotkey
-  "ww" 'save-buffer
+  "w" 'save-buffer
   "cl" 'compile
   "ud" '(lambda ()(interactive) (gud-gdb (concat "gdb --fullname " (cppcm-get-exe-path-current-buffer))))
   "W" 'save-some-buffers
@@ -46,7 +51,7 @@
   "mq" '(lambda () (interactive) (man (concat "-k " (thing-at-point 'symbol))))
   "gg" '(lambda () (interactive) (w3m-search "g" (thing-at-point 'symbol)))
   "q" '(lambda () (interactive) (w3m-search "q" (thing-at-point 'symbol)))
-  "s" '(lambda () (interactive) (require 'w3m) (browse-url-generic (concat "http://code.google.com/codesearch?q=" (w3m-url-encode-string (thing-at-point 'symbol)))))
+  "s" 'w3mext-hacker-search
   "d" 'gtags-find-tag-from-here
   "p" 'gtags-pop-stack
   "gr" 'gtags-find-rtag
@@ -61,10 +66,9 @@
   ;; recommended in html
   "md" 'mc/mark-all-like-this-dwim
   "rw" 'rotate-windows
-  "wc" 'wg-create-workgroup
-  "ws" 'wgext-save
-  "wl" 'wgext-load
-  "wv" 'wg-switch-to-workgroup
   )
+
+;; comment/uncomment lines
+(evilnc-default-hotkeys)
 
 (provide 'init-evil)

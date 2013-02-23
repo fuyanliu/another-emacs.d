@@ -6,15 +6,21 @@
   (setq linum-mode-inhibit-modes-list '(eshell-mode
                                          shell-mode
                                          erc-mode
+                                         help-mode
                                          jabber-roster-mode
                                          jabber-chat-mode
                                          twittering-mode
                                          compilation-mode
                                          weibo-timeline-mode
                                          woman-mode
+                                         Info-mode
+                                         calc-mode
+                                         calc-trail-mode
+                                         comint-mode
                                          gnus-group-mode
                                          inf-ruby-mode
                                          gud-mode
+					 term-mode
                                          w3m-mode
                                          gnus-summary-mode
                                          gnus-article-mode

@@ -3,6 +3,8 @@
 (require 'org-install)
 (require 'org-latex)
 
+;; 取消^和_字体上浮和下沉的特殊性
+(setq org-export-with-sub-superscripts nil)
 ;; 使用xelatex一步生成PDF
 (setq org-latex-to-pdf-process
       '("xelatex -interaction nonstopmode %f"
