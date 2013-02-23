@@ -14,8 +14,8 @@
      (setq org-export-html-style-include-default nil) ; 不加载默认css
      (setq org-export-html-link-home "http://sydi.org/")
      (setq org-export-with-section-numbers nil)
-     ;; (setq org-export-page-keywords "施宇迪 sydi.org")
-     ;; (setq org-export-page-description "施宇迪 sydi.org")
+     (setq org-export-page-keywords "施宇迪 sydi.org")
+     (setq org-export-page-description "施宇迪 sydi.org")
      (setq org-export-html-preamble (lambda () "<g:plusone></g:plusone>"))
      (setq org-export-html-home/up-format
            "<div id=\"home-and-up\"> [ <a href=\"%s\"> UP </a> ] [ <a href=\"%s\"> HOME </a> ] <button class='btn btn-inverse' onclick='show_org_source()'>查看Org源文件</button></div>")))
@@ -49,7 +49,7 @@
                                            'mime-charset)))
           (content (prog1 (buffer-substring-no-properties (point-min) (point-max))
                      (kill-region (point-min) (point-max)))))
-      (when body-only
+      (if body-only
         (insert (format "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"
                \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
 <html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"%s\" xml:lang=\"%s\">
@@ -95,7 +95,8 @@
                         title
                         content
                         author
-                        date)))))
+                        date)))
+      (insert content)))
   )
 
 (defun sydi/htmlize-buffer ()
@@ -159,7 +160,7 @@
           ("sydi-pages"
            :base-directory ,sydi-base-directory
            :base-extension "org"
-           :publishing-directory ,sydi-base-code-directory
+           :publishing-directory ,sydi-publish-directory
            :html-extension "html"
            :recursive t
            :makeindex t
@@ -211,28 +212,6 @@
 ;; external browser should be chromium
 (setq browse-url-generic-program
       (executable-find "chromium"))
-
-(eval-after-load 'org
-  '(progn
-     (require 'org-exp)
-     (require 'org-clock)
-     ;; @see http://irreal.org/blog/?p=671
-     (setq org-src-fontify-natively t)
-     ;; (require 'org-checklist)
-     (require 'org-fstree)
-     (setq org-ditaa-jar-path (format "%s%s" (if *cygwin* "c:/cygwin" "")
-                                      (expand-file-name "~/.emacs.d/elpa/contrib/scripts/ditaa.jar")) )
-     (defun soft-wrap-lines ()
-       "Make lines wrap at window edge and on word boundary,
-        in current buffer."
-       (interactive)
-       (setq truncate-lines nil)
-       (setq word-wrap t)
-       )
-     (add-hook 'org-mode-hook '(lambda ()
-                                 (soft-wrap-lines)
-                                 (inhibit-autopair)
-                                 ))))
 
 (defadvice org-open-at-point (around org-open-at-point-choose-browser activate)
   (let ((browse-url-browser-function

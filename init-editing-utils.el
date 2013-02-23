@@ -30,7 +30,7 @@
  truncate-lines nil
  truncate-partial-width-windows nil
  resize-mini-windows nil
- show-trailing-whitespace t)
+ show-trailing-whitespace t
  ;; no annoying beep on errors
  visible-bell t)
 
@@ -118,6 +118,7 @@
 (global-set-key (kbd "C-c c a") 'mc/edit-beginnings-of-lines)
 
 (defun duplicate-line ()
+  "duplicate the line which curser at and put that line after!"
   (interactive)
   (save-excursion
     (let ((line-text (buffer-substring-no-properties
@@ -220,7 +221,9 @@
 ;; Random line sorting
 ;;----------------------------------------------------------------------------
 (defun sort-lines-random (beg end)
-  "Sort lines in region randomly."
+  "Sort lines in region randomly.
+Argument BEG
+Argument END"
   (interactive "r")
   (save-excursion
     (save-restriction

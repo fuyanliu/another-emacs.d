@@ -9,8 +9,8 @@
            )
 
 ; Personal Information
-(setq user-full-name "Chen Bin"
-      user-mail-address "chenbin.sh@gmail.com"
+(setq user-full-name "Shi Yudi"
+      user-mail-address "cedsyd@gmail.com"
       ;message-generate-headers-first t
       )
 

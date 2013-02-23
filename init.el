@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2013-02-23 21:14:12 ryan>
+;; Time-stamp: <2013-02-23 23:57:53 ryan>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -91,6 +91,7 @@
 (require 'init-org-clock)
 (require 'init-org-capture)
 (require 'init-org-html)
+(require 'init-org-pdf)
 ;;; (require 'init-org-mime)
 
 (require 'init-nxml)
