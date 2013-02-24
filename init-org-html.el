@@ -226,6 +226,7 @@
 
 ;; (add-hook 'org-mode-hook 'inhibit-autopair)
 (defun generate-atom ()
+  "generate a atom style page"
   (interactive)
   (require 'find-lisp)
   (save-excursion
@@ -279,6 +280,7 @@
         (insert "</feed>")))))
 
 (defun org-date-compare (a b)
+  "compare tow org file according to it's date"
   (require 'org-publish)
   (let* ((adate (org-publish-find-date a))
          (bdate (org-publish-find-date b))
