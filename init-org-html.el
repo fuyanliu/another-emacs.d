@@ -95,9 +95,8 @@
                         title
                         content
                         author
-                        date)))
-      (insert content)))
-  )
+                        date))
+        (insert content)))))
 
 (defun sydi/htmlize-buffer ()
   (with-current-buffer (htmlize-buffer)
