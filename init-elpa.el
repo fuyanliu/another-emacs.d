@@ -162,6 +162,7 @@ ARCHIVE is the string name of the package archive.")
 (require-package 'org '(20130204 0 0) nil)
 (require-package 'org-mime)
 (require-package 'org-fstree)
+(require-package 'org-plus-contrib)
 ;; I don't care mac
 ;;(when *is-a-mac*
 ;;  (require-package 'org-mac-link-grabber)
