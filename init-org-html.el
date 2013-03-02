@@ -1,6 +1,16 @@
+(defvar sydi/base-directory "~/sydi.org/org/"
+  "base org files directory")
+(defvar sydi/base-code-directory "~/sydi.org/html/code/")
+;; (defvar sydi/base-color-themes-directory "~/sydi.org/worg/color-themes/")
+(defvar sydi/base-images-directory "~/sydi.org/html/images/")
+(defvar sydi/publish-directory "~/sydi.org/html/")
+(defvar sydi/site-url "http://sydi.org/")
+(defvar sydi/google-id "112098239943590093765")
+(defvar sydi/site-name "MiScratch")
+
 (eval-after-load 'org-html
   '(progn
-     ;;; add a horizontal line before footnotes
+;;; add a horizontal line before footnotes
      (setq org-export-html-footnotes-section
            (concat "<hr />" org-export-html-footnotes-section))
 
@@ -12,7 +22,7 @@
      (setq org-export-allow-BIND t)
      (setq org-export-html-style-include-scripts nil) ; 不加载默认js
      (setq org-export-html-style-include-default nil) ; 不加载默认css
-     (setq org-export-html-link-home "http://sydi.org/")
+     (setq org-export-html-link-home sydi/site-url)
      (setq org-export-with-section-numbers nil)
      (setq org-export-page-keywords "施宇迪 sydi.org")
      (setq org-export-page-description "施宇迪 sydi.org")
@@ -50,7 +60,7 @@
           (content (prog1 (buffer-substring-no-properties (point-min) (point-max))
                      (kill-region (point-min) (point-max)))))
       (if body-only
-        (insert (format "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"
+          (insert (format "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"
                \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
 <html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"%s\" xml:lang=\"%s\">
 <head>
@@ -80,22 +90,24 @@
     </div>
   </div>
 <div class=\"bottom\"></div>
-<footer><p><a href=\"https://plus.google.com/112098239943590093765?rel=author\">By %s</a> @ %s <a href=\"http://sydi.org\">SYDI.ORG</a></p></footer>
+<footer><p><a href=\"https://plus.google.com/%s?rel=author\">By %s</a> @ %s <a href=\"http://sydi.org\">%s</a></p></footer>
 </div></body></html>"
-                        language
-                        language
-                        title
-                        charset
-                        title
-                        date
-                        author
-                        description
-                        keywords
-                        style
-                        title
-                        content
-                        author
-                        date))
+                          language
+                          language
+                          title
+                          charset
+                          title
+                          date
+                          author
+                          description
+                          keywords
+                          style
+                          title
+                          content
+                          sydi/google-id
+                          author
+                          date
+                          sydi/site-name))
         (insert content)))))
 
 (defun sydi/htmlize-buffer ()
@@ -157,9 +169,9 @@
            :recursive t
            :publishing-function org-publish-attachment)
           ("sydi-pages"
-           :base-directory ,sydi-base-directory
+           :base-directory ,sydi/base-directory
            :base-extension "org"
-           :publishing-directory ,sydi-publish-directory
+           :publishing-directory ,sydi/publish-directory
            :html-extension "html"
            :recursive t
            :makeindex t
@@ -190,17 +202,12 @@
            :body-only t
            :completion-function (sydi/sync-server)))))
 
-(defun publish-sydi ()
+(defun sydi/publish ()
   "Publish Worg in htmlized pages."
   (interactive)
   (add-hook 'org-export-html-final-hook 'sydi/final-export)
   (let ((org-format-latex-signal-error nil)
-        (org-startup-folded nil)
-        (sydi-base-directory "~/sydi.org/org/")
-        (sydi-base-code-directory "~/sydi.org/html/code/")
-        ;; (sydi-base-color-themes-directory "~/sydi.org/worg/color-themes/")
-        (sydi-base-images-directory "~/sydi.org/html/images/")
-        (sydi-publish-directory "~/sydi.org/html/"))
+        (org-startup-folded nil))
     (set-org-publish-project-alist)
     (message "Emacs %s" emacs-version)
     (org-version)
@@ -231,7 +238,8 @@
 (defun generate-atom (root-dir atom-file)
   "generate a atom style page"
   (save-excursion
-    (let* ((org-files (get-sorted-org-files root-dir))
+    (let* ((org-export-allow-BIND t)
+           (org-files (sydi/get-sorted-org-files root-dir))
            (atom-filename atom-file)
            (visiting (find-buffer-visiting atom-filename))
            (atom-buffer (or visiting (find-file atom-filename)))
@@ -256,10 +264,10 @@
   <author>
     <name><![CDATA[%s]]></name><email>%s</email>
   </author>
-  <generator uri=\"http://sydi.org/\">orgmode4sydi</generator>"
+  <generator uri=\"%s\">orgmode4sydi</generator>"
                  title subtitle self-link link
                  (format-time-string "%Y-%m-%dT%T%z")
-                 id author email))
+                 id author email sydi/site-url))
         (dolist (file org-files)
           (let ((org-file-buffer (find-file file)))
             (set-buffer org-file-buffer)
@@ -274,32 +282,31 @@
                                                     (format-time-string
                                                      (org-time-stamp-format)
                                                      (cons 0 0))))))
+                   (url (concat
+                         (replace-regexp-in-string
+                          (file-truename sydi/base-directory)
+                          sydi/site-url
+                          (file-name-sans-extension (buffer-file-name)))
+                         ".html"))
                    (entry (format
                            "<entry>
   <title>%s</title>
-  <link href=\"http://sydi.org/\" />
+  <link href=\"%s\" />
   <updated>%s</updated>
-  <id>http://sydi.org/</id>
+  <id>%s</id>
   <content type=\"html\"><![CDATA[%s]]></content></entry>"
                            title
+                           url
                            date
+                           url
                            (org-export-as-html 3 nil 'string t)
                            )))
-            (kill-buffer org-file-buffer)
-            (set-buffer atom-buffer)
-            (insert entry))))
+              (kill-buffer org-file-buffer)
+              (set-buffer atom-buffer)
+              (insert entry))))
         (insert "</feed>")
         (save-buffer)
         (kill-buffer)))))
-
-(defun org-date-compare (a b)
-  "compare tow org file according to it's date"
-  (require 'org-publish)
-  (let* ((adate (org-publish-find-date a))
-         (bdate (org-publish-find-date b))
-         (A (+ (lsh (car adate) 16) (cadr adate)))
-         (B (+ (lsh (car bdate) 16) (cadr bdate))))
-    (>= A B)))
 
 (defun sydi/get-org-file-date (file &optional other)
   "Return org file date in #+date header line using `current-time' format.
@@ -321,7 +328,7 @@ If #+date keyword is not set and `other' equals to \"modify\", return the file s
                   ((equal other "change") (nth 6 (file-attributes file)))
                   (t '(0 0)))))))))
 
-(defun get-sorted-org-files (root-dir)
+(defun sydi/get-sorted-org-files (root-dir)
   "return a sorted org files list"
   (require 'find-lisp)
   (let ((org-files (find-lisp-find-files root-dir "\\.org$"))
@@ -333,12 +340,12 @@ If #+date keyword is not set and `other' equals to \"modify\", return the file s
                         org-alist)))
      org-files)
     (mapcar 'car
-          (sort org-alist
-                (lambda (a b)
-                  (let* ((adate (sydi/get-org-file-date (car a)))
-                         (bdate (sydi/get-org-file-date (car b)))
-                         (A (+ (lsh (car adate) 16) (cadr adate)))
-                         (B (+ (lsh (car bdate) 16) (cadr bdate))))
-                    (>= A B)))))))
+            (sort org-alist
+                  (lambda (a b)
+                    (let* ((adate (sydi/get-org-file-date (car a)))
+                           (bdate (sydi/get-org-file-date (car b)))
+                           (A (+ (lsh (car adate) 16) (cadr adate)))
+                           (B (+ (lsh (car bdate) 16) (cadr bdate))))
+                      (>= A B)))))))
 
 (provide 'init-org-html)
