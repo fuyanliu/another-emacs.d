@@ -152,7 +152,7 @@
            :components ("sydi-pages" "sydi-static"))
           ("sydi-static"
            :base-directory "~/sydi.org/org/"
-           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|html\\|div\\|pl\\|template"
+           :base-extension "xml\\|css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|html\\|div\\|pl\\|template"
            :publishing-directory "~/sydi.org/html"
            :recursive t
            :publishing-function org-publish-attachment)
@@ -223,20 +223,20 @@
                   (w3m-browse-url url t))))))
     ad-do-it))
 
-;; (add-hook 'org-mode-hook 'inhibit-autopair)
-(defun generate-atom ()
-  "generate a atom style page"
+(defun sydi/generate-atom ()
   (interactive)
-  (require 'find-lisp)
+  (generate-atom "~/sydi.org/org" "~/sydi.org/org/atom.xml"))
+
+;;;###autoload
+(defun generate-atom (root-dir atom-file)
+  "generate a atom style page"
   (save-excursion
-    (let* ((org-files (sort
-                       (find-lisp-find-files "~/sydi.org/org/" "\\.org$")
-                       'org-date-compare))
-           (atom-filename "atom.xml")
+    (let* ((org-files (get-sorted-org-files root-dir))
+           (atom-filename atom-file)
            (visiting (find-buffer-visiting atom-filename))
            (atom-buffer (or visiting (find-file atom-filename)))
-           (title "SYDI.ORG 施宇迪的另一片空间")
-           (subtitle "Distributed Arch Linux Emacs Oceanbase Database")
+           (title "MiScratch")
+           (subtitle "About Linux, Distributed System, Data Base, High Performance System")
            (self-link "http://sydi.org/atom.xml")
            (link "http://sydi.org/")
            (id "http://sydi.org")
@@ -261,22 +261,36 @@
                  (format-time-string "%Y-%m-%dT%T%z")
                  id author email))
         (dolist (file org-files)
-          (let* ((org-file-buffer (find-file file))
-                 (entry (concat
-                         "<entry>
-  <title>title</title>
+          (let ((org-file-buffer (find-file file)))
+            (set-buffer org-file-buffer)
+            (let* ((plist (org-infile-export-plist))
+                   (title (or
+                           (plist-get plist :title)
+                           "UNTITLED"))
+                   (date (format-time-string
+                          "%Y-%m-%dT%T%z"
+                          (org-time-string-to-time (or
+                                                    (plist-get plist :date)
+                                                    (format-time-string
+                                                     (org-time-stamp-format)
+                                                     (cons 0 0))))))
+                   (entry (format
+                           "<entry>
+  <title>%s</title>
   <link href=\"http://sydi.org/\" />
-  <updated>1.2.2.3</updated>
+  <updated>%s</updated>
   <id>http://sydi.org/</id>
-  <content type=\"html\"><![CDATA["
-                         (progn
-                           (set-buffer org-file-buffer)
-                           (org-export-as-html 3 nil 'string t))
-                         "]]></content></entry>")))
+  <content type=\"html\"><![CDATA[%s]]></content></entry>"
+                           title
+                           date
+                           (org-export-as-html 3 nil 'string t)
+                           )))
             (kill-buffer org-file-buffer)
             (set-buffer atom-buffer)
-            (insert entry)))
-        (insert "</feed>")))))
+            (insert entry))))
+        (insert "</feed>")
+        (save-buffer)
+        (kill-buffer)))))
 
 (defun org-date-compare (a b)
   "compare tow org file according to it's date"
@@ -286,5 +300,45 @@
          (A (+ (lsh (car adate) 16) (cadr adate)))
          (B (+ (lsh (car bdate) 16) (cadr bdate))))
     (>= A B)))
+
+(defun sydi/get-org-file-date (file &optional other)
+  "Return org file date in #+date header line using `current-time' format.
+
+If #+date keyword is not set and `other' equals to \"modify\", return the file system's modification time instead, if `other' equals to \"change\" return the file system's last change time instead, if `other' equals to \"access\" return the file systems's access time instead, otherwise return 0 as 1970-01-01 00:00:00, the minimal time.
+"
+  (let ((visiting (find-buffer-visiting file)))
+    (save-excursion
+      (org-pop-to-buffer-same-window (or visiting (find-file-noselect file nil t)))
+      (let* ((plist (org-infile-export-plist))
+	     (date (plist-get plist :date)))
+	(unless visiting
+	  (kill-buffer (current-buffer)))
+	(if date
+	    (org-time-string-to-time date)
+	  (when (file-exists-p file)
+            (cond ((equal other "access") (nth 4 (file-attributes file)))
+                  ((equal other "modify") (nth 5 (file-attributes file)))
+                  ((equal other "change") (nth 6 (file-attributes file)))
+                  (t '(0 0)))))))))
+
+(defun get-sorted-org-files (root-dir)
+  "return a sorted org files list"
+  (require 'find-lisp)
+  (let ((org-files (find-lisp-find-files root-dir "\\.org$"))
+        (org-alist))
+    (mapc
+     (lambda (file)
+       (set 'org-alist (cons
+                        (cons file (sydi/get-org-file-date file))
+                        org-alist)))
+     org-files)
+    (mapcar 'car
+          (sort org-alist
+                (lambda (a b)
+                  (let* ((adate (sydi/get-org-file-date (car a)))
+                         (bdate (sydi/get-org-file-date (car b)))
+                         (A (+ (lsh (car adate) 16) (cadr adate)))
+                         (B (+ (lsh (car bdate) 16) (cadr bdate))))
+                    (>= A B)))))))
 
 (provide 'init-org-html)
