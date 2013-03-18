@@ -100,6 +100,7 @@ ARCHIVE is the string name of the package archive.")
 (require-package 'bookmark+)
 (require-package 'surround)
 (require-package 'workgroups)
+(require-package 'helm)
 
 (require-package 'golden-ratio)
 (require-package 'smarter-compile)

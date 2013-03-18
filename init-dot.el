@@ -1,4 +1,4 @@
-;;; Time-stamp: <2012-11-08 19:45:37 ryan>
+;;; Time-stamp: <2013-03-02 14:04:11 ryan>
 
 (require 'graphviz-dot-mode)
 
@@ -7,6 +7,7 @@
             "DOCSTRING"
             (setq graphviz-dot-indent-width 4)
             (setq comment-start "/* ")
-            (setq comment-end " */")))
+            (setq comment-end " */")
+            (inhibit-autopair)))
 
 (provide 'init-dot)

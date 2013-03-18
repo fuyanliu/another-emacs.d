@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2013-02-25 18:57:08 ryan>
+;; Time-stamp: <2013-03-14 16:52:07 ryan>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -68,7 +68,8 @@
 (require 'init-recentf)
 (require 'init-better-registers)        ; C-x j - jump to register
 (require 'init-zencoding-mode) ; behind init-better-register to override C-j
-(require 'init-ido)            ; override C-j
+;; (require 'init-ido)            ; override C-j
+(require 'init-helm)
 (require 'init-hippie-expand)
 (require 'init-windows)
 (require 'init-sessions)

@@ -5,7 +5,7 @@
         'c-basic-offset
       (c-lineup-topmost-intro-cont langelem))))
 
-;===== hack gud-mode begin
+                                        ;===== hack gud-mode begin
 ;; move the cursor to the end of last line if it's gud-mode
 (defun hack-gud-mode ()
   (when (string= major-mode "gud-mode")
@@ -23,7 +23,7 @@
   (hack-gud-mode))
 ;; ==== end
 
-;C/C++ SECTION
+                                        ;C/C++ SECTION
 (defun my-c-mode-hook ()
   ;; @see http://stackoverflow.com/questions/3509919/ \
   ;; emacs-c-opening-corresponding-header-file
@@ -37,7 +37,7 @@
                                         ;expressions are entered
   (setq c-auto-newline nil)
 
- ; @see http://xugx2007.blogspot.com.au/2007/06/benjamin-rutts-emacs-c-development-tips.html
+  ;; @see http://xugx2007.blogspot.com.au/2007/06/benjamin-rutts-emacs-c-development-tips.html
   (setq compilation-window-height 8)
   (setq compilation-finish-function
         (lambda (buf str)
@@ -54,51 +54,51 @@
 
   (c-set-offset 'substatement-open 0)
 
-                                        ;first arg of arglist to functions: tabbed in once
-                                        ;(default was c-lineup-arglist-intro-after-paren)
+  ;; first arg of arglist to functions: tabbed in once
+  ;; (default was c-lineup-arglist-intro-after-paren)
   (c-set-offset 'arglist-intro '+)
 
-                                        ;second line of arglist to functions: tabbed in once
-                                        ;(default was c-lineup-arglist)
+  ;; second line of arglist to functions: tabbed in once
+  ;; (default was c-lineup-arglist)
   (c-set-offset 'arglist-cont-nonempty '+)
 
-                                        ;switch/case:  make each case line indent from switch
+  ;; switch/case:  make each case line indent from switch
   (c-set-offset 'case-label '+)
 
-                                        ;make the ENTER key indent next line properly
+  ;; make the ENTER key indent next line properly
   (local-set-key "\C-m" 'newline-and-indent)
 
-                                        ;syntax-highlight aggressively
+  ;; syntax-highlight aggressively
   ;; (setq font-lock-support-mode 'lazy-lock-mode)
   ;; (setq lazy-lock-defer-contextually t)
   ;; (setq lazy-lock-defer-time 0)
 
-                                        ;make DEL take all previous whitespace with it
+  ;; make DEL take all previous whitespace with it
   (c-toggle-hungry-state 1)
 
-                                        ;make open-braces after a case: statement indent to 0 (default was '+)
+  ;; make open-braces after a case: statement indent to 0 (default was '+)
   (c-set-offset 'statement-case-open 0)
 
-                                        ;make a #define be left-aligned
+  ;; make a #define be left-aligned
   (setq c-electric-pound-behavior (quote (alignleft)))
 
-                                        ;wxwdigets stuff
+  ;; wxwdigets stuff
   (c-set-offset 'topmost-intro-cont 'c-wx-lineup-topmost-intro-cont)
 
-                                        ;do not impose restriction that all lines not top-level be indented at least
-                                        ;1 (was imposed by gnu style by default)
+  ;; do not impose restriction that all lines not top-level be indented at least
+  ;; 1 (was imposed by gnu style by default)
   (setq c-label-minimum-indentation 0)
 
- (setq gtags-suggested-key-mapping t)
+  (setq gtags-suggested-key-mapping t)
   (gtags-mode 1)
 
   (require 'fic-mode)
   (add-hook 'c++-mode-hook 'turn-on-fic-mode)
 
-  ; @see https://github.com/seanfisk/cmake-flymake
-  ; make sure you project use cmake
-  (flymake-mode)
-)
+  ;; @see https://github.com/seanfisk/cmake-flymake
+  ;; make sure you project use cmake
+  ;; (flymake-mode)
+  )
 
 ;;;###autoload
 (defun sydi/c++-mode-hook ()
@@ -113,6 +113,7 @@
 ;; c++-mode for h files.
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.ipp\\'" . c++-mode))
+(add-hook 'c++-mode-hook 'my-c-mode-hook)
 (add-hook 'c++-mode-hook 'sydi/c++-mode-hook)
 
 (provide 'init-cc-mode)
