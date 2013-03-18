@@ -2,17 +2,30 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("para 1?" 0 7
+(#1=(#("org-capture-last-stored" 0 23
       (bmkp-full-record #1#))
-    (filename . "~/projects/oceanbase/dev/src/mergeserver/ob_merge_server_service.cpp")
-    (buffer-name . "ob_merge_server_service.cpp")
-    (front-context-string . "                ")
-    (rear-context-string . "                ")
+    (filename . "~/documents/oceanbase/reading.org")
+    (buffer-name . "reading.org")
+    (front-context-string . "* 生成逻辑计划\n [[file")
+    (rear-context-string . "-18 Mon 15:10]]\n")
     (front-context-region-string)
     (rear-context-region-string)
     (visits . 0)
-    (time . #2=(20802 55380 487840))
+    (time . #2=(20806 52476 226778))
     (created . #2#)
-    (position . 72008)
-    (end-position . 72008))
+    (position . 290)
+    (end-position . 290))
+#1=(#("ob_reading.org" 0 14
+      (bmkp-full-record #1#))
+    (filename . "/home/ryan/documents/oceanbase/reading.org")
+    (buffer-name . "reading.org")
+    (front-context-string)
+    (rear-context-string . "-18 Mon 15:10]]\n")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 2)
+    (time 20806 52494 729628)
+    (created 20806 48929 329344)
+    (position . 290)
+    (end-position . 290))
 )
