@@ -8,12 +8,17 @@
 (defvar sydi/google-id "112098239943590093765")
 (defvar sydi/site-name "MiScratch")
 
+(defvar sydi/comment-box-p t "Should add commnet box for this page")
+(defvar sydi/homepage-p nil "Indicate whether the page is home page")
+(defvar sydi/single-p t "Indicate whether a single post page or not")
+
+(add-to-list 'org-export-plist-vars '(:comment-box "comment-box" sydi/comment-box-p))
+(add-to-list 'org-export-plist-vars '(:homepage "homepage" sydi/homepage-p))
+(add-to-list 'org-export-plist-vars '(:single "single" sydi/single-p))
+
 (eval-after-load 'org-html
   '(progn
 ;;; add a horizontal line before footnotes
-     (setq org-export-html-footnotes-section
-           (concat "<hr />" org-export-html-footnotes-section))
-
      (add-to-list 'org-export-language-setup
                   '("zh-CN" "作者" "日期" "目录" "脚注"))
      (setq org-export-default-language "zh-CN")
@@ -26,15 +31,13 @@
      (setq org-export-with-section-numbers nil)
      (setq org-export-page-keywords "施宇迪 sydi.org")
      (setq org-export-page-description "施宇迪 sydi.org")
-     (setq org-export-html-preamble (lambda () "<g:plusone></g:plusone>"))
-     (setq org-export-html-home/up-format
-           "<div id=\"home-and-up\"> [ <a href=\"%s\"> UP </a> ] [ <a href=\"%s\"> HOME </a> ] <button class='btn btn-inverse' onclick='show_org_source()'>查看Org源文件</button></div>")))
+     (setq org-export-html-preamble (lambda () "<g:plusone></g:plusone>"))))
 
 
 ;;;###autoload
 (defun sydi/sync-server ()
   (message "sync file to server")
-  (async-shell-command "update_sydi_org.sh")
+  ;; (async-shell-command "update_sydi_org.sh")
   (message "sync file to server complete"))
 
 ;;;###autoload
@@ -44,7 +47,7 @@
   ;; declear free-varible
   (defvar opt-plist)
   (save-excursion
-    (let ((title (plist-get opt-plist :title))
+    (let* ((title (plist-get opt-plist :title))
           (email (plist-get opt-plist :email))
           (author (plist-get opt-plist :author))
           (body-only (plist-get opt-plist :body-only))
@@ -57,11 +60,15 @@
                         (fboundp 'coding-system-get)
                         (coding-system-get coding-system-for-write
                                            'mime-charset)))
+          (comment-box (if sydi/comment-box-p
+                           "<div class=\"comments ds-thread\"></div>" ""))
+          (header (if sydi/homepage-p "" "<div id=\"header\"></div>"))
+          (content-title (if sydi/homepage-p ""
+                           (format "<h1 class=\"title\">%s</h1>" title)))
           (content (prog1 (buffer-substring-no-properties (point-min) (point-max))
                      (kill-region (point-min) (point-max)))))
       (if body-only
-          (insert (format "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"
-               \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
+          (insert (format "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
 <html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"%s\" xml:lang=\"%s\">
 <head>
 <title>%s</title>
@@ -75,23 +82,31 @@
 %s
 </head>
 <body>
-<div class=\"container-fluid main-wrapper\">
-  <div id=\"header\"></div>
-  <div id=\"main\" class=\"row-fluid main\">
-    <div class=\"span4\">
-      <div class=\"sidebar sidebar-nav well \"></div>
-    </div><!--/span-->
-    <div class=\"span8 content\">
-      <div class=\"well\">
-        <h1 class=\"title\">%s</h1>
-        %s
-        <div class=\"comments ds-thread\"></div>
+<div id=\"wrapper\">
+  <div id=\"sidebar\"></div>
+  <div id=\"main\">
+    %s
+    <div id=\"content\">
+      <div id=\"page-content\">
+        <div class=\"post single\">
+          <ul class=\"meta\"></ul>
+          <div class=\"feature-image\"></div>
+          <div class=\"the-content\">
+            <!-- content tilte -->
+            %s
+            <!-- content -->
+            %s
+            <!-- comment box -->
+            %s
+          </div>
+        </div>
       </div>
     </div>
   </div>
-<div class=\"bottom\"></div>
-<footer><p><a href=\"https://plus.google.com/%s?rel=author\">By %s</a> @ %s <a href=\"http://sydi.org\">%s</a></p></footer>
-</div></body></html>"
+</div>
+<!-- ENS WRAPPER -->
+<div id=\"footer\"></div>
+</body></html>"
                           language
                           language
                           title
@@ -102,60 +117,15 @@
                           description
                           keywords
                           style
-                          title
+                          header
+                          content-title
                           content
+                          comment-box
                           sydi/google-id
                           author
                           date
                           sydi/site-name))
         (insert content)))))
-
-(defun sydi/htmlize-buffer ()
-  (with-current-buffer (htmlize-buffer)
-    (goto-char (point-min))
-    (let ((p1 (if (re-search-forward "<style" nil t) (match-beginning 0)) )
-          (p2 (if (re-search-forward "</style>" nil t) (1+ (match-end 0)))))
-      (delete-region p1 p2)
-      (current-buffer))))
-
-(defun sydi/org-publish-org-to-orghtml (plist filename pub-dir)
-  (unless (file-exists-p pub-dir)
-    (make-directory pub-dir t))
-  (let ((visiting (find-buffer-visiting filename))
-        (htmlize-output-type "css"))
-    (save-excursion
-      (org-pop-to-buffer-same-window (or visiting (find-file filename)))
-      (let* ((plist (cons :buffer-will-be-killed (cons t plist)))
-             (init-buf (current-buffer))
-             (init-point (point))
-             (init-buf-string (buffer-string))
-             (export-file (concat pub-dir
-                                  (file-name-nondirectory filename)
-                                  ".html")))
-        ;; run hooks before exporting
-        (run-hooks 'org-publish-before-export-hook)
-        ;; export the possibly modified buffer
-        (let ((export-buffer (sydi/htmlize-buffer)))
-          (when (and (bufferp export-buffer)
-                     (buffer-live-p export-buffer))
-            (with-current-buffer export-buffer
-              (goto-char (point-min))
-              (if (search-forward "</head>" nil t)
-                  (replace-match
-                   (concat org-export-html-style-extra "</head>") nil nil))
-              (write-file export-file)
-              (run-hooks 'org-publish-after-export-hook)
-              (if (buffer-modified-p) (save-buffer))
-              (kill-buffer export-buffer))))
-        ;; maybe restore buffer's content
-        (set-buffer init-buf)
-        (when (buffer-modified-p init-buf)
-          (erase-buffer)
-          (insert init-buf-string)
-          (save-buffer)
-          (goto-char init-point))
-        (unless visiting
-          (kill-buffer init-buf))))))
 
 ;;;###autoload
 (defun set-org-publish-project-alist ()
@@ -189,10 +159,8 @@
            :style "
 <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js\"></script>
 <script type=\"text/javascript\" src=\"/images/site.js\"></script>
+<script type=\"text/javascript\" src=\"/javascripts/custom.js\"></script>
 <script type=\"text/javascript\" src=\"/images/js/bootstrap.min.js\"></script>
-<link rel=\"stylesheet\" href=\"/images/me/mediaelementplayer.css\" />
-<link rel=\"stylesheet\" href=\"/images/css/bootstrap.min.css\" />
-<link rel=\"stylesheet\" href=\"/images/css/bootstrap-responsive.css\" />
 <link rel=\"stylesheet\" href=\"/images/site.css\" />
 <link href='/images/logo.png' rel='icon' type='image/x-icon' />
 <link href=\"atom.xml\" type=\"application/atom+xml\" rel=\"alternate\" title=\"sydi.org atom\" />

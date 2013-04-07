@@ -101,6 +101,7 @@ ARCHIVE is the string name of the package archive.")
 (require-package 'surround)
 (require-package 'workgroups)
 (require-package 'helm)
+(require-package 'helm-gtags)
 
 (require-package 'golden-ratio)
 (require-package 'smarter-compile)

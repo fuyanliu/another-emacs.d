@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2013-03-14 16:52:07 ryan>
+;; Time-stamp: <2013-04-04 21:47:00 ryan>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -95,7 +95,7 @@
 (require 'init-org-pdf)
 ;;; (require 'init-org-mime)
 
-(require 'init-nxml)
+;; (require 'init-nxml)
 (require 'init-css)
 ;; (require 'init-haml)
 (require 'init-python-mode)
@@ -237,6 +237,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(bmkp-last-as-first-bookmark-file "~/.emacs.d/.bookmarks.el"))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

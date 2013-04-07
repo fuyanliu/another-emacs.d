@@ -1,7 +1,7 @@
 ;;; (load-library "rng-auto")
 (add-to-list 'auto-mode-alist
-              (cons (concat "\\." (regexp-opt '("cshtml" "aspx" "xml" "xsd" "sch" "rng" "xslt" "svg" "rss" "bkl" "bkgen" "tpl" "inc") t) "\\'")
-                    'nxml-mode))
+             (cons (concat "\\." (regexp-opt '("cshtml" "aspx" "xml" "xsd" "sch" "rng" "xslt" "svg" "rss" "bkl" "bkgen" "tpl" "inc") t) "\\'")
+                   'nxml-mode))
 (setq magic-mode-alist (cons '("<\\?xml " . nxml-mode) magic-mode-alist))
 (fset 'html-mode 'nxml-mode)
 (fset 'xml-mode 'nxml-mode)
@@ -22,11 +22,11 @@ between them.  It then indents the markup by using nxml's
 indentation rules."
   (interactive "r")
   (save-excursion
-      (nxml-mode)
-      (goto-char begin)
-      (while (search-forward-regexp "\>[ \\t]*\<" nil t)
-        (backward-char) (insert "\n"))
-      (indent-region begin end)))
+    (nxml-mode)
+    (goto-char begin)
+    (while (search-forward-regexp "\>[ \\t]*\<" nil t)
+      (backward-char) (insert "\n"))
+    (indent-region begin end)))
 
 ;;----------------------------------------------------------------------------
 ;; Integration with tidy for html + xml
