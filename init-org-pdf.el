@@ -15,6 +15,23 @@
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq-default TeX-master nil)
+;; (setq org-emphasis-alist (quote (("*" bold "<b>" "</b>") 
+;;                                  ("/" italic "<i>" "</i>")
+;;                                  ("_" underline "<span 
+;; style=\"text-decoration:underline;\">" "</span>")
+;;                                  ("=" org-code "<code>" "</code>" verbatim)
+;;                                  ("~" org-verbatim "<code>" "</code>" verbatim)
+;;                                  ("+" (:strike-through t) "<del>" "</del>")
+;;                                  ("@" org-warning "<b>" "</b>")))
+;;       org-export-latex-emphasis-alist (quote 
+;;                                        (("*" "\\textbf{%s}" nil)
+;;                                         ("/" "\\emph{%s}" nil) 
+;;                                         ("_" "\\underline{%s}" nil)
+;;                                         ("+" "\\texttt{%s}" nil)
+;;                                         ("=" "\\verb=%s=" nil)
+;;                                         ("~" "\\verb~%s~" t)
+;;                                         ("@" "\\alert{%s}" nil))))
+
 (defun org-mode-article-modes ()
   (reftex-mode t)
   (and (buffer-file-name)
@@ -42,7 +59,6 @@
 \\usepackage{wrapfig}
 \\usepackage{soul}
 \\usepackage{textcomp}
-\\usepackage{listings}
 \\usepackage{geometry}
 \\usepackage{algorithm}
 \\usepackage{algorithmic}
@@ -95,7 +111,7 @@ marginparsep=7pt, marginparwidth=.6in}
 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
 ;; 使用Listings宏包格式化源代码(只是把代码框用listing环境框起来，还需要额外的设置)
-(setq org-export-latex-listings t)
+(setq org-export-latex-listings nil)
 ;; Options for \lset command（reference to listing Manual)
 (setq org-export-latex-listings-options
       '(
@@ -143,45 +159,52 @@ marginparsep=7pt, marginparwidth=.6in}
    (js . t)
    ))
 
-;; 导出Beamer的设置
-;; allow for export=>beamer by placing #+LaTeX_CLASS: beamer in org files
-;;-----------------------------------------------------------------------------
-(add-to-list 'org-export-latex-classes
-             ;; beamer class, for presentations
-             '("beamer"
-               "\\documentclass[11pt,professionalfonts]{beamer}
-\\mode
-\\usetheme{{{{Warsaw}}}}
-%\\usecolortheme{{{{beamercolortheme}}}}
 
-\\beamertemplateballitem
-\\setbeameroption{show notes}
-\\usepackage{graphicx}
-\\usepackage{tikz}
-\\usepackage{xcolor}
-\\usepackage{xeCJK}
-\\usepackage{amsmath}
-\\usepackage{lmodern}
-\\usepackage{fontspec,xunicode,xltxtra}
-\\usepackage{polyglossia}
-\\setmainfont{Times New Roman}
-\\setCJKmainfont{DejaVu Sans YuanTi}
-\\setCJKmonofont{DejaVu Sans YuanTi Mono}
-\\usepackage{verbatim}
-\\usepackage{listings}
-\\institute{{{{beamerinstitute}}}}
-\\subject{{{{beamersubject}}}}"
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\begin{frame}[fragile]\\frametitle{%s}"
-                "\\end{frame}"
-                "\\begin{frame}[fragile]\\frametitle{%s}"
-                "\\end{frame}")))
+(setq org-emphasis-alist (quote (("*" bold "<b>" "</b>") 
+                                 ("/" italic "<i>" "</i>")
+                                 ("_" underline "<span 
+style=\"text-decoration:underline;\">" "</span>")
+                                 ("=" org-code "<code>" "</code>" verbatim)
+                                 ("~" org-verbatim "<code>" "</code>" verbatim)
+                                 ("+" (:strike-through t) "<del>" "</del>")
+                                 ("@" org-warning "<b>" "</b>")))
+      org-export-latex-emphasis-alist (quote 
+                                       (("*" "\\textbf{%s}" nil)
+                                        ("/" "\\emph{%s}" nil) 
+                                        ("_" "\\underline{%s}" nil)
+                                        ("+" "\\texttt{%s}" nil)
+                                        ("=" "\\verb=%s=" nil)
+                                        ("~" "\\verb~%s~" t)
+                                        ("@" "\\alert{%s}" nil)))
+      )
+
+;; 导出Beamer的设置
+(setq org-export-latex-append-header "
+\\usecolortheme[dark,accent=cyan]{solarized}
+\\useinnertheme[shadow=true]{rounded}
+")
+
+(setq org-export-latex-default-packages-alist
+      '(("" "fixltx2e" nil)
+        ("" "graphicx" t)
+        ("" "longtable" nil)
+        ("" "float" nil)
+        ("" "wrapfig" nil)
+        ("" "soul" t)
+        ("" "textcomp" t)
+        ("" "marvosym" t)
+        ("" "wasysym" t)
+        ("" "latexsym" t)
+        ("" "amssymb" t)
+        ("" "hyperref" nil)
+        ("" "zhfontcfg" nil)
+        ("" "listings" nil)
+        ;; ("" "verbatim" nil)
+        "\\tolerance=1000"))
 
 (setq ps-paper-type 'a4
       ps-font-size 16.0
       ps-print-header nil
       ps-landscape-mode nil)
-
-
 
 (provide 'init-org-pdf)
