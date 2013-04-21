@@ -62,9 +62,12 @@
                                            'mime-charset)))
           (comment-box (if sydi/comment-box-p
                            "<div class=\"comments ds-thread\"></div>" ""))
-          (header (if sydi/homepage-p "" "<div id=\"header\"></div>"))
-          (content-title (if sydi/homepage-p ""
-                           (format "<h1 class=\"title\">%s</h1>" title)))
+          (header (if sydi/homepage-p ""
+                    (format "<div id=\"header\">
+                               <div class=\"title\">%s</div>
+                               <div id=\"breadcrumbs\"></div>
+                            </div>"
+                            title)))
           (content (prog1 (buffer-substring-no-properties (point-min) (point-max))
                      (kill-region (point-min) (point-max)))))
       (if body-only
@@ -92,8 +95,6 @@
           <ul class=\"meta\"></ul>
           <div class=\"feature-image\"></div>
           <div class=\"the-content\">
-            <!-- content tilte -->
-            %s
             <!-- content -->
             %s
             <!-- comment box -->
@@ -118,7 +119,6 @@
                           keywords
                           style
                           header
-                          content-title
                           content
                           comment-box
                           sydi/google-id
@@ -126,6 +126,82 @@
                           date
                           sydi/site-name))
         (insert content)))))
+
+(defun sydi/publish-org-sitemap (project &optional sitemap-filename)
+  "Create a sitemap of pages in set defined by PROJECT.
+Optionally set the filename of the sitemap with SITEMAP-FILENAME.
+Default for SITEMAP-FILENAME is 'sitemap.org'."
+  (let* ((project-plist (cdr project))
+	 (dir (file-name-as-directory
+	       (plist-get project-plist :base-directory)))
+	 (localdir (file-name-directory dir))
+	 (indent-str "")
+	 (exclude-regexp (plist-get project-plist :exclude))
+	 (files (nreverse (org-publish-get-base-files project exclude-regexp)))
+	 (sitemap-filename (concat dir (or sitemap-filename "sitemap.org")))
+	 (sitemap-title (or (plist-get project-plist :sitemap-title)
+			    (concat "Sitemap for project " (car project))))
+	 (sitemap-sans-extension (plist-get project-plist :sitemap-sans-extension))
+	 (visiting (find-buffer-visiting sitemap-filename))
+	 (ifn (file-name-nondirectory sitemap-filename))
+	 file sitemap-buffer)
+    (with-current-buffer (setq sitemap-buffer
+			       (or visiting (find-file sitemap-filename)))
+      (erase-buffer)
+      (insert (concat "#+TITLE: " sitemap-title "\n\n"))
+      (insert "@<div class=\"accordion\">\n")
+      (while (setq file (pop files))
+	(let ((fn (file-name-nondirectory file))
+	      (link (file-relative-name file dir))
+	      (oldlocal localdir))
+	  (when sitemap-sans-extension
+	    (setq link (file-name-sans-extension link)))
+	  ;; sitemap shouldn't list itself
+	  (unless (equal (file-truename sitemap-filename)
+			 (file-truename file))
+            (message "Generating tree-style sitemap for %s" sitemap-title)
+            (setq localdir (concat (file-name-as-directory dir)
+                                   (file-name-directory link)))
+            (unless (string= localdir oldlocal)
+              (if (string= localdir dir)
+                  (insert (concat "\n* Top\n"))
+                (let* ((subdirs
+                        (split-string
+                         (directory-file-name
+                          (file-name-directory
+                           (file-relative-name localdir dir))) "/"))
+                       (subdir "")
+                       (old-subdirs (split-string
+                                     (file-relative-name oldlocal dir) "/"))
+                       (level-between (- (length subdirs)
+                                         (length (split-string dir))))
+                       (indent-str (make-string (* level-between 2) ?\ )))
+                  ;; (setq indent-str (make-string 2 ?\ ))
+                  (while (string= (car old-subdirs) (car subdirs))
+                    (pop old-subdirs)
+                    (pop subdirs))
+                  (dolist (d subdirs)
+                    (setq subdir (concat subdir d "/"))
+                    ;; (insert (concat indent-str " + " d "\n"))
+                    (insert (concat "\n* " d "\n")))))
+              )
+	    ;; This is common to 'flat and 'tree
+	    (let ((entry
+		   (org-publish-format-file-entry "%t" file project-plist))
+		  (regexp "\\(.*\\)\\[\\([^][]+\\)\\]\\(.*\\)"))
+	      (cond ((string-match-p regexp entry)
+		     (string-match regexp entry)
+		     (insert (concat indent-str " + " (match-string 1 entry)
+				     "[[file:" link "]["
+				     (match-string 2 entry)
+				     "]]" (match-string 3 entry) "\n")))
+		    (t
+		     (insert (concat indent-str " + [[file:" link "]["
+				     entry
+				     "]]\n"))))))))
+      (insert "\n@</div>\n")
+      (save-buffer))
+    (or visiting (kill-buffer sitemap-buffer))))
 
 ;;;###autoload
 (defun set-org-publish-project-alist ()
@@ -148,6 +224,7 @@
            :auto-sitemap t
            :sitemap-ignore-case t
            :sitemap-filename "sitemap.org"
+           :sitemap-function sydi/publish-org-sitemap
            :htmlized-source t
            :table-of-contents nil
            :auto-preamble t
