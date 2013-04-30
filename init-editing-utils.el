@@ -30,7 +30,6 @@
  truncate-lines nil
  truncate-partial-width-windows nil
  resize-mini-windows nil
- show-trailing-whitespace t
  ;; no annoying beep on errors
  visible-bell t)
 
