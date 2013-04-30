@@ -153,6 +153,10 @@
 ;;----------------------------------------------------------------------------
 (when (> emacs-major-version 23)
   (require 'fill-column-indicator)
+
+  (custom-set-faces '(whitespace-trailing ((t (:foreground "cyan"))))
+                    '(trailing-whitespace ((t (:foreground "cyan")))))
+
   (defun sanityinc/prog-mode-fci-settings ()
     ;; (turn-on-fci-mode)
     (when show-trailing-whitespace
