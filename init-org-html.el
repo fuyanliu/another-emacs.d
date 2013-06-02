@@ -12,9 +12,11 @@
 (defvar sydi/homepage-p nil "Indicate whether the page is home page")
 (defvar sydi/single-p t "Indicate whether a single post page or not")
 
-(add-to-list 'org-export-plist-vars '(:comment-box "comment-box" sydi/comment-box-p))
-(add-to-list 'org-export-plist-vars '(:homepage "homepage" sydi/homepage-p))
-(add-to-list 'org-export-plist-vars '(:single "single" sydi/single-p))
+(require 'ox)
+
+(add-to-list 'org-export-options-alist '(:comment-box nil "comment-box" t sydi/comment-box-p))
+(add-to-list 'org-export-options-alist '(:homepage nil "homepage" nil sydi/homepage-p))
+(add-to-list 'org-export-options-alist '(:single nil "single" t sydi/single-p))
 
 (eval-after-load 'org-html
   '(progn
@@ -33,45 +35,55 @@
      (setq org-export-page-description "施宇迪 sydi.org")
      (setq org-export-html-preamble (lambda () "<g:plusone></g:plusone>"))))
 
-
 ;;;###autoload
 (defun sydi/sync-server ()
   (message "sync file to server")
   ;; (async-shell-command "update_sydi_org.sh")
   (message "sync file to server complete"))
 
+(setq org-export-filter-final-output-functions '(sydi/final-export))
+
+(defun sydi/final-export (contents backend info)
+  "Filter to indent the HTML and convert HTML entities."
+  (if (eq backend 'html)
+      (sydi/final-html-export-filter contents info)))
+
 ;;;###autoload
 ;;; The hook is run after org-html export html done and
 ;;; still stay on the output html file.
-(defun sydi/final-export ()
-  ;; declear free-varible
-  (defvar opt-plist)
-  (save-excursion
-    (let* ((title (plist-get opt-plist :title))
-          (email (plist-get opt-plist :email))
-          (author (plist-get opt-plist :author))
-          (body-only (plist-get opt-plist :body-only))
-          (date (plist-get opt-plist :date))
-          (language    (plist-get opt-plist :language))
-          (keywords    (org-html-expand (plist-get opt-plist :keywords)))
-          (description (org-html-expand (plist-get opt-plist :description)))
-          (style (plist-get opt-plist :style))
-          (charset (and coding-system-for-write
-                        (fboundp 'coding-system-get)
-                        (coding-system-get coding-system-for-write
-                                           'mime-charset)))
-          (comment-box (if sydi/comment-box-p
-                           "<div class=\"comments ds-thread\"></div>" ""))
-          (header (if sydi/homepage-p ""
-                    (format "<div id=\"header\">
+(defun sydi/final-html-export-filter (contents info)
+  (let ((content-no-script)
+        (script))
+    ;; extract javascript
+    (if (not (string-match "<script .*>\\(.\\|\n\\)*</script>" contents))
+        (setq content-no-script contents)
+      (setq script (match-string-no-properties 0 contents))
+      (setq content-no-script (concat (substring contents 0 (match-beginning 0))
+                                        (substring contents (match-end 0)))))
+    ;; format html contents
+    (let* ((title (plist-get info :title))
+           (email (plist-get info :email))
+           (author (plist-get info :author))
+           (body-only (plist-get info :body-only))
+           (date (plist-get info :date))
+           (language    (plist-get info :language))
+           (keywords    (plist-get info :keywords))
+           (description (plist-get info :description))
+           (style (plist-get info :style))
+           (charset (and org-html-coding-system
+                         (fboundp 'coding-system-get)
+                         (coding-system-get org-html-coding-system 'mime-charset)))
+           (comment-box (if (plist-get info :comment-box)
+                            "<div class=\"comments ds-thread\"></div>" ""))
+           (head (concat (plist-get info :html-head) "\n" (plist-get info :html-head-extra)))
+           (header (if (plist-get info :homepage) ""
+                     (format "<div id=\"header\">
                                <div class=\"title\">%s</div>
                                <div id=\"breadcrumbs\"></div>
                             </div>"
-                            title)))
-          (content (prog1 (buffer-substring-no-properties (point-min) (point-max))
-                     (kill-region (point-min) (point-max)))))
+                             title))))
       (if body-only
-          (insert (format "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
+        (format "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
 <html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"%s\" xml:lang=\"%s\">
 <head>
 <title>%s</title>
@@ -82,6 +94,7 @@
 <meta name=\"author\" content=\"%s\"/>
 <meta name=\"description\" content=\"%s\"/>
 <meta name=\"keywords\" content=\"%s\"/>
+%s
 %s
 </head>
 <body>
@@ -107,25 +120,28 @@
 </div>
 <!-- ENS WRAPPER -->
 <div id=\"footer\"></div>
+%s
 </body></html>"
-                          language
-                          language
-                          title
-                          charset
-                          title
-                          date
-                          author
-                          description
-                          keywords
-                          style
-                          header
-                          content
-                          comment-box
-                          sydi/google-id
-                          author
-                          date
-                          sydi/site-name))
-        (insert content)))))
+                      language
+                      language
+                      title
+                      charset
+                      title
+                      date
+                      author
+                      description
+                      keywords
+                      style
+                      head
+                      header
+                      content-no-script
+                      comment-box
+                      script
+                      ;; sydi/google-id
+                      ;; author
+                      ;; date
+                      ;; sydi/site-name
+                      )))))
 
 (defun sydi/publish-org-sitemap (project &optional sitemap-filename)
   "Create a sitemap of pages in set defined by PROJECT.
@@ -220,13 +236,13 @@ Default for SITEMAP-FILENAME is 'sitemap.org'."
            :publishing-directory ,sydi/publish-directory
            :html-extension "html"
            :recursive t
-           :makeindex t
+           :makeindex nil
            :auto-sitemap t
            :sitemap-ignore-case t
            :sitemap-filename "sitemap.org"
            :sitemap-function sydi/publish-org-sitemap
            :htmlized-source t
-           :table-of-contents nil
+           :with-toc nil
            :auto-preamble t
            ;; :exclude ".*my-wife.*\.org"
            :sitemap-title "站点地图 for 本网站"
@@ -242,15 +258,13 @@ Default for SITEMAP-FILENAME is 'sitemap.org'."
 <link href='/images/logo.png' rel='icon' type='image/x-icon' />
 <link href=\"atom.xml\" type=\"application/atom+xml\" rel=\"alternate\" title=\"sydi.org atom\" />
 "
-           :publishing-function (org-publish-org-to-html
-                                 org-publish-org-to-org)
+           :publishing-function (org-html-publish-to-html)
            :body-only t
            :completion-function (sydi/sync-server)))))
 
 (defun sydi/publish ()
   "Publish Worg in htmlized pages."
   (interactive)
-  (add-hook 'org-export-html-final-hook 'sydi/final-export)
   (let ((org-format-latex-signal-error nil)
         (org-startup-folded nil))
     (set-org-publish-project-alist)
@@ -344,7 +358,7 @@ Default for SITEMAP-FILENAME is 'sitemap.org'."
                            url
                            date
                            url
-                           (org-export-as-html 3 nil 'string t)
+                           (org-html-export-as-html 3 nil 'string t)
                            )))
               (kill-buffer org-file-buffer)
               (set-buffer atom-buffer)
@@ -373,9 +387,9 @@ If #+date keyword is not set and `other' equals to \"modify\", return the file s
                   ((equal other "change") (nth 6 (file-attributes file)))
                   (t '(0 0)))))))))
 
+(require 'find-lisp)
 (defun sydi/get-sorted-org-files (root-dir)
   "return a sorted org files list"
-  (require 'find-lisp)
   (let ((org-files (find-lisp-find-files root-dir "\\.org$"))
         (org-alist))
     (mapc
