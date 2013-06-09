@@ -18,12 +18,9 @@
 (add-to-list 'org-export-options-alist '(:homepage nil "homepage" nil sydi/homepage-p))
 (add-to-list 'org-export-options-alist '(:single nil "single" t sydi/single-p))
 
-(eval-after-load 'org-html
+(eval-after-load 'ox-html
   '(progn
 ;;; add a horizontal line before footnotes
-     (add-to-list 'org-export-language-setup
-                  '("zh-CN" "作者" "日期" "目录" "脚注"))
-     (setq org-export-default-language "zh-CN")
      (setq org-export-htmlize-output-type "css")
      (setq org-export-htmlize-css-font-prefix "")
      (setq org-export-allow-BIND t)
@@ -33,7 +30,13 @@
      (setq org-export-with-section-numbers nil)
      (setq org-export-page-keywords "施宇迪 sydi.org")
      (setq org-export-page-description "施宇迪 sydi.org")
-     (setq org-export-html-preamble (lambda () "<g:plusone></g:plusone>"))))
+     (setq org-export-html-preamble (lambda () "<g:plusone></g:plusone>"))
+     (setq org-html-footnotes-section "<div id=\"footnotes\">
+<h2 class=\"footnotes\">%s: </h2>
+<span id=\"text-footnotes\">
+%s
+</span>
+</div>")))
 
 ;;;###autoload
 (defun sydi/sync-server ()
@@ -55,7 +58,7 @@
   (let ((content-no-script)
         (script))
     ;; extract javascript
-    (if (not (string-match "<script .*>\\(.\\|\n\\)*</script>" contents))
+    (if (not (string-match "<script.*>\\(.\\|\n\\)*</script>" contents))
         (setq content-no-script contents)
       (setq script (match-string-no-properties 0 contents))
       (setq content-no-script (concat (substring contents 0 (match-beginning 0))
@@ -78,9 +81,10 @@
            (head (concat (plist-get info :html-head) "\n" (plist-get info :html-head-extra)))
            (header (if (plist-get info :homepage) ""
                      (format "<div id=\"header\">
-                               <div class=\"title\">%s</div>
-                               <div id=\"breadcrumbs\"></div>
-                            </div>"
+                                <div id=\"header-menu\"></div>
+                                <div id=\"page-title\"><div>%s</div></div>
+                                <div id=\"breadcrumbs\"></div>
+                              </div>"
                              title))))
       (if body-only
         (format "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
@@ -109,7 +113,7 @@
           <div class=\"feature-image\"></div>
           <div class=\"the-content\">
             <!-- content -->
-            %s
+           %s
             <!-- comment box -->
             %s
           </div>
@@ -163,9 +167,10 @@ Default for SITEMAP-FILENAME is 'sitemap.org'."
 	 file sitemap-buffer)
     (with-current-buffer (setq sitemap-buffer
 			       (or visiting (find-file sitemap-filename)))
+      (message "Generating tree-style sitemap for %s" sitemap-title)
       (erase-buffer)
       (insert (concat "#+TITLE: " sitemap-title "\n\n"))
-      (insert "@<div class=\"accordion\">\n")
+      (insert "#+BEGIN_HTML\n<div class=\"panes\">\n#+END_HTML\n")
       (while (setq file (pop files))
 	(let ((fn (file-name-nondirectory file))
 	      (link (file-relative-name file dir))
@@ -175,7 +180,6 @@ Default for SITEMAP-FILENAME is 'sitemap.org'."
 	  ;; sitemap shouldn't list itself
 	  (unless (equal (file-truename sitemap-filename)
 			 (file-truename file))
-            (message "Generating tree-style sitemap for %s" sitemap-title)
             (setq localdir (concat (file-name-as-directory dir)
                                    (file-name-directory link)))
             (unless (string= localdir oldlocal)
@@ -215,7 +219,7 @@ Default for SITEMAP-FILENAME is 'sitemap.org'."
 		     (insert (concat indent-str " + [[file:" link "]["
 				     entry
 				     "]]\n"))))))))
-      (insert "\n@</div>\n")
+      (insert "#+BEGIN_HTML\n<div class=\"panes\">\n#+END_HTML\n")
       (save-buffer))
     (or visiting (kill-buffer sitemap-buffer))))
 
@@ -251,10 +255,11 @@ Default for SITEMAP-FILENAME is 'sitemap.org'."
            :language "zh-CN"
            :style "
 <script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js\"></script>
-<script type=\"text/javascript\" src=\"/images/site.js\"></script>
+<script type=\"text/javascript\" src=\"/js/site.js\"></script>
 <script type=\"text/javascript\" src=\"/javascripts/custom.js\"></script>
 <script type=\"text/javascript\" src=\"/images/js/bootstrap.min.js\"></script>
-<link rel=\"stylesheet\" href=\"/images/site.css\" />
+<link rel=\"stylesheet\" href=\"/css/site.css\" />
+<link rel=\"stylesheet\" href=\"/css/style.css\" />
 <link href='/images/logo.png' rel='icon' type='image/x-icon' />
 <link href=\"atom.xml\" type=\"application/atom+xml\" rel=\"alternate\" title=\"sydi.org atom\" />
 "
