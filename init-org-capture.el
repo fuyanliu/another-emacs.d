@@ -1,4 +1,4 @@
-;;; Time-stamp: <2013-03-18 15:14:44 ryan>
+;;; Time-stamp: <2013-07-01 15:15:49 ryan>
 
 (require 'org-capture)
 
@@ -12,7 +12,9 @@
          "* %?\nEntered on %U\n  %i\n")
         ("j" "Web Journal" entry (file "~/sydi.org/org/journal.org")
          "* %U\n%?%i" :prepend t)
-        ("o" "Reading Oceanbase" entry (file "~/documents/oceanbase/reading.org")
+        ("o" "Reading Oceanbase" entry (file "~/documents/reading/oceanbase.org")
+         "* %?\n [[%l][follow]] -- [%U]\n  %i")
+        ("l" "Reading SQLite" entry (file "~/documents/reading/sqlite.org")
          "* %?\n [[%l][follow]] -- [%U]\n  %i")))
 
 (provide 'init-org-capture)

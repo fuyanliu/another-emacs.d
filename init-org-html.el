@@ -82,7 +82,7 @@
            (header (if (plist-get info :homepage) ""
                      (format "<div id=\"header\">
                                 <div id=\"header-menu\"></div>
-                                <div id=\"page-title\"><div>%s</div></div>
+                                <div id=\"page-title\"><div id=\"page-title-text\">%s</div></div>
                                 <div id=\"breadcrumbs\"></div>
                               </div>"
                              title))))
@@ -219,7 +219,7 @@ Default for SITEMAP-FILENAME is 'sitemap.org'."
 		     (insert (concat indent-str " + [[file:" link "]["
 				     entry
 				     "]]\n"))))))))
-      (insert "#+BEGIN_HTML\n<div class=\"panes\">\n#+END_HTML\n")
+      (insert "\n#+BEGIN_HTML\n</div>\n#+END_HTML\n")
       (save-buffer))
     (or visiting (kill-buffer sitemap-buffer))))
 
