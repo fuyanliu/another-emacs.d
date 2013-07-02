@@ -1,25 +1,13 @@
 ;; Maintainer: Yudi Shi
-;; Time-stamp: <2012-10-21 19:53:59 ryan>
+;; Time-stamp: <2013-07-02 15:50:35 ryan>
 
 ;; here is global gtags settings.
 (require 'gtags)
+(require 'xgtags)
 
-(define-key gtags-mode-map (kbd "C-c g f") 'gtags-find-tag)
-(define-key gtags-mode-map (kbd "C-c g l") 'gtags-pop-stack)
-(define-key gtags-select-mode-map (kbd "g") 'gtags-select-tag)
-(define-key gtags-select-mode-map (kbd "SPC") 'gtags-select-tag)
-(define-key gtags-select-mode-map (kbd "RET") 'gtags-select-tag)
-(define-key gtags-select-mode-map (kbd "l") 'gtags-pop-stack)
-(define-key gtags-select-mode-map (kbd "q")
-  (lambda () (interactive) (kill-buffer)))
-
-(setq gtags-select-mode-hook nil)
-(add-hook 'gtags-select-mode-hook
-          '(lambda ()
-             (setq hl-line-face 'hl-line)
-             (hl-line-mode 1)
-             (local-set-key (kbd "g") 'gtags-select-tag)
-             ))
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (xgtags-mode 1)))
 
 ;; @see http://emacs-fu.blogspot.com.au/2008/01/navigating-through-source-code-using.html
 (defun djcb-gtags-create-or-update ()
