@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2013-04-04 21:47:00 ryan>
+;; Time-stamp: <2013-07-02 14:48:56 ryan>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -41,14 +41,6 @@
 (require 'init-utils)
 (require 'init-site-lisp) ;; Must come before elpa, as it may provide package.el
 
-;; win32 auto configuration, assuming that cygwin is installed at "c:/cygwin"
-(if *win32*
-    (progn
-      (setq cygwin-mount-cygwin-bin-directory "c:/cygwin/bin")
-      (require 'setup-cygwin)
-      ;(setenv "HOME" "c:/cygwin/home/someuser") ;; better to set HOME env in GUI
-      ))
-
 (require 'init-elpa)
 
 ;; (require 'init-ecb)
@@ -68,8 +60,8 @@
 (require 'init-recentf)
 (require 'init-better-registers)        ; C-x j - jump to register
 (require 'init-zencoding-mode) ; behind init-better-register to override C-j
-;; (require 'init-ido)            ; override C-j
-(require 'init-helm)
+(require 'init-ido)            ; override C-j
+;; (require 'init-helm)
 (require 'init-hippie-expand)
 (require 'init-windows)
 (require 'init-sessions)
@@ -129,7 +121,7 @@
 (require 'init-yari)
 
 (require 'init-cc-mode)
-(require 'init-auto-complete) ;; after init-yasnippeta to override TAB
+;; (require 'init-auto-complete) ;; after init-yasnippeta to override TAB
 ;;; (require 'init-semantic)
 (require 'init-cmake-mode)
 (require 'init-csharp-mode)
