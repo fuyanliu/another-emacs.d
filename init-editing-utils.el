@@ -238,7 +238,7 @@ Argument END"
                    (lambda (s1 s2) (eq (random 2) 0)))))))
 
 ;; need install browse-kill-ring
-(browse-kill-ring-default-keybindings)
+;; (browse-kill-ring-default-keybindings)
 
 ;; show trailing spaces in a programming mod
 (add-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace t)))
