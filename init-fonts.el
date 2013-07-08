@@ -35,15 +35,16 @@ DELTA should be a multiple of 10, in the units used by the
 
 (defun sydi-set-font ()
   (when *linux-x*
-    (set-frame-font "Monaco:pixelsize=13")
+    (set-frame-font (font-spec :family "Source Code Pro Light" :size 14 :antialias t))
 ;;; (set-frame-font "Monaco:pixelsize=14:antialias=True:hinting=True")
     (dolist (charset '(han kana symbol cjk-misc bopomofo))
       (set-fontset-font
        (frame-parameter nil 'font)
        charset
-       (font-spec :family "WenQuanYi Zen Hei" :size 16 :antialias t)))))
+       (font-spec :family "Microsoft YaHei" :size 12 :antialias t)))))
 
 (sydi-set-font)
+
 (add-hook 'before-make-frame-hook 'sydi-set-font)
 
 (provide 'init-fonts)
