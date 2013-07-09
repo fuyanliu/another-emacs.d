@@ -1,15 +1,9 @@
-(if window-system
-    ;; (color-theme-sanityinc-solarized-dark)
-    ;; (color-theme-sanityinc-tomorrow-bright)
-    (color-theme-sanityinc-tomorrow-night)
-  )
-
 ;;------------------------------------------------------------------------------
 ;; New-style theme support, in which per-frame theming is not possible
 ;;------------------------------------------------------------------------------
 
 ;; If you don't customize it, this is the theme you get.
-(setq-default custom-enabled-themes '(sanityinc-tomorrow-bright))
+(setq-default custom-enabled-themes '(sanityinc-solarized-dark))
 
 ;; Ensure that themes will be applied even if they have not been customized
 (defun reapply-themes ()
@@ -68,6 +62,5 @@
       (custom-set-variables
        '(custom-enabled-themes '(sanityinc-solarized-light)))
     (color-theme-sanityinc-solarized-light)))
-
 
 (provide 'init-themes)
