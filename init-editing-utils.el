@@ -31,7 +31,7 @@
  truncate-partial-width-windows nil
  resize-mini-windows nil
  ;; no annoying beep on errors
- visible-bell t)
+ visible-bell nil)
 
 (global-auto-revert-mode)
 (setq global-auto-revert-non-file-buffers t
