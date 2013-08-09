@@ -18,6 +18,7 @@
 (add-to-list 'org-export-options-alist '(:homepage nil "homepage" nil sydi/homepage-p))
 (add-to-list 'org-export-options-alist '(:single nil "single" t sydi/single-p))
 
+
 (eval-after-load 'ox-html
   '(progn
 ;;; add a horizontal line before footnotes
@@ -56,7 +57,7 @@
 ;;; still stay on the output html file.
 (defun sydi/final-html-export-filter (contents info)
   (let ((content-no-script)
-        (script))
+        (script ""))
     ;; extract javascript
     (if (not (string-match "<script.*>\\(.\\|\n\\)*</script>" contents))
         (setq content-no-script contents)
@@ -301,6 +302,10 @@ Default for SITEMAP-FILENAME is 'sitemap.org'."
 ;;;###autoload
 (defun generate-atom (root-dir atom-file)
   "generate a atom style page"
+  (defun web-time-string (&optional TIME)
+    (concat (format-time-string "%Y-%m-%dT%T" TIME)
+            ((lambda (x) (concat (substring x 0 3) ":" (substring x 3 5)))
+             (format-time-string "%z"))))
   (save-excursion
     (let* ((org-export-allow-BIND t)
            (org-files (sydi/get-sorted-org-files root-dir))
@@ -330,7 +335,7 @@ Default for SITEMAP-FILENAME is 'sitemap.org'."
   </author>
   <generator uri=\"%s\">orgmode4sydi</generator>"
                  title subtitle self-link link
-                 (format-time-string "%Y-%m-%dT%T%z")
+                 (web-time-string)
                  id author email sydi/site-url))
         (dolist (file org-files)
           (let ((org-file-buffer (find-file file)))
@@ -339,8 +344,7 @@ Default for SITEMAP-FILENAME is 'sitemap.org'."
                    (title (or
                            (plist-get plist :title)
                            "UNTITLED"))
-                   (date (format-time-string
-                          "%Y-%m-%dT%T%z"
+                   (date (web-time-string
                           (org-time-string-to-time (or
                                                     (plist-get plist :date)
                                                     (format-time-string
@@ -363,7 +367,7 @@ Default for SITEMAP-FILENAME is 'sitemap.org'."
                            url
                            date
                            url
-                           (org-html-export-as-html 3 nil 'string t)
+                           (org-export-as 'html nil nil t)
                            )))
               (kill-buffer org-file-buffer)
               (set-buffer atom-buffer)
