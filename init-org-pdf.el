@@ -6,31 +6,19 @@
 ;; 取消^和_字体上浮和下沉的特殊性
 (setq org-export-with-sub-superscripts nil)
 ;; 使用xelatex一步生成PDF
-(setq org-latex-to-pdf-process
+(setq org-latex-pdf-process
       '("xelatex -interaction nonstopmode %f"
+        "xelatex -interaction nonstopmode %f"
         "xelatex -interaction nonstopmode %f"))
+
+(add-to-list 'org-file-apps '("pdf" . "zathura %s"))
+
 ;; code执行免应答（Eval code without confirm）
 (setq org-confirm-babel-evaluate nil)
 ;; Auctex
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq-default TeX-master nil)
-;; (setq org-emphasis-alist (quote (("*" bold "<b>" "</b>") 
-;;                                  ("/" italic "<i>" "</i>")
-;;                                  ("_" underline "<span 
-;; style=\"text-decoration:underline;\">" "</span>")
-;;                                  ("=" org-code "<code>" "</code>" verbatim)
-;;                                  ("~" org-verbatim "<code>" "</code>" verbatim)
-;;                                  ("+" (:strike-through t) "<del>" "</del>")
-;;                                  ("@" org-warning "<b>" "</b>")))
-;;       org-export-latex-emphasis-alist (quote 
-;;                                        (("*" "\\textbf{%s}" nil)
-;;                                         ("/" "\\emph{%s}" nil) 
-;;                                         ("_" "\\underline{%s}" nil)
-;;                                         ("+" "\\texttt{%s}" nil)
-;;                                         ("=" "\\verb=%s=" nil)
-;;                                         ("~" "\\verb~%s~" t)
-;;                                         ("@" "\\alert{%s}" nil))))
 
 (defun org-mode-article-modes ()
   (reftex-mode t)
@@ -42,9 +30,12 @@
             (if (member "REFTEX" org-todo-keywords-1)
                 (org-mode-article-modes))))
 (unless (boundp 'org-export-latex-classes)
-  (setq org-export-latex-classes nil))
+  (setq org-latex-classes nil))
 
-(add-to-list 'org-export-latex-classes
+(require 'ox-latex)
+(require 'ox-beamer)
+
+(add-to-list 'org-latex-classes
              '("cn-article"
                "\\documentclass[10pt,a4paper]{article}
 \\usepackage{graphicx}
@@ -111,9 +102,9 @@ marginparsep=7pt, marginparwidth=.6in}
 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
 ;; 使用Listings宏包格式化源代码(只是把代码框用listing环境框起来，还需要额外的设置)
-(setq org-export-latex-listings nil)
+(setq org-latex-listings nil)
 ;; Options for \lset command（reference to listing Manual)
-(setq org-export-latex-listings-options
+(setq org-latex-listings-options
       '(
         ("basicstyle" "\\color{foreground}\\small\\mono")           ; 源代码字体样式
         ("keywordstyle" "\\color{function}\\bfseries\\small\\mono") ; 关键词字体样式
@@ -140,6 +131,7 @@ marginparsep=7pt, marginparwidth=.6in}
         ("rulesepcolor" "\\color{comdil}")
         ("framexleftmargin" "10mm")
         ))
+
 ;; Make Org use ido-completing-read for most of its completing prompts.
 (setq org-completion-use-ido t)
 ;; 各种Babel语言支持
@@ -160,17 +152,17 @@ marginparsep=7pt, marginparwidth=.6in}
    ))
 
 
-(setq org-emphasis-alist (quote (("*" bold "<b>" "</b>") 
+(setq org-emphasis-alist (quote (("*" bold "<b>" "</b>")
                                  ("/" italic "<i>" "</i>")
-                                 ("_" underline "<span 
+                                 ("_" underline "<span
 style=\"text-decoration:underline;\">" "</span>")
                                  ("=" org-code "<code>" "</code>" verbatim)
                                  ("~" org-verbatim "<code>" "</code>" verbatim)
                                  ("+" (:strike-through t) "<del>" "</del>")
                                  ("@" org-warning "<b>" "</b>")))
-      org-export-latex-emphasis-alist (quote 
+      org-export-latex-emphasis-alist (quote
                                        (("*" "\\textbf{%s}" nil)
-                                        ("/" "\\emph{%s}" nil) 
+                                        ("/" "\\emph{%s}" nil)
                                         ("_" "\\underline{%s}" nil)
                                         ("+" "\\texttt{%s}" nil)
                                         ("=" "\\verb=%s=" nil)
@@ -178,13 +170,7 @@ style=\"text-decoration:underline;\">" "</span>")
                                         ("@" "\\alert{%s}" nil)))
       )
 
-;; 导出Beamer的设置
-(setq org-export-latex-append-header "
-\\usecolortheme[dark,accent=cyan]{solarized}
-\\useinnertheme[shadow=true]{rounded}
-")
-
-(setq org-export-latex-default-packages-alist
+(setq org-latex-default-packages-alist
       '(("" "fixltx2e" nil)
         ("" "graphicx" t)
         ("" "longtable" nil)
