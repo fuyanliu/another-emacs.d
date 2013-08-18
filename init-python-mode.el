@@ -8,7 +8,7 @@
               auto-mode-alist))
 
 (setq interpreter-mode-alist
-      (cons '("python" . python-mode) interpreter-mode-alist))
+      (cons '("python2" . python-mode) interpreter-mode-alist))
 
 
 ;;----------------------------------------------------------------------------
