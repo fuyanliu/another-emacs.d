@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2013-07-02 14:48:56 ryan>
+;; Time-stamp: <2013-08-19 00:01:18 ryan>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -163,7 +163,7 @@
 (require 'init-twittering-mode)
 (require 'init-weibo)
 ;; itune cannot play flac, so I use mplayer+emms instead (updated, use mpd!)
-(if (not (boundp 'light-weight-emacs)) (if *is-a-mac* (require 'init-emms)) )
+;; (if (not (boundp 'light-weight-emacs)) (if *is-a-mac* (require 'init-emms)) )
 (require 'init-lua-mode)
 (require 'init-doxygen)
 (require 'init-workgroups)
@@ -222,13 +222,6 @@
    (message "Emacs startup time: %d seconds."
     (time-to-seconds (time-since emacs-load-start-time)))
    )
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(bmkp-last-as-first-bookmark-file "~/.emacs.d/.bookmarks.el"))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
