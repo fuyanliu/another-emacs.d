@@ -5,7 +5,7 @@
         'c-basic-offset
       (c-lineup-topmost-intro-cont langelem))))
 
-                                        ;===== hack gud-mode begin
+;; ===== hack gud-mode begin
 ;; move the cursor to the end of last line if it's gud-mode
 (defun hack-gud-mode ()
   (when (string= major-mode "gud-mode")
