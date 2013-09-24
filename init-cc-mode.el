@@ -95,25 +95,20 @@
   (require 'fic-mode)
   (add-hook 'c++-mode-hook 'turn-on-fic-mode)
 
-  ;; @see https://github.com/seanfisk/cmake-flymake
-  ;; make sure you project use cmake
-  ;; (flymake-mode)
-  )
-
-;;;###autoload
-(defun sydi/c++-mode-hook ()
   (require 'oceanbase-style)
   (setq comment-start "/* ")
   (setq comment-end " */")
   (c-set-style "oceanbase")
   (local-set-key (kbd "RET") 'newline-and-indent)
-  ;; (subword-mode)
+
+  ;; @see https://github.com/seanfisk/cmake-flymake
+  ;; make sure you project use cmake
+  ;; (flymake-mode)
   )
 
 ;; c++-mode for h files.
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.ipp\\'" . c++-mode))
-(add-hook 'c++-mode-hook 'my-c-mode-hook)
 (add-hook 'c++-mode-hook 'sydi/c++-mode-hook)
 
 (provide 'init-cc-mode)
