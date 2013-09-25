@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2013-08-19 00:01:18 ryan>
+;; Time-stamp: <2013-09-25 08:54:23 ryan>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -122,6 +122,7 @@
 
 (require 'init-cc-mode)
 ;; (require 'init-auto-complete) ;; after init-yasnippeta to override TAB
+(require 'init-company-mode)
 ;;; (require 'init-semantic)
 (require 'init-cmake-mode)
 (require 'init-csharp-mode)
