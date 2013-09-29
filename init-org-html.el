@@ -12,6 +12,9 @@
 (defvar sydi/homepage-p nil "Indicate whether the page is home page")
 (defvar sydi/single-p t "Indicate whether a single post page or not")
 
+(defvar sydi/atom-exclude-file-list '("douban\\.org$") "exclude files exporting to atom file")
+(defvar sydi/atom-max-export-files-num 10 "max files to export")
+
 (require 'ox)
 
 (add-to-list 'org-export-options-alist '(:comment-box nil "comment-box" t sydi/comment-box-p))
@@ -56,6 +59,11 @@
 ;;; The hook is run after org-html export html done and
 ;;; still stay on the output html file.
 (defun sydi/final-html-export-filter (contents info)
+  (defun get-string-from-file (filePath)
+    "Return filePath's file content."
+    (with-temp-buffer
+      (insert-file-contents filePath t)
+      (buffer-string)))
   (let ((content-no-script)
         (script ""))
     ;; extract javascript
@@ -77,6 +85,9 @@
            (charset (and org-html-coding-system
                          (fboundp 'coding-system-get)
                          (coding-system-get org-html-coding-system 'mime-charset)))
+           (sidebar-html (if (plist-get info :base-directory)
+                           (get-string-from-file (concat (plist-get info :base-directory) "/sidebar.div"))
+                          ""))
            (comment-box (if (plist-get info :comment-box)
                             "<div class=\"comments ds-thread\"></div>" ""))
            (head (concat (plist-get info :html-head) "\n" (plist-get info :html-head-extra)))
@@ -104,7 +115,7 @@
 </head>
 <body>
 <div id=\"wrapper\">
-  <div id=\"sidebar\"></div>
+  <div id=\"sidebar\">%s</div>
   <div id=\"main\">
     %s
     <div id=\"content\">
@@ -138,6 +149,7 @@
                       keywords
                       style
                       head
+                      sidebar-html
                       header
                       content-no-script
                       comment-box
@@ -235,6 +247,18 @@ Default for SITEMAP-FILENAME is 'sitemap.org'."
            :publishing-directory "~/sydi.org/html"
            :recursive t
            :publishing-function org-publish-attachment)
+          ("sydi-rss"
+              :base-directory ,sydi/base-directory
+              :base-extension "org"
+              :rss-image-url "http://lumiere.ens.fr/~guerry/images/faces/15.png"
+              :html-link-home "http://sydi.org/"
+              :rss-extension "xml"
+              :publishing-directory ,sydi/publish-directory
+              :publishing-function (org-rss-publish-to-rss)
+              :section-numbers nil
+              :exclude ".*"            ;; To exclude all files...
+              :include ("index.xml")   ;; ... except index.org.
+              :table-of-contents nil)
           ("sydi-pages"
            :base-directory ,sydi/base-directory
            :base-extension "org"
@@ -308,7 +332,7 @@ Default for SITEMAP-FILENAME is 'sitemap.org'."
              (format-time-string "%z"))))
   (save-excursion
     (let* ((org-export-allow-BIND t)
-           (org-files (sydi/get-sorted-org-files root-dir))
+           (org-files (subseq (sydi/get-sorted-org-files root-dir) 0 sydi/atom-max-export-files-num))
            (atom-filename atom-file)
            (visiting (find-buffer-visiting atom-filename))
            (atom-buffer (or visiting (find-file atom-filename)))
@@ -399,7 +423,11 @@ If #+date keyword is not set and `other' equals to \"modify\", return the file s
 (require 'find-lisp)
 (defun sydi/get-sorted-org-files (root-dir)
   "return a sorted org files list"
-  (let ((org-files (find-lisp-find-files root-dir "\\.org$"))
+  (let ((org-files (remove-if
+                    (lambda (ele) (member-if
+                              (lambda (match-reg) (string-match-p match-reg ele))
+                              sydi/atom-exclude-file-list))
+                    (find-lisp-find-files root-dir "\\.org$")))
         (org-alist))
     (mapc
      (lambda (file)
