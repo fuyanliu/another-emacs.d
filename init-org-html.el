@@ -300,6 +300,7 @@ Default for SITEMAP-FILENAME is 'sitemap.org'."
     (set-org-publish-project-alist)
     (message "Emacs %s" emacs-version)
     (org-version)
+    (sydi/generate-sitemap)
     (org-publish-project "sydi")))
 
 (add-hook 'org-mode-hook 'inhibit-autopair)
@@ -443,5 +444,42 @@ If #+date keyword is not set and `other' equals to \"modify\", return the file s
                            (A (+ (lsh (car adate) 16) (cadr adate)))
                            (B (+ (lsh (car bdate) 16) (cadr bdate))))
                       (>= A B)))))))
+
+;;; for sitemap.xml
+(defun sydi/all-urls (root-dir prefix)
+  (let* ((all-files (find-lisp-find-files root-dir ""))
+         (all-org-files (remove-if-not
+                         (lambda (file) (string-match ".org$" file)) all-files)))
+    (concatenate 'list
+                 (mapcar
+                  (lambda (file) (replace-regexp-in-string
+                             (concat root-dir "\\(.*\\).org")
+                             (concat prefix "\\1.html")
+                             file))
+                  all-org-files)
+                 (mapcar
+                  (lambda (file) (replace-regexp-in-string
+                             (concat root-dir "\\(.*\\)")
+                             (concat prefix "\\1.html")
+                             file))
+                  all-org-files))))
+
+(defun sydi/generate-sitemap-ex (sitemap-filename root-dir prefix)
+  (with-temp-buffer
+    (kill-region (point-min) (point-max))
+    (insert
+     (concat
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">
+"
+      (mapconcat (lambda (url) (format "<url><loc>%s</loc><priority>0.5000</priority></url>" url))
+                 (sydi/all-urls root-dir prefix) "\n")
+      "</urlset>"))
+    (write-file (concat root-dir sitemap-filename))
+    (kill-buffer)))
+
+(defun sydi/generate-sitemap ()
+  (interactive)
+  (sydi/generate-sitemap-ex "sitemap.xml" "/home/ryan/sydi.org/org/" "http://sydi.org/"))
 
 (provide 'init-org-html)
