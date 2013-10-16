@@ -1,5 +1,5 @@
 ;; -*- coding: utf-8 -*-
-;; Time-stamp: <2013-09-25 08:54:23 ryan>
+;; Time-stamp: <2013-09-29 16:12:09 ryan>
 (setq emacs-load-start-time (current-time))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -87,10 +87,10 @@
 (require 'init-org-pdf)
 ;;; (require 'init-org-mime)
 
-;; (require 'init-nxml)
+(require 'init-nxml)
 (require 'init-css)
 ;; (require 'init-haml)
-(require 'init-python-mode)
+;; (require 'init-python-mode)
 (require 'init-cperl-mode)
 ;; (require 'init-haskell)
 (require 'init-ruby-mode)

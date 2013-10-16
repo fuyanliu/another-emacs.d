@@ -3,7 +3,7 @@
 ; @see https://github.com/timcharper/evil-surround
 (global-surround-mode 1)
 
-(evil-set-initial-state 'org-mode 'emacs)
+;; (evil-set-initial-state 'org-mode 'emacs)
 (evil-set-initial-state 'Info-mode 'emacs)
 (evil-set-initial-state 'term-mode 'emacs)
 (evil-set-initial-state 'log-edit-mode 'emacs)

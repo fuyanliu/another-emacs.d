@@ -20,7 +20,7 @@
 (add-to-list 'org-export-options-alist '(:comment-box nil "comment-box" t sydi/comment-box-p))
 (add-to-list 'org-export-options-alist '(:homepage nil "homepage" nil sydi/homepage-p))
 (add-to-list 'org-export-options-alist '(:single nil "single" t sydi/single-p))
-
+(add-to-list 'org-export-options-alist '(:js-style nil nil nil))
 
 (eval-after-load 'ox-html
   '(progn
@@ -82,6 +82,7 @@
            (keywords    (plist-get info :keywords))
            (description (plist-get info :description))
            (style (plist-get info :style))
+           (js-style (plist-get info :js-style))
            (charset (and org-html-coding-system
                          (fboundp 'coding-system-get)
                          (coding-system-get org-html-coding-system 'mime-charset)))
@@ -137,6 +138,7 @@
 <!-- ENS WRAPPER -->
 <div id=\"footer\"></div>
 %s
+%s
 </body></html>"
                       language
                       language
@@ -154,6 +156,7 @@
                       content-no-script
                       comment-box
                       script
+                      js-style
                       ;; sydi/google-id
                       ;; author
                       ;; date
@@ -243,7 +246,7 @@ Default for SITEMAP-FILENAME is 'sitemap.org'."
            :components ("sydi-pages" "sydi-static"))
           ("sydi-static"
            :base-directory "~/sydi.org/org/"
-           :base-extension "xml\\|css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|html\\|div\\|pl\\|template"
+           :base-extension "xml\\|css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|html\\|div\\|pl\\|template\\|txt"
            :publishing-directory "~/sydi.org/html"
            :recursive t
            :publishing-function org-publish-attachment)
@@ -273,22 +276,21 @@ Default for SITEMAP-FILENAME is 'sitemap.org'."
            :htmlized-source t
            :with-toc nil
            :auto-preamble t
-           ;; :exclude ".*my-wife.*\.org"
+           :exclude ".*my-wife.*\.org"
            :sitemap-title "站点地图 for 本网站"
            :author "施宇迪"
            :email "a@sydi.org"
            :language "zh-CN"
            :style "
-<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js\"></script>
-<script type=\"text/javascript\" src=\"/js/site.js\"></script>
-<script type=\"text/javascript\" src=\"/javascripts/custom.js\"></script>
-<script type=\"text/javascript\" src=\"/images/js/bootstrap.min.js\"></script>
 <link rel=\"stylesheet\" href=\"/css/site.css\" />
 <link rel=\"stylesheet\" href=\"/css/style.css\" />
-<link href='/images/logo.png' rel='icon' type='image/x-icon' />
-<link href=\"atom.xml\" type=\"application/atom+xml\" rel=\"alternate\" title=\"sydi.org atom\" />
+<link href=\"/images/logo.png\" rel=\"icon\" type=\"image/x-icon\" />
+<link href=\"/atom.xml\" type=\"application/atom+xml\" rel=\"alternate\" title=\"sydi.org atom\" />
 "
-           :publishing-function (org-html-publish-to-html)
+           :js-style "<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js\"></script>
+<script type=\"text/javascript\" src=\"/js/site.js\"></script>
+"
+           :publishing-function (org-html-publish-to-html org-org-publish-to-org)
            :body-only t
            :completion-function (sydi/sync-server)))))
 
