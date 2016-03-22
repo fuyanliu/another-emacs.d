@@ -1,5 +1,14 @@
-# contributor: Xah Lee (XahLee.org)
-# name: dolist
+# -*- coding: utf-8; mode: snippet -*-
+# name: (dolist () break)
 # key: dolist
+# contributor: Chen Bin <chenbin DOT sh AT gmail>
 # --
-(dolist $0 )
+(let ((i 0) found item)
+  (while (and (not found)
+              (< i (length ${1:items})))
+    (setq item (nth i ${1:$(yas/substr yas-text "[^ ]*")}))
+    (when (${2:t})
+      (setq found t)
+      )
+    (setq i (1+ i))
+    ))

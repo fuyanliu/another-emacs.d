@@ -1,8 +1,10 @@
-# contributor: Xah Lee (XahLee.org)
-# name: cond
-# key: cond
+# -*- coding: utf-8; mode: snippet -*-
+# name: (cond (COND1 BODY) (t ...))
+# key: con
+# contributor: Chen Bin <chenbin DOT sh AT gmail>
 # --
 (cond
-(CONDITION$0 BODY)
-(CONDITION BODY)
-)
+ ((${1:CONDITION})
+  $0)
+ (t
+  (message "default")))

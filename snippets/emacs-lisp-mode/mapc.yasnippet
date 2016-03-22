@@ -1,5 +1,12 @@
-# contributor: Xah Lee (XahLee.org)
-# name: mapc
-# key: mapc
+# -*- coding: utf-8; mode: snippet -*-
+# name: (mapc FUNCTION SEQUENCE)
+# key: foreach
+# contributor: Chen Bin <chenbin DOT sh AT gmail>
 # --
-(mapc '$0 SEQUENCE)
+(mapc
+  (lambda (elem)
+    (message "elem=%s" elem)
+    $0
+  )
+  ${1:(list 1 2 3 4)}
+)
