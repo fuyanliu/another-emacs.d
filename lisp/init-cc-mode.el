@@ -56,8 +56,11 @@
 
   (setq cc-search-directories '("." "/usr/include" "/usr/local/include/*" "../*/include" "$WXWIN/include"))
 
+  (require 'new-oceanbase-style)
+  (new-oceanbase-style)
+
   ;; wxWidgets setup
-  (c-set-offset 'topmost-intro-cont 'c-wx-lineup-topmost-intro-cont)
+  ;; (c-set-offset 'topmost-intro-cont 'c-wx-lineup-topmost-intro-cont)
 
   ;; make a #define be left-aligned
   (setq c-electric-pound-behavior (quote (alignleft)))
