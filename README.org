@@ -1,4 +1,4 @@
-\bf\it｛注:｝这个emacs.d来自于Mac Safari书签http://ryzn.me/posts/emacs/org-mode-for-blog.html。
+### *\large 注:* 这个emacs.d来自于Mac Safari书签http://ryzn.me/posts/emacs/org-mode-for-blog.html。
 * Checklist
 - [[https://github.com/redguardtoo/emacs.d/issues/169][You can make this setup more stable]]
 - I recommend Emacs *24.3.1* or *24.4*
